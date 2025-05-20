@@ -1,18 +1,13 @@
 #include <iostream>
-#include "sqlite3.h"
+#include <SQLiteCpp/SQLiteCpp.h>
 
 int main() {
-    sqlite3* db;
-    int rc = sqlite3_open("example.db", &db);
-
-    if (rc != SQLITE_OK) {
-        std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << std::endl;
-        sqlite3_close(db);
-        return 1;
-    }
-
-    // Use the database...
-
-    sqlite3_close(db);
+	try {
+		SQLite::Database db("test_db.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+	}
+	catch (const std::exception e) {
+		std::cerr << "Blad: " << e.what() << std::endl;
+	}
+	
 	return 0;
 }
