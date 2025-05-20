@@ -1,6 +1,7 @@
 #pragma once
 
-class Seat
+
+class Seat //: protected car (przedzial)
 {
 protected:
 	// variables
@@ -9,5 +10,8 @@ protected:
 	int seatNumber{};
 	// int takenBy[] // 0 if free, passengerID if taken on station number
 
-	// contructors
+	// constructors
+public:
+	Seat();
+	Seat(int);
 };
