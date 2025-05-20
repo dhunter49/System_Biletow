@@ -1,5 +1,6 @@
 #pragma once
 
+
 class Seat //: protected car (przedzial)
 {
 protected:
