@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\adamm\source\repos\System_Biletow\System_Biletow\SQLiteCpp\sqlite3;C:\Users\adamm\source\repos\System_Biletow\System_Biletow\SQLiteCpp\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\SQLiteCpp\sqlite3;.\SQLiteCpp\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
