@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\SQLiteCpp\sqlite3;.\SQLiteCpp\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,10 +129,32 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="train.cpp" />
+    <ClCompile Include="Seat.cpp" />
+    <ClCompile Include="SQLiteCpp\sqlite3\sqlite3.c" />
+    <ClCompile Include="SQLiteCpp\src\Backup.cpp" />
+    <ClCompile Include="SQLiteCpp\src\Column.cpp" />
+    <ClCompile Include="SQLiteCpp\src\Database.cpp" />
+    <ClCompile Include="SQLiteCpp\src\Exception.cpp" />
+    <ClCompile Include="SQLiteCpp\src\Savepoint.cpp" />
+    <ClCompile Include="SQLiteCpp\src\Statement.cpp" />
+    <ClCompile Include="SQLiteCpp\src\Transaction.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="train.h" />
+    <ClInclude Include="Seat.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Assertion.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Backup.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Column.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Database.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Exception.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\ExecuteMany.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Savepoint.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\SQLiteCpp.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\SQLiteCppExport.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Statement.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Transaction.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Utils.h" />
+    <ClInclude Include="SQLiteCpp\include\SQLiteCpp\VariadicBind.h" />
+    <ClInclude Include="SQLiteCpp\sqlite3\sqlite3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
