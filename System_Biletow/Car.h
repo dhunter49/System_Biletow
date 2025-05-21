@@ -1,11 +1,11 @@
 #pragma once
-class Train {
+class Car {
 protected:
 	//variables
-	int trainID;
+	int carNumber;
 public:
 	//constructors
-	Train();
-	Train(int);
+	Car();
+	Car(int);
 };
 
