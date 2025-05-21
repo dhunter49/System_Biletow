@@ -1,7 +1,7 @@
 #pragma once
 
 
-class Seat //: protected car (przedzial)
+class Seat //: protected Car (przedzial)
 {
 protected:
 	// variables
