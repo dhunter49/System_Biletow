@@ -1,7 +1,7 @@
 #pragma once
+#include "Compartment.h"
 
-class Seat
-{
+class Seat : protected Compartment {
 protected:
 	// variables
 	bool isFirstClass{}, isFacingFront{}, isByTable{}, isInCompartment{};

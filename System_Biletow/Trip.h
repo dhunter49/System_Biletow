@@ -1,5 +1,7 @@
 #pragma once
-class Trip {
+#include "Route.h"
+
+class Trip : protected Route {
 protected:
 	//variables
 	int tripID;

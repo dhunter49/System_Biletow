@@ -1,5 +1,5 @@
 #include "Trip.h"
 
-Trip::Trip() {};
+Trip::Trip() :tripID(0){};
 Trip::Trip(int tripID) :tripID(tripID) {};
 

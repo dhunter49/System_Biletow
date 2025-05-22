@@ -1,5 +1,7 @@
 #pragma once
-class Car {
+#include "Train.h"
+
+class Car : protected Train {
 protected:
 	//variables
 	int carNumber;

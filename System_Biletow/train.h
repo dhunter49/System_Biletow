@@ -1,5 +1,7 @@
 #pragma once
-class Train {
+#include "Trip.h"
+
+class Train : protected Trip {
 protected:
 	//variables
 	int trainID;
