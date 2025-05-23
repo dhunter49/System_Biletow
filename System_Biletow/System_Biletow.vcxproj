@@ -128,7 +128,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Car.cpp" />
+    <ClCompile Include="Compartment.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Passenger.cpp" />
+    <ClCompile Include="Route.cpp" />
     <ClCompile Include="Seat.cpp" />
     <ClCompile Include="SQLiteCpp\sqlite3\sqlite3.c" />
     <ClCompile Include="SQLiteCpp\src\Backup.cpp" />
@@ -138,8 +142,15 @@
     <ClCompile Include="SQLiteCpp\src\Savepoint.cpp" />
     <ClCompile Include="SQLiteCpp\src\Statement.cpp" />
     <ClCompile Include="SQLiteCpp\src\Transaction.cpp" />
+    <ClCompile Include="Train.cpp" />
+    <ClCompile Include="Trip.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Car.h" />
+    <ClInclude Include="Compartment.h" />
+    <ClInclude Include="headers.h" />
+    <ClInclude Include="Passenger.h" />
+    <ClInclude Include="Route.h" />
     <ClInclude Include="Seat.h" />
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Assertion.h" />
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Backup.h" />
@@ -155,6 +166,8 @@
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Utils.h" />
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\VariadicBind.h" />
     <ClInclude Include="SQLiteCpp\sqlite3\sqlite3.h" />
+    <ClInclude Include="Train.h" />
+    <ClInclude Include="Trip.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

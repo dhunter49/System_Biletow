@@ -1,8 +1,7 @@
 #pragma once
+#include "Compartment.h"
 
-
-class Seat //: protected Car (przedzial)
-{
+class Seat : protected Compartment {
 protected:
 	// variables
 	bool isFirstClass{}, isFacingFront{}, isByTable{}, isInCompartment{};
