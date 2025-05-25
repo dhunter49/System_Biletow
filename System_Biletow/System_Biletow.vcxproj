@@ -131,6 +131,7 @@
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Compartment.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Passenger.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="Seat.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="Car.h" />
     <ClInclude Include="Compartment.h" />
     <ClInclude Include="headers.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Passenger.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="Seat.h" />
