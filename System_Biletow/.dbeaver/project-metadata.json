@@ -1,1 +1,1 @@
-{"resources":{"Scripts/Script-1.sql":{"default-datasource":"sqlite_jdbc-197034b952e-46f183dae6eb29f5"},"Scripts/Script-2.sql":{"default-datasource":"sqlite_jdbc-197041daf78-511096a524e79e95"},"Scripts/Script-3.sql":{"default-datasource":"sqlite_jdbc-197041daf78-511096a524e79e95"},"Scripts/Script.sql":{"default-datasource":"sqlite_jdbc-197034b952e-46f183dae6eb29f5"}}}
+{"resources":{"Scripts/Script-2.sql":{"default-datasource":"sqlite_jdbc-197041daf78-511096a524e79e95"}}}
