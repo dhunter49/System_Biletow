@@ -22,10 +22,10 @@ int main() {
 	//catch (const std::exception e) {
 	//	std::cerr << "Blad: " << e.what() << std::endl;
 	//}
-	std::vector<std::string> mainMenuOptions = {
-		"1. test1", "2. test 2"
-	};
 	try {
+		std::vector<std::string> mainMenuOptions = {
+			"Sigma", "Beta", "Omega"
+		};
 		std::cout << showMenu("Glowne", mainMenuOptions);
 	}
 	catch (const std::exception e) {

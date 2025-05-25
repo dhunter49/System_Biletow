@@ -14,6 +14,17 @@ void setColor(int color) {
     }
 }
 
+// Hides/Shows visibility of text cursor
+void setConsoleCursorVisibility(bool visible) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hConsole == INVALID_HANDLE_VALUE) return;
+
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(hConsole, &cursorInfo);
+    cursorInfo.bVisible = visible; // true - widoczny, false - ukryty
+    SetConsoleCursorInfo(hConsole, &cursorInfo);
+}
+
 // Clears console screen 
 // ONLY WINDOWS
 void clearScreen() {
@@ -36,10 +47,14 @@ int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) 
         throw std::invalid_argument("Menu options can't be empty");
     int currentSelection{};
     int key = -1;
+    setConsoleCursorVisibility(false);
     try {
         while (true) {
             clearScreen();
-            std::cout << " ===== " << menuTitle << " ===== " << std::endl << std::endl;
+            if (menuTitle == "")
+                std::cout << " ========== " << std::endl << std::endl;
+            else 
+                std::cout << " ===== " << menuTitle << " ===== " << std::endl << std::endl;
             for (size_t i = 0; i < menuOptions.size(); i++) {
                 if (i == currentSelection) {
                     setColor(12); // sets to red when choosen
@@ -62,14 +77,19 @@ int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) 
                 }
             }
             else if (key == 13) { //ENTER pressed
+                setConsoleCursorVisibility(true);
                 return currentSelection;
             }
             else if (key == 27) { // ESC pressed
+                setConsoleCursorVisibility(true);
                 return -2;
             }
         }
     }
     catch (...) {
+        setConsoleCursorVisibility(true);
+        system("CLS");
+        setColor(7);
         throw;
     }
 }
