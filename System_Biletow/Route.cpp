@@ -17,22 +17,19 @@ void RoutesManager::loadRoutesFromDatabase(StationManager stations) {
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
 		SQLite::Statement query(db, "SELECT ID, StationNumber, StationID FROM Routes");
 
-		int amountOfRoutes{};
-		int id{};
+		int id = 1;
 		int stationID{};
 		std::unordered_map<int, Station> listOfStations;
 		while (query.executeStep()) {
 			if (id != query.getColumn(0).getInt()) {
-				amountOfRoutes++;
 				Route route(id, listOfStations);
 				routes[id] = route;
 				id = query.getColumn(0).getInt();
 			}
 			stationID = query.getColumn(1).getInt();
-			const Station* station = stations.findByID(stationID);
-			listOfStations[stationID] = {stationID, station->name};
+			const Station* station = stations.findByID(query.getColumn(2).getInt());
+			listOfStations[stationID] = {query.getColumn(2).getInt(), station->name};
 		}
-		amountOfRoutes++;
 		Route route(id, listOfStations);
 		routes[id] = route;
 	}
