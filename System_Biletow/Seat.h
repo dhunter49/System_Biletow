@@ -1,5 +1,6 @@
 #pragma once
 #include "Compartment.h"
+#include <unordered_map>
 
 class Seat : protected Compartment {
 protected:
@@ -7,7 +8,7 @@ protected:
 	bool isFirstClass{}, isFacingFront{}, isByTable{}, isInCompartment{};
 	char locationOfSeating{}; // Where 'w' is window; 'm' is middle; 'c' is corridor
 	int seatNumber{};
-	// int takenBy[] // 0 if free, passengerID if taken on station number
+	std::unordered_map<int, int> takenBy; // stationIDOnRoute, PassengerID
 
 	// constructors
 public:
