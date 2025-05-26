@@ -69,6 +69,9 @@
     <ClCompile Include="SQLiteCpp\src\Transaction.cpp">
       <Filter>Source Files\SQLiteCpp</Filter>
     </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Car.h">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\VariadicBind.h">
       <Filter>Header Files\SQLiteCpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
