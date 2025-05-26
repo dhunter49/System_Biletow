@@ -2,10 +2,13 @@
 #include "headers.h"
 #include <vector>
 #include <unordered_map>
+#include "StationManager.h"
 
-struct Station {
-	int stationID;
-	std::string stationName;
+class Route;
+
+struct RoutesManager {
+	std::unordered_map<int, Route> routes;
+	void loadRoutesFromDatabase(StationManager stations);
 };
 
 class Route {
@@ -16,6 +19,6 @@ protected:
 public:
 	//constructors
 	Route();
-	Route(int);
+	Route(int, std::unordered_map<int,Station>);
 };
 
