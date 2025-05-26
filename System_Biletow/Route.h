@@ -18,6 +18,7 @@ protected:
 	std::unordered_map<int,Station> stationList; // stationIDOnRoute
 public:
 	//constructors
+	Route();
 	Route(int, std::unordered_map<int,Station>);
 };
 

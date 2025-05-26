@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include "StationManager.h"
 
+Route::Route() : routeID(1) {}
+
 Route::Route(int routeID, std::unordered_map<int, Station> listOfStations) :routeID(routeID) {
 	for (auto& i : listOfStations) {
 		stationList[i.first] = i.second;
