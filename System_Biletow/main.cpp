@@ -6,8 +6,6 @@
 #include "StationManager.h"
 #include <Windows.h>
 
-const std::string DATABASE_PATH = "database.db3";
-
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);

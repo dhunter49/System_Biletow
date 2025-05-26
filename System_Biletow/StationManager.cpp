@@ -1,10 +1,11 @@
 #include "StationManager.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <iostream>
+#include "GlobalConsts.h"
 
 void StationManager::loadFromDatabase(){
 	try {
-		SQLite::Database db("database.db3", SQLite::OPEN_READONLY);
+		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
 		SQLite::Statement query(db, "SELECT ID, Name FROM Stations");
 
 		while (query.executeStep()) {

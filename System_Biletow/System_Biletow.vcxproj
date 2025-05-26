@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="Car.h" />
     <ClInclude Include="Compartment.h" />
+    <ClInclude Include="GlobalConsts.h" />
     <ClInclude Include="headers.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Passenger.h" />
