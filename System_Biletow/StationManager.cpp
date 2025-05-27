@@ -3,40 +3,13 @@
 #include <iostream>
 #include "GlobalConsts.h"
 
-//void StationManager::loadFromDatabase(){
-//	try {
-//		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-//		SQLite::Statement query(db, "SELECT ID, Name FROM Stations");
-//
-//		while (query.executeStep()) {
-//			Station station;
-//			station.id = query.getColumn(0).getInt();
-//			station.name = query.getColumn(1).getString();
-//
-//			stations[station.id] = station;
-//		}
-//	}
-//	catch (SQLite::Exception& e) {
-//		std::cerr << "SQLite error: " << e.what() << std::endl;
-//	}
-//	catch (...) {
-//		std::cerr << "Nieznany blad!" << std::endl;
-//	}
-//}
-//
-//const Station* StationManager::findByID(int id) const {
-//	auto it = stations.find(id);
-//	if (it != stations.end())
-//		return &it->second;
-//	else
-//		return nullptr;
-//}
-
+// Find a station in database by it's ID, returns struct Station ({stationID, stationName})
+// If not found throws an exception
 Station findInDatabase(int stationID) {
 	try {
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
 		SQLite::Statement query(db, "SELECT Name FROM Stations WHERE ID = ?");
-		query.bind(1, stationID);
+		query.bind(1, stationID); // Replaces '?' with stationID
 		if (query.executeStep()) {
 			return { stationID, query.getColumn(0).getString() };
 		}

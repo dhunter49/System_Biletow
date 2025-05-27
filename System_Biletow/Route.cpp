@@ -13,6 +13,7 @@ Route::Route(int routeID, std::unordered_map<int, Station> listOfStations) :rout
 	}
 };
 
+// Used to load all routes from database
 void RoutesManager::loadRoutesFromDatabase() {
 	try {
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
@@ -20,7 +21,7 @@ void RoutesManager::loadRoutesFromDatabase() {
 
 		int id = 1;
 		int stationID{}; // Station unique ID
-		int stationNum{}; // Station number in list, always starts at 1
+		int stationNum{}; // Station number in list, always starts at 1, for every route
 		std::unordered_map<int, Station> listOfStations;
 		while (query.executeStep()) {
 			if (id != query.getColumn(0).getInt()) {

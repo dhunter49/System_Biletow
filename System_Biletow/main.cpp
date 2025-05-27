@@ -60,19 +60,7 @@ int main() {
 	//	std::cerr << "Error: unknown" << std::endl;
 	//}
 
-	// Init stations
-	//StationManager stations;
-	//stations.loadFromDatabase();
-
-	// Display of initialized stations
-	//for (int i = 0;i < 45;i++) {
-	//	if (const Station* s = stations.findByID(i)) {
-	//		std::cout << s->name << std::endl;
-	//	}
-	//	else
-	//		std::cout << "Nieznaleziono!\n";
-	//}
-
+	// Loads all routes
 	RoutesManager routes;
 	try {
 		routes.loadRoutesFromDatabase();
