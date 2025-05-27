@@ -5,6 +5,7 @@
 #include <map>
 #include "StationManager.h"
 #include <string>
+#include "Menu.h"
 
 class Route;
 
@@ -18,7 +19,7 @@ struct RoutesManager {
 class Route {
 public:
 	//methods
-	std::string getStringAsMenuOption();
+	MenuOption getMenuOption();
 protected:
 	//variables
 	int routeID;

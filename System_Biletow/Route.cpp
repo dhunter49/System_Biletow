@@ -14,7 +14,7 @@ Route::Route(int routeID, std::map<int, Station> listOfStations) :routeID(routeI
 };
 
 // Returns string in a format "StationA - StationB - ... - StationZ"
-std::string Route::getStringAsMenuOption() {
+MenuOption Route::getMenuOption() {
 	std::string out{};
 	size_t count{};
 	for (auto& stationPair : stationList) {
@@ -23,7 +23,7 @@ std::string Route::getStringAsMenuOption() {
 			out += " - ";
 		}
 	}
-	return out;
+	return {routeID,out};
 }
 
 // Used to load all routes from database

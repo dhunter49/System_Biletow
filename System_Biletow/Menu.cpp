@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <vector>
 #include <conio.h>
+#include "Menu.h"
 
 // Sets console output text to given color
 // ONLY WINDOWS
@@ -46,7 +47,7 @@ void clearScreen() {
 // Displays menu interface with set amount of options and set title, return choosen option
 // If string is empty ("") it won't print any title
 // ONLY WINDOWS
-int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) {
+int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
     if (menuOptions.empty())
         throw std::invalid_argument("Menu options can't be empty");
     int currentSelection{};
@@ -62,11 +63,11 @@ int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) 
             for (size_t i = 0; i < menuOptions.size(); i++) {
                 if (i == currentSelection) {
                     setColor(12); // sets to red when choosen
-                    std::cout << "> " << menuOptions[i] << std::endl;
+                    std::cout << "> " << menuOptions[i].menuText << std::endl;
                     setColor(7); // resets to default color
                 }
                 else {
-                    std::cout << "  " << menuOptions[i] << std::endl;
+                    std::cout << "  " << menuOptions[i].menuText << std::endl;
                 }
             }
             int key = _getch();
@@ -82,7 +83,7 @@ int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) 
             }
             else if (key == 13) { // ENTER pressed
                 setConsoleCursorVisibility(true);
-                return currentSelection;
+                return menuOptions[currentSelection].id;
             }
             else if (key == 27) { // ESC pressed
                 setConsoleCursorVisibility(true);
