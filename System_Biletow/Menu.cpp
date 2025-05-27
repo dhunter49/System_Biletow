@@ -4,6 +4,7 @@
 #include <conio.h>
 
 // Sets console output text to given color
+// ONLY WINDOWS
 void setColor(int color) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hConsole == INVALID_HANDLE_VALUE) {
@@ -15,13 +16,15 @@ void setColor(int color) {
 }
 
 // Hides/Shows visibility of text cursor
+// true - visible, false - hidden
+// ONLY WINDOWS
 void setConsoleCursorVisibility(bool visible) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hConsole == INVALID_HANDLE_VALUE) return;
 
     CONSOLE_CURSOR_INFO cursorInfo;
     GetConsoleCursorInfo(hConsole, &cursorInfo);
-    cursorInfo.bVisible = visible; // true - widoczny, false - ukryty
+    cursorInfo.bVisible = visible;
     SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
 
@@ -41,6 +44,7 @@ void clearScreen() {
 }
 
 // Displays menu interface with set amount of options and set title, return choosen option
+// If string is empty ("") it won't print any title
 // ONLY WINDOWS
 int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) {
     if (menuOptions.empty())
@@ -76,7 +80,7 @@ int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) 
                     break;
                 }
             }
-            else if (key == 13) { //ENTER pressed
+            else if (key == 13) { // ENTER pressed
                 setConsoleCursorVisibility(true);
                 return currentSelection;
             }

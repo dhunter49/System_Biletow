@@ -143,12 +143,14 @@
     <ClCompile Include="SQLiteCpp\src\Savepoint.cpp" />
     <ClCompile Include="SQLiteCpp\src\Statement.cpp" />
     <ClCompile Include="SQLiteCpp\src\Transaction.cpp" />
+    <ClCompile Include="StationManager.cpp" />
     <ClCompile Include="Train.cpp" />
     <ClCompile Include="Trip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Car.h" />
     <ClInclude Include="Compartment.h" />
+    <ClInclude Include="GlobalConsts.h" />
     <ClInclude Include="headers.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Passenger.h" />
@@ -168,6 +170,7 @@
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Utils.h" />
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\VariadicBind.h" />
     <ClInclude Include="SQLiteCpp\sqlite3\sqlite3.h" />
+    <ClInclude Include="StationManager.h" />
     <ClInclude Include="Train.h" />
     <ClInclude Include="Trip.h" />
   </ItemGroup>
