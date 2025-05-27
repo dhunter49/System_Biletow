@@ -7,11 +7,24 @@
 
 Route::Route() : routeID(1) {}
 
-Route::Route(int routeID, std::unordered_map<int, Station> listOfStations) :routeID(routeID) {
+Route::Route(int routeID, std::map<int, Station> listOfStations) :routeID(routeID) {
 	for (auto& i : listOfStations) {
 		stationList[i.first] = i.second;
 	}
 };
+
+// Returns string in a format "StationA - StationB - ... - StationZ"
+std::string Route::getStringAsMenuOption() {
+	std::string out{};
+	size_t count{};
+	for (auto& stationPair : stationList) {
+		out += stationPair.second.name;
+		if (++count < stationList.size()) {
+			out += " - ";
+		}
+	}
+	return out;
+}
 
 // Used to load all routes from database
 void RoutesManager::loadRoutesFromDatabase() {
@@ -21,7 +34,7 @@ void RoutesManager::loadRoutesFromDatabase() {
 
 		int stationID{}; // Station unique ID
 		int stationNum{}; // Station number in list, always starts at 1, for every route
-		std::unordered_map<int, Station> listOfStations;
+		std::map<int, Station> listOfStations;
 
 		if (!query.executeStep())
 			throw std::runtime_error("No routes found in database!");

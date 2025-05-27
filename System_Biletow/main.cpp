@@ -75,6 +75,9 @@ int main() {
 		std::cerr << "nieznany problem" << std::endl;
 	}
 
+	std::vector<std::string> menu = generateMenuList(routes);
+	showMenu("", menu);
+
 	
 	return 0;
 }

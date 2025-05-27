@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Compartment.cpp" />
+    <ClCompile Include="generateMenu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Passenger.cpp" />
