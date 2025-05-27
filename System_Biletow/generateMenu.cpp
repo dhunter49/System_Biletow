@@ -1,13 +1,12 @@
-#include <vector> 
-#include <string>
+#include "Menu.h"
 #include "Route.h"
 
 // Generates vector to use in function show menu based of routes in routes
-std::vector<std::string> generateMenuList(RoutesManager routes) {
-	std::vector<std::string> out;
-	std::string one;
+std::vector<MenuOption> generateMenuList(RoutesManager routes) {
+	std::vector<MenuOption> out;
+	MenuOption one;
 	for (auto& routePair : routes.routes) {
-		one = routePair.second.getStringAsMenuOption();
+		one = routePair.second.getMenuOption();
 		out.push_back(one);
 	}
 	return out;
