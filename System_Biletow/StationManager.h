@@ -7,12 +7,14 @@ struct Station {
 	std::string name;
 };
 
-class StationManager
-{
-public:
-	void loadFromDatabase();
-	const Station* findByID(int id) const;
-private:
-	std::unordered_map<int, Station> stations;
-};
+Station findInDatabase(int);
+
+//class StationManager
+//{
+//public:
+//	void loadFromDatabase();
+//	const Station* findByID(int id) const;
+//private:
+//	std::unordered_map<int, Station> stations;
+//};
 

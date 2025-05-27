@@ -3,31 +3,53 @@
 #include <iostream>
 #include "GlobalConsts.h"
 
-void StationManager::loadFromDatabase(){
+//void StationManager::loadFromDatabase(){
+//	try {
+//		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+//		SQLite::Statement query(db, "SELECT ID, Name FROM Stations");
+//
+//		while (query.executeStep()) {
+//			Station station;
+//			station.id = query.getColumn(0).getInt();
+//			station.name = query.getColumn(1).getString();
+//
+//			stations[station.id] = station;
+//		}
+//	}
+//	catch (SQLite::Exception& e) {
+//		std::cerr << "SQLite error: " << e.what() << std::endl;
+//	}
+//	catch (...) {
+//		std::cerr << "Nieznany blad!" << std::endl;
+//	}
+//}
+//
+//const Station* StationManager::findByID(int id) const {
+//	auto it = stations.find(id);
+//	if (it != stations.end())
+//		return &it->second;
+//	else
+//		return nullptr;
+//}
+
+Station findInDatabase(int stationID) {
 	try {
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-		SQLite::Statement query(db, "SELECT ID, Name FROM Stations");
-
-		while (query.executeStep()) {
-			Station station;
-			station.id = query.getColumn(0).getInt();
-			station.name = query.getColumn(1).getString();
-
-			stations[station.id] = station;
+		SQLite::Statement query(db, "SELECT Name FROM Stations WHERE ID = ?");
+		query.bind(1, stationID);
+		if (query.executeStep()) {
+			return { stationID, query.getColumn(0).getString() };
 		}
+		else
+			throw std::runtime_error("Station ID couldn't be found in database!");
+	}
+	catch (std::exception& e) {
+		throw e;
 	}
 	catch (SQLite::Exception& e) {
-		std::cerr << "SQLite error: " << e.what() << std::endl;
+		throw e;
 	}
 	catch (...) {
-		std::cerr << "Nieznany blad!" << std::endl;
+		throw;
 	}
-}
-
-const Station* StationManager::findByID(int id) const {
-	auto it = stations.find(id);
-	if (it != stations.end())
-		return &it->second;
-	else
-		return nullptr;
 }

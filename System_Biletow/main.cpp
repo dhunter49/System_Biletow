@@ -61,21 +61,24 @@ int main() {
 	//}
 
 	// Init stations
-	StationManager stations;
-	stations.loadFromDatabase();
+	//StationManager stations;
+	//stations.loadFromDatabase();
 
 	// Display of initialized stations
-	for (int i = 0;i < 45;i++) {
-		if (const Station* s = stations.findByID(i)) {
-			std::cout << s->name << std::endl;
-		}
-		else
-			std::cout << "Nieznaleziono!\n";
-	}
+	//for (int i = 0;i < 45;i++) {
+	//	if (const Station* s = stations.findByID(i)) {
+	//		std::cout << s->name << std::endl;
+	//	}
+	//	else
+	//		std::cout << "Nieznaleziono!\n";
+	//}
 
 	RoutesManager routes;
 	try {
-		routes.loadRoutesFromDatabase(stations);
+		routes.loadRoutesFromDatabase();
+	}
+	catch (std::exception& e) {
+		std::cerr << "err: " << e.what() << std::endl;
 	}
 	catch (SQLite::Exception& e) {
 		std::cerr << "err: " << e.what() << std::endl;

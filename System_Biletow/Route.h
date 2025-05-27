@@ -8,7 +8,7 @@ class Route;
 
 struct RoutesManager {
 	std::unordered_map<int, Route> routes;
-	void loadRoutesFromDatabase(StationManager stations);
+	void loadRoutesFromDatabase();
 };
 
 class Route {

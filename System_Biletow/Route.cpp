@@ -13,7 +13,7 @@ Route::Route(int routeID, std::unordered_map<int, Station> listOfStations) :rout
 	}
 };
 
-void RoutesManager::loadRoutesFromDatabase(StationManager stations) {
+void RoutesManager::loadRoutesFromDatabase() {
 	try {
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
 		SQLite::Statement query(db, "SELECT ID, StationNumber, StationID FROM Routes");
@@ -30,14 +30,17 @@ void RoutesManager::loadRoutesFromDatabase(StationManager stations) {
 			}
 			stationNum = query.getColumn(1).getInt();
 			stationID = query.getColumn(2).getInt();
-			const Station* station = stations.findByID(stationID);
-			listOfStations[stationNum] = { stationID, station->name };
+			Station station = findInDatabase(stationID);
+			listOfStations[stationNum] = { stationID, station.name };
 		}
 		Route route(id, listOfStations);
 		routes[id] = route;
 	}
+	catch (std::exception& e) {
+		throw e;
+	}
 	catch (SQLite::Exception& e) {
-		throw;
+		throw e;
 	}
 	catch (...) {
 		throw;
