@@ -1,6 +1,8 @@
 #pragma once
 #include "Route.h"
 #include <unordered_map>
+struct Date;
+void initializeTripsByDate(Date, int);
 
 struct Date {
 	unsigned int day;
@@ -19,13 +21,14 @@ struct Schedule{
 	Time departure;
 };
 
-class Trip : protected Route {
+class Trip : public Route {
 protected:
 	//variables
 	int tripID;
-	std::unordered_map<int, Schedule> schedules; // stationIDOnRoute
+	std::unordered_map<int, Schedule> schedules;
 	Date date;
 public:
+	friend void initializeTripsByDate(Date date, int routeID);
 	Trip();
 	Trip(int);
 };

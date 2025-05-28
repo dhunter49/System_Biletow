@@ -10,6 +10,7 @@ class Route;
 struct RoutesManager {
 	std::unordered_map<int, Route> routes;
 	void loadRoutesFromDatabase();
+	Route findRouteByID(int routeID);
 };
 
 // Class for routes, stores it's ID and list of stations
@@ -21,7 +22,9 @@ protected:
 	std::unordered_map<int,Station> stationList; 
 public:
 	//constructors
+	void addStation(int stationNum, Station newStation);
+	void loadStations(bool all);
 	Route();
-	Route(int, std::unordered_map<int,Station>);
+	Route(int);
 };
 
