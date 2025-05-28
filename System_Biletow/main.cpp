@@ -76,7 +76,7 @@ int main() {
 	}
 
 	std::vector<MenuOption> menu = generateMenuList(routes);
-	std::cout<<showMenu("", menu);
+	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 	
 	return 0;
