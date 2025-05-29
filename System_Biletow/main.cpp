@@ -5,6 +5,7 @@
 #include "Menu.h"
 #include "StationManager.h"
 #include "Route.h"
+#include "DataManager.h"
 #include "Trip.h"
 #include <Windows.h>
 
@@ -14,9 +15,9 @@ int main() {
 	SetConsoleCP(CP_UTF8);
 
 	// Loads all routes
-	RoutesManager routes;
+	DataManager routes;
 	try {
-		routes.loadRoutesFromDatabase();
+		routes.loadAllRoutesFromDatabase();
 	}
 	catch (std::exception& e) {
 		std::cerr << "err: " << e.what() << std::endl;
@@ -28,7 +29,7 @@ int main() {
 		std::cerr << "nieznany problem" << std::endl;
 	}
 
-	initializeTripsByDate({ 16,6,2025 }, 1);
+	routes.getTripsByDateAndRouteID(Date{ 16,6,2025 }, 2);
 
 	
 	return 0;

@@ -35,35 +35,6 @@ void Route::loadStations(bool all) {
 
 }
 
-Route RoutesManager::findRouteByID(int routeID) {
-	return routes[routeID];
-}
-
-// Used to load all routes from database
-void RoutesManager::loadRoutesFromDatabase() {
-    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT ID, StationNumber, StationID FROM Routes WHERE IsShowing = 1 ORDER BY ID, StationNumber");
-
-    if (!query.executeStep()) {
-        throw std::runtime_error("No routes found in database!");
-    }
-
-    int currentRouteID = query.getColumn(0).getInt();
-    Route currentRoute(currentRouteID);
-
-    do {
-        int routeID = query.getColumn(0).getInt();
-
-        // If we encounter a new route, store the previous one and start a new route
-        if (routeID != currentRouteID) {
-            routes[currentRouteID] = currentRoute;
-            currentRouteID = routeID;
-            currentRoute = Route(currentRouteID);
-        }
-
-        currentRoute.loadStations(false);
-    } while (query.executeStep());
-
-    // Store the last route after the loop ends
-    routes[currentRouteID] = currentRoute;
+Station Route::getStation(int stationNum) {
+    return stationList[stationNum];
 }

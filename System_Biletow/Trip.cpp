@@ -70,6 +70,14 @@ void Trip::initializeAllOtherSchedules() {
     }
 }
 
+void Trip::setDate(Date newDate) {
+    date = newDate;
+}
+
+void Trip::setSchedule(int stationNum, Schedule newSchedule) {
+    schedules[stationNum] = newSchedule;
+}
+
 Trip::Trip() :tripID(0) {};
 Trip::Trip(int tripID) :tripID(tripID) {};
 
