@@ -53,8 +53,6 @@ void RoutesManager::loadRoutesFromDatabase() {
 
     do {
         int routeID = query.getColumn(0).getInt();
-        int stationNum = query.getColumn(1).getInt();
-        int stationID = query.getColumn(2).getInt();
 
         // If we encounter a new route, store the previous one and start a new route
         if (routeID != currentRouteID) {
@@ -63,8 +61,7 @@ void RoutesManager::loadRoutesFromDatabase() {
             currentRoute = Route(currentRouteID);
         }
 
-        Station station = findInDatabase(stationID);
-        currentRoute.addStation(stationNum, station);
+        currentRoute.loadStations(false);
     } while (query.executeStep());
 
     // Store the last route after the loop ends
