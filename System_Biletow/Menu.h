@@ -2,4 +2,14 @@
 #include <string> 
 #include <vector>
 
-int showMenu(std::string, const std::vector <std::string>);
+// Forward declaration
+struct RoutesManager;
+
+struct MenuOption {
+    int id;
+    std::string menuText;
+};
+
+int showMenu(std::string, const std::vector<MenuOption>);
+
+std::vector<MenuOption> generateMenuList(RoutesManager);

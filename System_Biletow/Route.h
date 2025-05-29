@@ -2,16 +2,21 @@
 #include "headers.h"
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include "StationManager.h"
+#include <string>
+#include "Menu.h"
 
 // Class for routes, stores it's ID and list of stations
 class Route {
+public:
+	//methods
+	MenuOption getMenuOption();
 protected:
 	//variables
 	int routeID;
 	// int here is storing stationNum (always starts at 1 for every route)
-	std::unordered_map<int,Station> stationList; 
-
+	std::map<int,Station> stationList; 
 public:
 	// methods
 	void addStation(int stationNum, Station newStation);

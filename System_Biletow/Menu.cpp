@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <vector>
 #include <conio.h>
+#include "Menu.h"
 
 // Sets console output text to given color
 // ONLY WINDOWS
@@ -43,30 +44,46 @@ void clearScreen() {
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
+// Sets cursor position to (x, y)
+// ONLY WINDOWS
+void gotoXY(int x, int y) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD coordScreen = { x, y };
+    SetConsoleCursorPosition(hConsole, coordScreen);
+}
+
+
 // Displays menu interface with set amount of options and set title, return choosen option
 // If string is empty ("") it won't print any title
 // ONLY WINDOWS
-int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) {
+int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
     if (menuOptions.empty())
         throw std::invalid_argument("Menu options can't be empty");
     int currentSelection{};
     int key = -1;
     setConsoleCursorVisibility(false);
     try {
+        clearScreen();
+        if (menuTitle == "")
+            std::cout << " ========== " << std::endl << std::endl;
+        else
+            std::cout << " ===== " << menuTitle << " ===== " << std::endl << std::endl;
+        setColor(12); // sets to red
+        std::cout << "> " << menuOptions[0].menuText << std::endl;
+        setColor(7); // resets to default color
+        for (size_t i = 1; i < menuOptions.size(); i++) {
+            std::cout << "  " << menuOptions[i].menuText << std::endl;
+        }
         while (true) {
-            clearScreen();
-            if (menuTitle == "")
-                std::cout << " ========== " << std::endl << std::endl;
-            else 
-                std::cout << " ===== " << menuTitle << " ===== " << std::endl << std::endl;
+            gotoXY(0, 2);
             for (size_t i = 0; i < menuOptions.size(); i++) {
                 if (i == currentSelection) {
-                    setColor(12); // sets to red when choosen
-                    std::cout << "> " << menuOptions[i] << std::endl;
+                    setColor(12); // sets to red when chosen
+                    std::cout << "> " << menuOptions[i].menuText << std::endl;
                     setColor(7); // resets to default color
                 }
                 else {
-                    std::cout << "  " << menuOptions[i] << std::endl;
+                    std::cout << "  " << menuOptions[i].menuText << std::endl;
                 }
             }
             int key = _getch();
@@ -82,7 +99,7 @@ int showMenu(std::string menuTitle, const std::vector<std::string> menuOptions) 
             }
             else if (key == 13) { // ENTER pressed
                 setConsoleCursorVisibility(true);
-                return currentSelection;
+                return menuOptions[currentSelection].id;
             }
             else if (key == 27) { // ESC pressed
                 setConsoleCursorVisibility(true);
