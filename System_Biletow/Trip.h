@@ -6,6 +6,19 @@ struct Date {
 	unsigned int day;
 	unsigned int month;
 	unsigned int year;
+	std::string getDateFormat() {
+		std::string stringDay, stringMonth, out;
+		if (day < 10) // ensure 2 digit hour
+			stringDay = std::to_string(0) + std::to_string(day);
+		else
+			stringDay = std::to_string(day);
+		if (month < 10) // ensure 2 digit minutes
+			stringMonth = std::to_string(0) + std::to_string(month);
+		else
+			stringMonth = std::to_string(month);
+		out = stringDay + "." + stringMonth + "." + std::to_string(year);
+		return out;
+	}
 };
 
 struct Time {
