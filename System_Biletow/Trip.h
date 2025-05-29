@@ -11,9 +11,22 @@ struct Date {
 struct Time {
 	unsigned int hours;
 	unsigned int minutes;
+	std::string getTimeFormat() {
+		std::string stringHours, stringMinutes, out;
+		if (hours < 10) // ensure 2 digit hour
+			stringHours = std::to_string(0) + std::to_string(hours);
+		else
+			stringHours = std::to_string(hours);
+		if (minutes<10) // ensure 2 digit minutes
+			stringMinutes = std::to_string(0) + std::to_string(minutes);
+		else
+			stringMinutes = std::to_string(minutes);
+		out = stringHours + ":" + stringMinutes;
+		return out;
+	}
 };
 
-struct Schedule{
+struct Schedule {
 	int stationID;
 	Time arrival;
 	Time departure;

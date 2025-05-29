@@ -10,11 +10,11 @@ void Trip::printStationSchedule(int stationNum) {
     std::cout << getStation(stationNum).name << " ";
     Schedule schedule = getSchedule(stationNum);
     if (schedule.isArrivalTheSameAsDeparture()) {
-        std::cout << "o." << schedule.departure.hours << ":" << schedule.departure.minutes;
+        std::cout << "o." << schedule.departure.getTimeFormat();
     }
     else {
-        std::cout << "p." << schedule.arrival.hours << ":" << schedule.arrival.minutes  << " "
-            << "o." << schedule.departure.hours << ":" << schedule.departure.minutes;
+        std::cout << "p." << schedule.arrival.getTimeFormat() << " "
+            << "o." << schedule.departure.getTimeFormat();
     }
 }
 
