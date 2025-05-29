@@ -16,6 +16,8 @@ void setColor(int color) {
     }
 }
 
+//Gets the console dimensions
+//ONLY WINDOWS
 void getConsoleDimensions(int& lines, int& columns) {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
 
@@ -70,23 +72,46 @@ void gotoXY(int x, int y) {
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
+//refreshes menu options, of given menuPage, current selection, and MenuOptions vector
+void refreshMenuOptions(int page,int currentSelection , const std::vector<MenuOption> menuOptions) {
+    clearScreen();// NA RAZIE
+    int lines, columns;
+    getConsoleDimensions(lines, columns);
+    const int MAX_OPTIONS = 20;
+    int spaceLeftForOptions = MAX_OPTIONS;
+    size_t i = page * MAX_OPTIONS;
+    if (page > 0 && menuOptions[i - 1].menuText.length() > columns) { // if on previous page, the last element was too long, it should be displayed in the next page.
+        i--;
+        spaceLeftForOptions--;
+    }
+    for (; i < menuOptions.size() && i<page * MAX_OPTIONS + spaceLeftForOptions; i++) {
+        if (menuOptions[i].menuText.length() > columns) {
+            if (i == page * MAX_OPTIONS + spaceLeftForOptions - 1) { // the last element shouldn't be displayed if it is too long
+                std::cout << std::endl;
+                break;
+            }
+            spaceLeftForOptions -= menuOptions[i].menuText.length()/columns;
+        }
+        if (i == currentSelection) {
+            setColor(12); // sets to red when chosen
+            std::cout << "> " << menuOptions[i].menuText << std::endl;
+            setColor(7); // resets to default color
+        }
+        else {
+            std::cout << "  " << menuOptions[i].menuText << std::endl;
+        }
+    }
+}
 
 // Displays menu interface with set amount of options and set title, return choosen option
 // If string is empty ("") it won't print any title
 // ONLY WINDOWS
 int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
-    int lines, columns;
-    while (true) {
-        getConsoleDimensions(lines, columns);
-        std::cout << lines << std::endl << columns << std::endl;
-        Sleep(1000);
-    }
-    return 0;
-    ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar
     if (menuOptions.empty())
         throw std::invalid_argument("Menu options can't be empty");
     int currentSelection{};
     int key = -1;
+    int menuPage{};
     setConsoleCursorVisibility(false);
     try {
         clearScreen();
@@ -94,32 +119,29 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
             std::cout << " ========== " << std::endl << std::endl;
         else
             std::cout << " ===== " << menuTitle << " ===== " << std::endl << std::endl;
-        setColor(12); // sets to red
-        std::cout << "> " << menuOptions[0].menuText << std::endl;
-        setColor(7); // resets to default color
-        for (size_t i = 1; i < menuOptions.size(); i++) {
-            std::cout << "  " << menuOptions[i].menuText << std::endl;
-        }
+        refreshMenuOptions(menuPage, currentSelection, menuOptions);
         while (true) {
             gotoXY(0, 2);
-            for (size_t i = 0; i < menuOptions.size(); i++) {
-                if (i == currentSelection) {
-                    setColor(12); // sets to red when chosen
-                    std::cout << "> " << menuOptions[i].menuText << std::endl;
-                    setColor(7); // resets to default color
-                }
-                else {
-                    std::cout << "  " << menuOptions[i].menuText << std::endl;
-                }
-            }
             int key = _getch();
             if (key == 0 || key == 224) {
                 switch (_getch()) {
                 case 72: // up arrow pressed
                     currentSelection = (currentSelection - 1 + menuOptions.size()) % menuOptions.size();
+                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
                     break;
                 case 80: // down arrow pressed
                     currentSelection = (currentSelection + 1) % menuOptions.size();
+                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
+                    break;
+                case 75: // left arrow pressed
+                    currentSelection = 0;
+                    menuPage--;//DODAÆ ¯EBY SIÊ ZAPÊTLA£O JAK DOJDZIE DO KONCA, TAK JAK CURRENTSELECTION??
+                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
+                    break;
+                case 77: // right arrow pressed
+                    currentSelection = 0;
+                    menuPage++;//DODAÆ ¯EBY SIÊ ZAPÊTLA£O JAK DOJDZIE DO KONCA, TAK JAK CURRENTSELECTION??
+                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
                     break;
                 }
             }

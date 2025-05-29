@@ -11,6 +11,8 @@ int main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 
+	ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar
+
 	//try {
 	//	SQLite::Database db("database.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 	//	SQLite::Statement query1(db, "SELECT * FROM Trains");
@@ -76,8 +78,9 @@ int main() {
 
 	std::vector<MenuOption> menu; //= generateMenuList(routes);
 	for (int i = 0; i < 50; i++) {
-		menu.push_back({ i,"Opyugggggggggggggggggggggggggggggggggggggcja " +  std::to_string(i)});
+		menu.push_back({ i,"Opcja " +  std::to_string(i)});
 	}
+	menu[18] = { 18,"sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" };
 	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 	
