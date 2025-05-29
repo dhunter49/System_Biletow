@@ -18,6 +18,7 @@ public:
 
 	//gettery i settery
 	Station getStation(int stationNum);
+	void setRouteID(int routeID);
 
 	Route();
 	Route(int);

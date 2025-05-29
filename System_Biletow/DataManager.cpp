@@ -63,6 +63,7 @@ std::vector<Trip> DataManager::getTripsByDateAndRouteID(Date date, int routeID) 
     Trip currentTrip;
     do {
         currentTrip = Trip(currentTripID);
+        currentTrip.setRouteID(routeID);
         currentTrip.setDate(date);
         currentTrip.loadStations(true);
         currentTrip.setSchedule(1,

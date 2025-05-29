@@ -38,3 +38,7 @@ void Route::loadStations(bool all) {
 Station Route::getStation(int stationNum) {
     return stationList[stationNum];
 }
+
+void Route::setRouteID(int routeID) {
+    this->routeID = routeID;
+}

@@ -1,10 +1,6 @@
 #pragma once
 #include "Route.h"
 #include <unordered_map>
-struct Date;
-void initializeTripsByDate(Date, int);
-
-
 
 struct Date {
 	unsigned int day;
@@ -18,9 +14,15 @@ struct Time {
 };
 
 struct Schedule{
-	int stationNum;
+	int stationID;
 	Time arrival;
 	Time departure;
+	bool isArrivalTheSameAsDeparture() {
+		if (arrival.hours == departure.hours && arrival.minutes == departure.minutes)
+			return true;
+		else
+			return false;
+	}
 };
 
 class Trip : public Route {
@@ -30,10 +32,11 @@ protected:
 	std::unordered_map<int, Schedule> schedules; // stationNum
 	Date date;
 public:
-	friend void initializeTripsByDate(Date date, int routeID);
+	void printStationSchedule(int stationNum);
 	void initializeAllOtherSchedules();
 
 	//gettery i settery
+	Schedule getSchedule(int stationNum);
 	void setDate(Date newDate);
 	void setSchedule(int stationNum,Schedule newSchedule);
 

@@ -29,7 +29,13 @@ int main() {
 		std::cerr << "nieznany problem" << std::endl;
 	}
 
-	routes.getTripsByDateAndRouteID(Date{ 16,6,2025 }, 2);
+	auto& dm = DataManager::getInstance();
+
+	const auto& trips = dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
+	for (auto i : trips) {
+		i.printStationSchedule(3);
+	}
+	
 
 	
 	return 0;
