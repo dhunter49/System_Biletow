@@ -11,15 +11,19 @@ protected:
 	int routeID;
 	// int here is storing stationNum (always starts at 1 for every route)
 	std::unordered_map<int,Station> stationList; 
+
 public:
-	//constructors
+	// methods
 	void addStation(int stationNum, Station newStation);
 	void loadStations(bool all);
 
-	//gettery i settery
+	// getters
 	Station getStation(int stationNum);
-	void setRouteID(int routeID);
 
+	// setters
+	void setRouteID(int routeID);
+	
+	// constructors
 	Route();
 	Route(int);
 };

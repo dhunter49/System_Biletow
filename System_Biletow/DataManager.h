@@ -8,6 +8,7 @@
 #include "Trip.h"
 #include "Train.h"
 
+// This class will hold data of currently proccessed table
 class DataManager {
 private:
 	static DataManager* instance;

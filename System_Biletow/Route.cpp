@@ -14,6 +14,7 @@ void Route::addStation(int stationNum, Station newStation) {
 	stationList[stationNum] = newStation;
 }
 
+// Loads all stations for route; takes a bool which decides if it should load all stations or just "main" stations.
 void Route::loadStations(bool all) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, all

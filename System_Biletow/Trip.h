@@ -57,19 +57,25 @@ struct Schedule {
 
 class Trip : public Route {
 protected:
-	//variables
+	// variables
 	int tripID;
+	// int here is storing stationNum (always starts at 1 for every route)
 	std::unordered_map<int, Schedule> schedules; // stationNum
 	Date date;
+
 public:
 	void printStationSchedule(int stationNum);
-	void initializeAllOtherSchedules();
+	void loadAllOtherSchedules();
 
-	//gettery i settery
+	// getters
 	Schedule getSchedule(int stationNum);
 	void setDate(Date newDate);
-	void setSchedule(int stationNum,Schedule newSchedule);
 
+	// setters
+	void setSchedule(int stationNum,Schedule newSchedule);
+	void setTripID(int newTripID);
+
+	// constructors
 	Trip();
 	Trip(int);
 };

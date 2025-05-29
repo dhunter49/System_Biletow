@@ -6,6 +6,7 @@ Schedule Trip::getSchedule(int stationNum) {
     return schedules[stationNum];
 }
 
+// Prints out station schedule in format (stationName p.hh:mm o.hh:mm)
 void Trip::printStationSchedule(int stationNum) {
     std::cout << getStation(stationNum).name << " ";
     Schedule schedule = getSchedule(stationNum);
@@ -18,7 +19,8 @@ void Trip::printStationSchedule(int stationNum) {
     }
 }
 
-void Trip::initializeAllOtherSchedules() {
+// Load schedules based on schedule of first station
+void Trip::loadAllOtherSchedules() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT StationNumber, StationID, ArrivalTime, DepartureTime FROM Routes WHERE ID = ? ORDER BY StationNumber");
     query.bind(1, routeID);
@@ -52,6 +54,10 @@ void Trip::setDate(Date newDate) {
 
 void Trip::setSchedule(int stationNum, Schedule newSchedule) {
     schedules[stationNum] = newSchedule;
+}
+
+void Trip::setTripID(int newTripID) {
+    tripID = newTripID;
 }
 
 Trip::Trip() :tripID(0) {};
