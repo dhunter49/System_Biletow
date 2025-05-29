@@ -29,6 +29,7 @@ protected:
 	Date date;
 public:
 	friend void initializeTripsByDate(Date date, int routeID);
+	void initializeAllOtherSchedules();
 	Trip();
 	Trip(int);
 };
