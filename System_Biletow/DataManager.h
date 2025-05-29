@@ -14,6 +14,8 @@ private:
 	std::unordered_map<int, Route> routes;
 
 public:
+	static DataManager& getInstance();
+
 	void loadAllRoutesFromDatabase();
 	std::vector<Trip> getTripsByDateAndRouteID(Date date, int routeID);
 	Train currentTrain; // Only one train should match with one trip, else throw exception

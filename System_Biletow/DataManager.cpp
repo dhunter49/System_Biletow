@@ -2,6 +2,15 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "GlobalConsts.h"
 
+DataManager* DataManager::instance = nullptr;
+
+DataManager& DataManager::getInstance() {
+    if (!instance) {
+        instance = new DataManager();
+    }
+    return *instance;
+}
+
 void DataManager::loadAllRoutesFromDatabase() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT ID, StationNumber, StationID FROM Routes WHERE IsShowing = 1 ORDER BY ID, StationNumber");
