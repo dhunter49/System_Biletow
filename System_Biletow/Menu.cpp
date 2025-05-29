@@ -16,6 +16,24 @@ void setColor(int color) {
     }
 }
 
+void getConsoleDimensions(int& lines, int& columns) {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+    // Get the handle to the console output
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+        columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        lines = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+    }
+    else {
+        // Fallback values if the API call fails
+        columns = 80;
+        lines = 25;
+    }
+}
+
+
 // Hides/Shows visibility of text cursor
 // true - visible, false - hidden
 // ONLY WINDOWS
@@ -57,6 +75,14 @@ void gotoXY(int x, int y) {
 // If string is empty ("") it won't print any title
 // ONLY WINDOWS
 int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
+    int lines, columns;
+    while (true) {
+        getConsoleDimensions(lines, columns);
+        std::cout << lines << std::endl << columns << std::endl;
+        Sleep(1000);
+    }
+    return 0;
+    ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar
     if (menuOptions.empty())
         throw std::invalid_argument("Menu options can't be empty");
     int currentSelection{};

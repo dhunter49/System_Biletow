@@ -6,7 +6,6 @@
 #include "StationManager.h"
 #include "Route.h"
 #include <Windows.h>
-
 int main() {
 	// Allows to display polish characters in console (user should ensure that their console is using font that is compatible with polish chars)
 	SetConsoleOutputCP(CP_UTF8);
@@ -75,7 +74,10 @@ int main() {
 		std::cerr << "nieznany problem" << std::endl;
 	}
 
-	std::vector<MenuOption> menu = generateMenuList(routes);
+	std::vector<MenuOption> menu; //= generateMenuList(routes);
+	for (int i = 0; i < 50; i++) {
+		menu.push_back({ i,"Opyugggggggggggggggggggggggggggggggggggggcja " +  std::to_string(i)});
+	}
 	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 	
