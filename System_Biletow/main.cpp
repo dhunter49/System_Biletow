@@ -11,7 +11,7 @@ int main() {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 
-	ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar
+	ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar // TO MUSI BYĆ W PĘTLI WHILE ŻEBY DZIAŁAŁO, BO JAK UŻYTKOWNIK ZESCROLLUJE MYSZKĄ, TO SIĘ POKAZUJE SCROLLBAR
 
 	//try {
 	//	SQLite::Database db("database.db3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
@@ -77,10 +77,11 @@ int main() {
 	}
 
 	std::vector<MenuOption> menu; //= generateMenuList(routes);
-	for (int i = 0; i < 50; i++) {
+	for (int i = 0; i < 100000; i++) {
 		menu.push_back({ i,"Opcja " +  std::to_string(i)});
 	}
-	menu[18] = { 18,"sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" };
+	menu[14] = { 16,"Opcja 16 sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" };
+	menu[16] = { 16,"Opcja 16 sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" };
 	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 	

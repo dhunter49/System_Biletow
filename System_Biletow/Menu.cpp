@@ -3,6 +3,7 @@
 #include <vector>
 #include <conio.h>
 #include "Menu.h"
+#include <iomanip>
 
 // Sets console output text to given color
 // ONLY WINDOWS
@@ -72,26 +73,43 @@ void gotoXY(int x, int y) {
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
-//refreshes menu options, of given menuPage, current selection, and MenuOptions vector
-void refreshMenuOptions(int page,int currentSelection , const std::vector<MenuOption> menuOptions) {
-    clearScreen();// NA RAZIE
+
+const int MAX_OPTIONS_ON_MENU = 20; // represents the maximum amount of options shown on the menu. Adjustable to liking
+
+//Calculates first and last indexes of elements on each page
+void calculateIndexesOfMenu(int* firstIndexes, int* lastindexes, const std::vector<MenuOption> menuOptions) {
+    int lines, columns;
+    firstIndexes[0] = 0;
+    getConsoleDimensions(lines, columns);
+    int spaceLeftForOptions = MAX_OPTIONS_ON_MENU;
+    int page{};
+    for (int i = 0; i < menuOptions.size(); i++) {
+        spaceLeftForOptions -= (menuOptions[i].menuText.length()-1) / columns;
+        if (i > firstIndexes[page] + spaceLeftForOptions-1) {
+            lastindexes[page] = i - 1;
+            firstIndexes[page + 1] = i; // validation not required because there is no way that there wouldn't be next page if last element is too long. It comes from calculation of MAX_PAGES in showMenu function
+            page++;
+            spaceLeftForOptions = MAX_OPTIONS_ON_MENU - (menuOptions[i].menuText.length()-1) / columns;
+            continue;
+        }
+        if (i == menuOptions.size() - 1) {
+            lastindexes[page] = i;
+            break;
+        }
+    }
+}
+
+//refreshes menu options, based on given firstIndex of page, lastIndex of page, currentSeleciton, and menu options
+void refreshMenuOptions(int firstIndex,int lastIndex ,int currentSelection, const std::vector<MenuOption> menuOptions) {
     int lines, columns;
     getConsoleDimensions(lines, columns);
-    const int MAX_OPTIONS = 20;
-    int spaceLeftForOptions = MAX_OPTIONS;
-    size_t i = page * MAX_OPTIONS;
-    if (page > 0 && menuOptions[i - 1].menuText.length() > columns) { // if on previous page, the last element was too long, it should be displayed in the next page.
-        i--;
-        spaceLeftForOptions--;
+    std::string spaces(columns, ' ');
+    for (int i = 0; i < MAX_OPTIONS_ON_MENU; i++) {
+        gotoXY(0, i+2);
+        std::cout << spaces <<std::endl;
     }
-    for (; i < menuOptions.size() && i<page * MAX_OPTIONS + spaceLeftForOptions; i++) {
-        if (menuOptions[i].menuText.length() > columns) {
-            if (i == page * MAX_OPTIONS + spaceLeftForOptions - 1) { // the last element shouldn't be displayed if it is too long
-                std::cout << std::endl;
-                break;
-            }
-            spaceLeftForOptions -= menuOptions[i].menuText.length()/columns;
-        }
+    gotoXY(0, 2);
+    for (int i=firstIndex; i <=lastIndex; i++) {
         if (i == currentSelection) {
             setColor(12); // sets to red when chosen
             std::cout << "> " << menuOptions[i].menuText << std::endl;
@@ -109,41 +127,52 @@ void refreshMenuOptions(int page,int currentSelection , const std::vector<MenuOp
 int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
     if (menuOptions.empty())
         throw std::invalid_argument("Menu options can't be empty");
+    int lines, columns;
+    getConsoleDimensions(lines, columns);
+    int count{};
+    for (int i = 0; i < menuOptions.size(); i++) {
+        count += 1 + menuOptions[i].menuText.length() / columns;
+    }
+    const int MAX_PAGES = (count-1) / MAX_OPTIONS_ON_MENU + 1;
+    int* firstIndexes = new int[MAX_PAGES] {}; // dynamic table that will store first indexes of elements on each page
+    int* lastIndexes = new int[MAX_PAGES] {}; // dynamic table tat will store last indexes of elements on each page
+    calculateIndexesOfMenu(firstIndexes,lastIndexes, menuOptions);
     int currentSelection{};
     int key = -1;
     int menuPage{};
     setConsoleCursorVisibility(false);
     try {
-        clearScreen();
         if (menuTitle == "")
             std::cout << " ========== " << std::endl << std::endl;
         else
             std::cout << " ===== " << menuTitle << " ===== " << std::endl << std::endl;
-        refreshMenuOptions(menuPage, currentSelection, menuOptions);
         while (true) {
-            gotoXY(0, 2);
-            int key = _getch();
+            if (menuPage<0 || menuPage>=MAX_PAGES) menuPage = 0;
+            refreshMenuOptions(firstIndexes[menuPage], lastIndexes[menuPage], currentSelection, menuOptions);
+            gotoXY(columns-17, 23);
+            if (menuPage >= 999) std::cout << "Strona nr. 999+";
+            else std::cout << "Strona nr. " << std::setw(3) << menuPage + 1 << " ";
+            key = _getch();
             if (key == 0 || key == 224) {
                 switch (_getch()) {
                 case 72: // up arrow pressed
-                    currentSelection = (currentSelection - 1 + menuOptions.size()) % menuOptions.size();
-                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
+                    currentSelection = firstIndexes[menuPage] + ((currentSelection- firstIndexes[menuPage]) - 1 + (lastIndexes[menuPage] - firstIndexes[menuPage] + 1)) % (lastIndexes[menuPage] - firstIndexes[menuPage] + 1);
                     break;
                 case 80: // down arrow pressed
-                    currentSelection = (currentSelection + 1) % menuOptions.size();
-                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
+                    currentSelection = firstIndexes[menuPage] + ((currentSelection - firstIndexes[menuPage]) + 1) % (lastIndexes[menuPage] - firstIndexes[menuPage] + 1);
                     break;
                 case 75: // left arrow pressed
-                    currentSelection = 0;
-                    menuPage--;//DODAÆ ¯EBY SIÊ ZAPÊTLA£O JAK DOJDZIE DO KONCA, TAK JAK CURRENTSELECTION??
-                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
+                    menuPage = (menuPage - 1 + MAX_PAGES) % MAX_PAGES;
+                    if (menuPage < 0 || menuPage >= MAX_PAGES) menuPage = 0;
+                    currentSelection = firstIndexes[menuPage];
                     break;
                 case 77: // right arrow pressed
-                    currentSelection = 0;
-                    menuPage++;//DODAÆ ¯EBY SIÊ ZAPÊTLA£O JAK DOJDZIE DO KONCA, TAK JAK CURRENTSELECTION??
-                    refreshMenuOptions(menuPage, currentSelection, menuOptions);
+                    menuPage = (menuPage + 1) % MAX_PAGES;
+                    if (menuPage < 0 || menuPage >= MAX_PAGES) menuPage = 0;
+                    currentSelection = firstIndexes[menuPage];
                     break;
                 }
+
             }
             else if (key == 13) { // ENTER pressed
                 setConsoleCursorVisibility(true);
