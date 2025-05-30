@@ -134,8 +134,8 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
         count += 1 + menuOptions[i].menuText.length() / columns;
     }
     const int MAX_PAGES = (count-1) / MAX_OPTIONS_ON_MENU + 1;
-    int* firstIndexes = new int[MAX_PAGES] {}; // dynamic table that will store first indexes of elements on each page
-    int* lastIndexes = new int[MAX_PAGES] {}; // dynamic table tat will store last indexes of elements on each page
+    int* firstIndexes = new int[MAX_PAGES] {}; // dynamic table that will store first indexes of elements on each page, index of element represents number of page
+    int* lastIndexes = new int[MAX_PAGES] {}; // dynamic table tat will store last indexes of elements on each page, index of element represents number of page
     calculateIndexesOfMenu(firstIndexes,lastIndexes, menuOptions);
     int currentSelection{};
     int key = -1;
@@ -176,13 +176,19 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
             }
             else if (key == 13) { // ENTER pressed
                 setConsoleCursorVisibility(true);
+                delete firstIndexes;
+                delete lastIndexes;
                 return menuOptions[currentSelection].id;
             }
             else if (key == 27) { // ESC pressed
                 setConsoleCursorVisibility(true);
+                delete firstIndexes;
+                delete lastIndexes;
                 return -2;
             }
         }
+        delete firstIndexes;
+        delete lastIndexes;
     }
     catch (...) {
         setConsoleCursorVisibility(true);
