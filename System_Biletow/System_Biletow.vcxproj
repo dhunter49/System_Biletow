@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Compartment.cpp" />
+    <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="generateMenu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -152,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Car.h" />
     <ClInclude Include="Compartment.h" />
+    <ClInclude Include="DataManager.h" />
     <ClInclude Include="GlobalConsts.h" />
     <ClInclude Include="headers.h" />
     <ClInclude Include="Menu.h" />

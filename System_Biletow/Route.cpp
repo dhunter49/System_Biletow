@@ -7,62 +7,39 @@
 
 Route::Route() : routeID(1) {}
 
-Route::Route(int routeID, std::map<int, Station> listOfStations) :routeID(routeID) {
-	for (auto& i : listOfStations) {
-		stationList[i.first] = i.second;
-	}
-};
+Route::Route(int routeID) : routeID(routeID) {}
 
-// Returns string in a format "StationA - StationB - ... - StationZ"
-MenuOption Route::getMenuOption() {
-	std::string out{};
-	size_t count{};
-	for (auto& stationPair : stationList) {
-		out += stationPair.second.name;
-		if (++count < stationList.size()) {
-			out += " - ";
-		}
-	}
-	return {routeID,out};
+void Route::addStation(int stationNum, Station newStation) {
+	if (stationList.count(stationNum) != 0) return;
+	stationList[stationNum] = newStation;
 }
 
-// Used to load all routes from database
-void RoutesManager::loadRoutesFromDatabase() {
-	try {
-		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-		SQLite::Statement query(db, "SELECT ID, StationNumber, StationID FROM Routes WHERE IsShowing = 1");
+// Loads all stations for route; takes a bool which decides if it should load all stations or just "main" stations.
+void Route::loadStations(bool all) {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, all
+        ? "SELECT StationNumber, StationID FROM Routes WHERE ID = ? ORDER BY StationNumber"
+        : "SELECT StationNumber, StationID FROM Routes WHERE ID = ? AND IsShowing = 1 ORDER BY StationNumber");
+    query.bind(1, routeID);
 
-		int stationID{}; // Station unique ID
-		int stationNum{}; // Station number in list, always starts at 1, for every route
-		std::map<int, Station> listOfStations;
+    if (!query.executeStep()) {
+        throw std::runtime_error("Couldn't find this route");
+    }
 
-		if (!query.executeStep())
-			throw std::runtime_error("No routes found in database!");
-		int id = query.getColumn(0).getInt();
+    do {
+        int stationNum = query.getColumn(0).getInt();
+        int stationID = query.getColumn(1).getInt();
 
-		do {
-			if (id != query.getColumn(0).getInt()) {
-				Route route(id, listOfStations);
-				routes[id] = route;
-				id = query.getColumn(0).getInt();
-				listOfStations.clear();
-			}
-			stationNum = query.getColumn(1).getInt();
-			stationID = query.getColumn(2).getInt();
-			Station station = findInDatabase(stationID);
-			listOfStations[stationNum] = { stationID, station.name };
-		} while (query.executeStep());
+        Station station = findInDatabase(stationID);
+        addStation(stationNum, station);
+    } while (query.executeStep());
 
-		Route route(id, listOfStations);
-		routes[id] = route;
-	}
-	catch (std::exception& e) {
-		throw e;
-	}
-	catch (SQLite::Exception& e) {
-		throw e;
-	}
-	catch (...) {
-		throw;
-	}
+}
+
+Station Route::getStation(int stationNum) {
+    return stationList[stationNum];
+}
+
+void Route::setRouteID(int routeID) {
+    this->routeID = routeID;
 }
