@@ -176,19 +176,19 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
             }
             else if (key == 13) { // ENTER pressed
                 setConsoleCursorVisibility(true);
-                delete firstIndexes;
-                delete lastIndexes;
+                delete[] firstIndexes;
+                delete[] lastIndexes;
                 return menuOptions[currentSelection].id;
             }
             else if (key == 27) { // ESC pressed
                 setConsoleCursorVisibility(true);
-                delete firstIndexes;
-                delete lastIndexes;
+                delete[] firstIndexes;
+                delete[] lastIndexes;
                 return -2;
             }
         }
-        delete firstIndexes;
-        delete lastIndexes;
+        delete[] firstIndexes;
+        delete[] lastIndexes;
     }
     catch (...) {
         setConsoleCursorVisibility(true);
