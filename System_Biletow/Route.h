@@ -7,14 +7,6 @@
 #include <string>
 #include "Menu.h"
 
-class Route;
-
-// Struct which stores all Routes in an unordered map
-struct RoutesManager {
-	std::unordered_map<int, Route> routes;
-	void loadRoutesFromDatabase();
-};
-
 // Class for routes, stores it's ID and list of stations
 class Route {
 public:
@@ -26,8 +18,18 @@ protected:
 	// int here is storing stationNum (always starts at 1 for every route)
 	std::map<int,Station> stationList; 
 public:
-	//constructors
+	// methods
+	void addStation(int stationNum, Station newStation);
+	void loadStations(bool all);
+
+	// getters
+	Station getStation(int stationNum);
+
+	// setters
+	void setRouteID(int routeID);
+	
+	// constructors
 	Route();
-	Route(int, std::map<int,Station>);
+	Route(int);
 };
 
