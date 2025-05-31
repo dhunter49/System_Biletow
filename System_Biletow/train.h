@@ -1,7 +1,7 @@
 #pragma once
 #include "Trip.h"
 
-class Train : protected Trip {
+class Train : public Trip {
 protected:
 	//variables
 	int trainID;
@@ -10,5 +10,6 @@ public:
 	//constructors
 	Train();
 	Train(int);
+	Train(Trip);
 };
 

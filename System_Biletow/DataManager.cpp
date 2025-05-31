@@ -1,4 +1,4 @@
-#include "DataManager.h"
+﻿#include "DataManager.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "GlobalConsts.h"
 
@@ -43,7 +43,7 @@ void DataManager::loadAllRoutesFromDatabase() {
 // Gets all trips in a vector that  are matching routeID and matching inputted date. Supposedly should find one Trip, although not always.
 // Returns vector with Trips with matching criteria.
 std::vector<Trip> DataManager::getTripsByDateAndRouteID(Date date, int routeID) {
-    std::vector<Trip> out; // Output vector
+    currentTrips = std::vector<Trip>(); // Empty vector
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db,
         "SELECT ID, "
@@ -61,7 +61,7 @@ std::vector<Trip> DataManager::getTripsByDateAndRouteID(Date date, int routeID) 
     query.bind(3, date.month < 10 ? "0" + std::to_string(date.month) : std::to_string(date.month)); // Ensure 2-digit format
     query.bind(4, std::to_string(date.year));
     if (!query.executeStep())
-        throw std::runtime_error("Brak przejazd�w danego dnia tej relacji!");
+        throw std::runtime_error("Brak przejazdów danego dnia tej relacji!");
     int currentTripID = query.getColumn(0).getInt();
     Trip currentTrip;
     do {
@@ -78,12 +78,44 @@ std::vector<Trip> DataManager::getTripsByDateAndRouteID(Date date, int routeID) 
             }
         );
         // Adds Trip to vector
-        out.push_back(currentTrip);
+        currentTrips.push_back(currentTrip);
     } while (query.executeStep());
 
-    for (auto& itTrip : out) {
+    for (auto& itTrip : currentTrips) {
         itTrip.loadAllOtherSchedules();
     }
+
+    return currentTrips;
+}
+
+Trip DataManager::getTripByID(int tripID) {
+    auto it = std::find_if(currentTrips.begin(), currentTrips.end(),
+        [tripID](Trip t) {return t.getTripID() == tripID;});
+
+    if (it == currentTrips.end()) {
+        throw std::runtime_error("Trip not found");
+    }
+
+    return *it;
+}
+
+Train DataManager::getTrainByTripID(int tripID) {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT DISTINCT TrainID FROM TrainSets WHERE TripID = ?");
+    query.bind(1, tripID);
+
+    if (!query.executeStep()) {
+        throw std::runtime_error("Nie znaleziono pociągu dla przejazdu: " + std::to_string(tripID));
+    }
+
+    int trainID = query.getColumn(0).getInt();
+
+    // Trying to get another row, as there should be only one
+    if (query.executeStep()) { 
+        throw std::runtime_error("Więcej niż jeden pociąg dla przejazdu: " + std::to_string(tripID));
+    }
+
+    Train out(getTripByID(tripID));
 
     return out;
 }
