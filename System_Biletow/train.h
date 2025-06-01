@@ -4,7 +4,7 @@
 class Train : protected Trip {
 protected:
 	//variables
-	int trainID;
+	std::string trainID;
 	std::string trainName;
 public:
 	//constructors

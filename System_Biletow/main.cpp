@@ -44,7 +44,7 @@ int main() {
 		i.printStationSchedule(3);
 	}
 	
-	std::vector<MenuOption> menu = generateMenuList(routes);
+	//std::vector<MenuOption> menu = generateMenuList(routes);
 
 	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
