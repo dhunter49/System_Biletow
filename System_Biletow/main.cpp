@@ -39,14 +39,12 @@ int main() {
 
 	auto& dm = DataManager::getInstance();
 
-	const auto& trips = dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
-	for (auto i : trips) {
-		i.printStationSchedule(3);
-	}
+	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
+	dm.getTrainByTripID(6);
 	
-	std::vector<MenuOption> menu = generateMenuList(routes);
+	//std::vector<MenuOption> menu = generateMenuList(routes);
+	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
-	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 	
 	return 0;

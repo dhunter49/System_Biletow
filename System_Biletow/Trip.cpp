@@ -6,6 +6,18 @@ Schedule Trip::getSchedule(int stationNum) {
     return schedules[stationNum];
 }
 
+std::unordered_map<int, Schedule> Trip::getSchedules() {
+    return schedules;
+}
+
+Date Trip::getDate() {
+    return date;
+}
+
+int Trip::getTripID() {
+    return tripID;
+}
+
 // Prints out station schedule in format (stationName p.hh:mm o.hh:mm)
 void Trip::printStationSchedule(int stationNum) {
     std::cout << getStation(stationNum).name << " ";

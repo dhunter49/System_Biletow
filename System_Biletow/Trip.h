@@ -68,10 +68,13 @@ public:
 	void loadAllOtherSchedules();
 
 	// getters
+	int getTripID();
+	std::unordered_map<int, Schedule> getSchedules();
+	Date getDate();
 	Schedule getSchedule(int stationNum);
-	void setDate(Date newDate);
 
 	// setters
+	void setDate(Date newDate);
 	void setSchedule(int stationNum,Schedule newSchedule);
 	void setTripID(int newTripID);
 

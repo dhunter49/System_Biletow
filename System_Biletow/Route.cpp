@@ -36,6 +36,14 @@ void Route::loadStations(bool all) {
 
 }
 
+int Route::getRouteID() {
+    return routeID;
+}
+
+std::map<int, Station> Route::getStationList() {
+    return stationList;
+}
+
 Station Route::getStation(int stationNum) {
     return stationList[stationNum];
 }
