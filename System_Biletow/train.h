@@ -3,13 +3,21 @@
 
 class Train : public Trip {
 protected:
-	//variables
-	int trainID;
+	// variables
+	std::string trainID;
 	std::string trainName;
 public:
-	//constructors
+	// getters
+	std::string getTrainID();
+	std::string getTrainName();
+
+	// setters
+	void setTrainID(std::string newTrainID);
+	void setTrainName(std::string newTrainName);
+
+	// constructors
 	Train();
-	Train(int);
+	Train(std::string);
 	Train(Trip);
 };
 

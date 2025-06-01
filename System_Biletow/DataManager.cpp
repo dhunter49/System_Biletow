@@ -108,14 +108,25 @@ Train DataManager::getTrainByTripID(int tripID) {
         throw std::runtime_error("Nie znaleziono pociągu dla przejazdu: " + std::to_string(tripID));
     }
 
-    int trainID = query.getColumn(0).getInt();
+   std::string trainID = query.getColumn(0).getString();
 
     // Trying to get another row, as there should be only one
     if (query.executeStep()) { 
         throw std::runtime_error("Więcej niż jeden pociąg dla przejazdu: " + std::to_string(tripID));
     }
 
-    Train out(getTripByID(tripID));
+    currentTrain = Train(getTripByID(tripID));
+    currentTrain.setTrainID(trainID);
 
-    return out;
+    query = SQLite::Statement(db, "SELECT Name FROM Trains WHERE ID = ?");
+    query.bind(1, trainID);
+
+    if (!query.executeStep()) {
+        currentTrain.setTrainName("");
+    }
+    else {
+        currentTrain.setTrainName(query.getColumn(0).getString());
+    }
+
+    return currentTrain;
 }
