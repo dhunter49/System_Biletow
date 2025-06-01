@@ -5,8 +5,8 @@ class Passenger : protected Seat {
 protected:
 	//variables
 	int passengerID;
-	int fromStation;
-	int toStation;
+	int fromStationNum;
+	int toStationNum;
 	std::string name;
 	std::string surname;
 	int price;
