@@ -40,7 +40,7 @@ void DataManager::loadAllRoutesFromDatabase() {
     routes[currentRouteID] = currentRoute;
 }
 
-// Gets all trips in a vector that  are matching routeID and matching inputted date. Supposedly should find one Trip, although not always.
+// Gets all trips in a vector that are matching routeID and matching inputted date. Supposedly should find one Trip, although not always.
 // Returns vector with Trips with matching criteria.
 std::vector<Trip> DataManager::getTripsByDateAndRouteID(Date date, int routeID) {
     currentTrips = std::vector<Trip>(); // Empty vector

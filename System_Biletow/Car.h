@@ -5,6 +5,7 @@ class Car : protected Train {
 protected:
 	//variables
 	int carNumber;
+	std::string carModel;
 public:
 	//constructors
 	Car();
