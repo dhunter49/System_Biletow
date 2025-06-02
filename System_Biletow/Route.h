@@ -24,6 +24,8 @@ public:
 	void loadStations(bool all);
 
 	// getters
+	int getRouteID();
+	std::map<int, Station> getStationList();
 	Station getStation(int stationNum);
 
 	// setters

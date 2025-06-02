@@ -1,14 +1,23 @@
 #pragma once
 #include "Trip.h"
 
-class Train : protected Trip {
+class Train : public Trip {
 protected:
-	//variables
+	// variables
 	std::string trainID;
 	std::string trainName;
 public:
-	//constructors
+	// getters
+	std::string getTrainID();
+	std::string getTrainName();
+
+	// setters
+	void setTrainID(std::string newTrainID);
+	void setTrainName(std::string newTrainName);
+
+	// constructors
 	Train();
-	Train(int);
+	Train(std::string);
+	Train(Trip);
 };
 
