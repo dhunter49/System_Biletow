@@ -41,6 +41,13 @@ int main() {
 
 	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
 	dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
+	dm.getCompartmentsByCarNumber(11);
+	try {
+		dm.getSeatsByCompartmentNumber(1, 11);
+	}
+	catch (SQLite::Exception& e) {
+		std::cerr << e.what();
+	}
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
