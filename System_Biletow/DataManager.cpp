@@ -156,7 +156,36 @@ Car DataManager::getCarByNumber(int carNumber) {
         [carNumber](Car t) {return t.getCarNumber() == carNumber;});
 
     if (it == currentCars.end()) {
-        throw std::runtime_error("Trip not found");
+        throw std::runtime_error("Car not found");
+    }
+
+    return *it;
+}
+
+std::vector<Compartment> DataManager::getCompartmentsByCarID(int carNumber) {
+    std::string carModel = getCarByNumber(carNumber).getCarModel();
+    Compartment currentCompartment;
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT Number, IsCompartment FROM Compartments WHERE CarModel = ?");
+    query.bind(1, carModel);
+
+    while (query.executeStep()) {
+        currentCompartment = Compartment(getCarByNumber(carNumber));
+        currentCompartment.setCompartmentNumber(query.getColumn(0).getInt());
+        currentCompartment.setIsAnActualCompartment(query.getColumn(1).getInt());
+
+        currentCompartments.push_back(currentCompartment);
+    }
+
+    return currentCompartments;
+}
+
+Compartment DataManager::getCompartmentbyID(int compartmentNumber) {
+    auto it = std::find_if(currentCompartments.begin(), currentCompartments.end(),
+        [compartmentNumber](Car t) {return t.getCarNumber() == compartmentNumber;});
+
+    if (it == currentCompartments.end()) {
+        throw std::runtime_error("Compartment not found");
     }
 
     return *it;

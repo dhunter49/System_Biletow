@@ -1,13 +1,23 @@
 #pragma once
 #include "Car.h"
 
-class Compartment : protected Car {
+class Compartment : public Car {
 protected:
-	//variables
+	// variables
 	int compartmentNumber;
+	bool isAnActualCompartment;
 public:
-	//constructors
+	// setters
+	void setCompartmentNumber(int newCompartmentNumber);
+	void setIsAnActualCompartment(bool is);
+
+	// getters
+	int getCompartmentNumber();
+	bool getIsAnActualCompartment();
+
+	// constructors
 	Compartment();
 	Compartment(int);
+	Compartment(Car);
 };
 
