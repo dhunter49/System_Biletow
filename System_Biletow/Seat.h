@@ -1,18 +1,42 @@
 #pragma once
 #include "Compartment.h"
-#include <unordered_map>
+#include <map>
 
-class Seat : protected Compartment {
+class Seat : public Compartment {
 protected:
 	// variables
 	bool isFirstClass{}, isFacingFront{}, isByTable{};
 	bool isWindow{}, isMiddle{}, isCorridor{};
 	char special{}; // 'b' - for passengers with bikes, 'd' - for passengers with disabilities, TBA
 	int seatNumber{};
-	std::unordered_map<int, int> takenBy; // stationIDOnRoute, PassengerID
+	std::map<int, int> takenBy; // stationIDOnRoute, PassengerID
+
+	
+public:
+	// getters
+	bool getIsFirstClass();
+	bool getIsFacingFront();
+	bool getIsByTable();
+	bool getIsWindow();
+	bool getIsMiddle();
+	bool getIsCorridor();
+	char getSpecial();
+	int getSeatNumber();
+	std::map<int, int> getTakenBy();
+
+	// setters
+	void setIsFirstClass(bool newIsFirstClass);
+	void setIsFacingFront(bool newIsFacingFront);
+	void setIsByTable(bool newIsByTable);
+	void setIsWindow(bool newIsWindow);
+	void setIsMiddle(bool newIsMiddle);
+	void setIsCorridor(bool newIsCorridor);
+	void setSpecial(char newSpecial);
+	void setSeatNumber(int newSeatNumber);
+	void setTakenBy(std::map<int, int> newTakenBy);
 
 	// constructors
-public:
 	Seat();
 	Seat(int);
+	Seat(Compartment);
 };

@@ -136,6 +136,7 @@ Train DataManager::getTrain() {
 }
 
 std::vector<Car> DataManager::getCarsByTrainID(std::string trainID) {
+    currentCars = std::vector<Car>();
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT CarNumber, CarModel FROM TrainSets WHERE TrainID = ?");
     query.bind(1, trainID);
@@ -162,7 +163,8 @@ Car DataManager::getCarByNumber(int carNumber) {
     return *it;
 }
 
-std::vector<Compartment> DataManager::getCompartmentsByCarID(int carNumber) {
+std::vector<Compartment> DataManager::getCompartmentsByCarNumber(int carNumber) {
+    currentCompartments = std::vector<Compartment>();
     std::string carModel = getCarByNumber(carNumber).getCarModel();
     Compartment currentCompartment;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
@@ -180,12 +182,53 @@ std::vector<Compartment> DataManager::getCompartmentsByCarID(int carNumber) {
     return currentCompartments;
 }
 
-Compartment DataManager::getCompartmentbyID(int compartmentNumber) {
+Compartment DataManager::getCompartmentByNumber(int compartmentNumber) {
     auto it = std::find_if(currentCompartments.begin(), currentCompartments.end(),
         [compartmentNumber](Car t) {return t.getCarNumber() == compartmentNumber;});
 
     if (it == currentCompartments.end()) {
         throw std::runtime_error("Compartment not found");
+    }
+
+    return *it;
+}
+
+std::vector<Seat> DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumber) {
+    currentSeats = std::vector<Seat>();
+    std::string carModel = getCarByNumber(carNumber).getCarModel();
+    Seat currentSeat;
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, 
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFirstClass"
+        "FROM Seats"
+        "WHERE Number BETWEEN ? AND ? AND CarModel = ?");
+    query.bind(1, compartmentNumber * 10);
+    query.bind(2, compartmentNumber * 10 + 9);
+    query.bind(3, carModel);
+
+    while (query.executeStep()) {
+        currentSeat = Seat(getCompartmentByNumber(compartmentNumber));
+
+        currentSeat.setSeatNumber(query.getColumn(0).getInt());
+        currentSeat.setIsWindow(query.getColumn(1).getInt());
+        currentSeat.setIsMiddle(query.getColumn(2).getInt());
+        currentSeat.setIsCorridor(query.getColumn(3).getInt());
+        currentSeat.setIsByTable(query.getColumn(4).getInt());
+        currentSeat.setSpecial(query.getColumn(5).getInt());
+        currentSeat.setIsFirstClass(query.getColumn(6).getInt());
+
+        currentSeats.push_back(currentSeat);
+    }
+
+    return currentSeats;
+}
+
+Seat DataManager::getSeatByNumber(int seatNumber) {
+    auto it = std::find_if(currentSeats.begin(), currentSeats.end(),
+        [seatNumber](Seat t) {return t.getSeatNumber() == seatNumber;});
+
+    if (it == currentSeats.end()) {
+        throw std::runtime_error("Seat not found");
     }
 
     return *it;
