@@ -29,9 +29,10 @@ public:
 	Trip getTripByID(int tripID);
 
 	Train getTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
+	Train getTrain();
 
-	std::vector<Car> getCarsByTrainID(int trainID);
-	Car getCarByID(int carID);
+	std::vector<Car> getCarsByTrainID(std::string trainID);
+	Car getCarByNumber(int carNumber);
 
 	std::vector<Compartment> getCompartmentsByCarID(int carID);
 	Compartment getCompartmentbyID(int compartmentID);

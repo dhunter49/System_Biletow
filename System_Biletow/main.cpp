@@ -40,7 +40,7 @@ int main() {
 	auto& dm = DataManager::getInstance();
 
 	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
-	dm.getTrainByTripID(6);
+	dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
