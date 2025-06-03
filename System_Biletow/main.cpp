@@ -53,6 +53,10 @@ int main() {
 	dm.getTakenSeatsInTrain(2, 6);
 	dm.getTakenSeatsInCar(2, 6, 11);
 	dm.getTakenSeatsInCompartment(2, 6, 11, 1);
+
+	for (auto& comp : dm.currentCars) {
+		std::cout<<comp.getCarNumber()<<" "<< dm.getTakenSeatsInCar(2, 6, comp.getCarNumber())<<std::endl;
+	}
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
