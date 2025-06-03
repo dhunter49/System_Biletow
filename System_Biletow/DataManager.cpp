@@ -184,7 +184,7 @@ std::vector<Compartment> DataManager::getCompartmentsByCarNumber(int carNumber) 
 
 Compartment DataManager::getCompartmentByNumber(int compartmentNumber) {
     auto it = std::find_if(currentCompartments.begin(), currentCompartments.end(),
-        [compartmentNumber](Car t) {return t.getCarNumber() == compartmentNumber;});
+        [compartmentNumber](Compartment t) {return t.getCompartmentNumber() == compartmentNumber;});
 
     if (it == currentCompartments.end()) {
         throw std::runtime_error("Compartment not found");
@@ -199,9 +199,9 @@ std::vector<Seat> DataManager::getSeatsByCompartmentNumber(int compartmentNumber
     Seat currentSeat;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, 
-        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFirstClass"
-        "FROM Seats"
-        "WHERE Number BETWEEN ? AND ? AND CarModel = ?");
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFirstClass "
+        "FROM Seats "
+        "WHERE Number >= ? AND Number <= ? AND CarModel = ?");
     query.bind(1, compartmentNumber * 10);
     query.bind(2, compartmentNumber * 10 + 9);
     query.bind(3, carModel);
