@@ -130,3 +130,34 @@ Train DataManager::getTrainByTripID(int tripID) {
 
     return currentTrain;
 }
+
+Train DataManager::getTrain() {
+    return currentTrain;
+}
+
+std::vector<Car> DataManager::getCarsByTrainID(std::string trainID) {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT CarNumber, CarModel FROM TrainSets WHERE TrainID = ?");
+    query.bind(1, trainID);
+
+    Car currentCar;
+    while (query.executeStep()) {
+        currentCar = Car(currentTrain);
+        currentCar.setCarNumber(query.getColumn(0).getInt());
+        currentCar.setCarModel(query.getColumn(1).getString());
+
+        currentCars.push_back(currentCar);
+    }
+    return currentCars;
+}
+
+Car DataManager::getCarByNumber(int carNumber) {
+    auto it = std::find_if(currentCars.begin(), currentCars.end(),
+        [carNumber](Car t) {return t.getCarNumber() == carNumber;});
+
+    if (it == currentCars.end()) {
+        throw std::runtime_error("Trip not found");
+    }
+
+    return *it;
+}

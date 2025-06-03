@@ -1,14 +1,23 @@
 #pragma once
 #include "Train.h"
 
-class Car : protected Train {
+class Car : public Train {
 protected:
-	//variables
-	int carNumber;
-	std::string carModel;
+	// variables
+	int carNumber; // NOT an unique identifier - just a number of car in a certain train
+	std::string carModel; // unique identifier
 public:
-	//constructors
+	// getters 
+	int getCarNumber();
+	std::string getCarModel();
+
+	// setters
+	void setCarNumber(int newCarNumber);
+	void setCarModel(std::string newCarModel);
+
+	// constructors
 	Car();
 	Car(int);
+	Car(Train);
 };
 
