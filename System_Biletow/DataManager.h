@@ -34,10 +34,10 @@ public:
 	std::vector<Car> getCarsByTrainID(std::string trainID);
 	Car getCarByNumber(int carNumber);
 
-	std::vector<Compartment> getCompartmentsByCarID(int carNumber);
-	Compartment getCompartmentbyID(int compartmentID);
+	std::vector<Compartment> getCompartmentsByCarNumber(int carNumber);
+	Compartment getCompartmentByNumber(int compartmentNumber);
 
-	std::vector<Seat> getSeatsByCompartmentID(int compartmentID);
-	Seat getSeatByID(int seatID);
+	std::vector<Seat> getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
+	Seat getSeatByNumber(int seatNumber);
 };
 
