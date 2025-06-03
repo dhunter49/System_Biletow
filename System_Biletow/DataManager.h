@@ -23,6 +23,7 @@ private:
 public:
 	static DataManager& getInstance();
 
+	// LOADING FROM DATABASE
 	void loadAllRoutesFromDatabase();
 
 	std::vector<Trip> getTripsByDateAndRouteID(Date date, int routeID);
@@ -39,5 +40,10 @@ public:
 
 	std::vector<Seat> getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
 	Seat getSeatByNumber(int seatNumber);
+
+	//METHODS TO COUNT AVAILABLE SPOTS
+	int getTakenSeatsInTrain(int stationStartNumber, int stationEndNumber);
+	int getTakenSeatsInCar(int stationStartNumber, int stationEndNumber, int carNumber);
+	int getTakenSeatsInCompartment(int stationStartNumber, int stationEndNumber, int carNumber, int compartmentNumber);
 };
 

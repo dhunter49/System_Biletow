@@ -39,8 +39,9 @@ int main() {
 
 	auto& dm = DataManager::getInstance();
 
-	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
-	dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
+	dm.getTripsByDateAndRouteID({ 24, 6, 2025 },2);
+	dm.getTrainByTripID(2);
+	dm.getCarsByTrainID(dm.getTrain().getTrainID());
 	dm.getCompartmentsByCarNumber(11);
 	try {
 		dm.getSeatsByCompartmentNumber(1, 11);
@@ -48,6 +49,10 @@ int main() {
 	catch (SQLite::Exception& e) {
 		std::cerr << e.what();
 	}
+
+	dm.getTakenSeatsInTrain(2, 6);
+	dm.getTakenSeatsInCar(2, 6, 11);
+	dm.getTakenSeatsInCompartment(2, 6, 11, 1);
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
