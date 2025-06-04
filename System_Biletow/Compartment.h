@@ -17,6 +17,8 @@ public:
 
 	// methods
 	int getTakenSeats(int stationStartNumber, int stationEndNumber);
+	int getSeatCount(int stationStartNumber, int stationEndNumber);
+	int getFreeSeats(int stationStartNumber, int stationEndNumber);
 
 	// constructors
 	Compartment();

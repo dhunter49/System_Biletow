@@ -16,7 +16,9 @@ public:
 	void setCarModel(std::string newCarModel);
 
 	// methods
-	int getTakenSeats(int stationStartNumber, int stationEndNumber);
+	int virtual getTakenSeats(int stationStartNumber, int stationEndNumber);
+	int virtual getSeatCount(int stationStartNumber, int stationEndNumber);
+	int virtual getFreeSeats(int stationStartNumber, int stationEndNumber);
 
 	// constructors
 	Car();

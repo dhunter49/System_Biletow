@@ -17,6 +17,8 @@ public:
 
 	// methods
 	int virtual getTakenSeats(int stationStartNumber, int stationEndNumber);
+	int virtual getSeatCount(int stationStartNumber, int stationEndNumber);
+	int virtual getFreeSeats(int stationStartNumber, int stationEndNumber);
 
 	// constructors
 	Train();
