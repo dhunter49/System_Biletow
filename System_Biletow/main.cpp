@@ -50,10 +50,12 @@ int main() {
 		std::cerr << e.what();
 	}
 
-	std::cout<<dm.currentTrain.getTakenSeats(2, 6)<<std::endl<<std::endl;
-	for (auto& comp : dm.currentCars) {
-		std::cout<<comp.getCarNumber()<<" "<< comp.getTakenSeats(2,6)<<std::endl;
-	}
+
+	// Throws exceptions now, need to change db;
+	//std::cout<<dm.currentTrain.getFreeSeats(2, 6)<<std::endl<<std::endl;
+	//for (auto& comp : dm.currentCars) {
+	//	std::cout<<comp.getCarNumber()<<" "<< comp.getFreeSeats(2,6)<<std::endl;
+	//}
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
