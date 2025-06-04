@@ -16,9 +16,9 @@ public:
 	void setTrainName(std::string newTrainName);
 
 	// methods
-	int virtual getTakenSeats(int stationStartNumber, int stationEndNumber);
-	int virtual getSeatCount(int stationStartNumber, int stationEndNumber);
-	int virtual getFreeSeats(int stationStartNumber, int stationEndNumber);
+	int getTakenSeats(int stationStartNumber, int stationEndNumber);
+	int getSeatCount(int stationStartNumber, int stationEndNumber);
+	int getFreeSeats(int stationStartNumber, int stationEndNumber);
 
 	// constructors
 	Train();

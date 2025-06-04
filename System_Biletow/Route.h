@@ -11,7 +11,7 @@
 class Route {
 public:
 	//methods
-	MenuOption getMenuOption();
+	// MenuOption getMenuOption();
 protected:
 	//variables
 	int routeID;
