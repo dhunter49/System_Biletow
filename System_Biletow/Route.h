@@ -10,10 +10,10 @@
 // Class for routes, stores its ID and list of stations
 class Route {
 public:
-	//methods
-	// MenuOption getMenuOption();
+	// methods
+	MenuOption getMenuOption();
 protected:
-	//variables
+	// variables
 	int routeID;
 	// int here is storing stationNum (always starts at 1 for every route)
 	std::map<int,Station> stationList; 
