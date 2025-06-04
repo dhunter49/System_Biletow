@@ -50,12 +50,9 @@ int main() {
 		std::cerr << e.what();
 	}
 
-	dm.getTakenSeatsInTrain(2, 6);
-	dm.getTakenSeatsInCar(2, 6, 11);
-	dm.getTakenSeatsInCompartment(2, 6, 11, 1);
-
+	std::cout<<dm.currentTrain.getTakenSeats(2, 6)<<std::endl<<std::endl;
 	for (auto& comp : dm.currentCars) {
-		std::cout<<comp.getCarNumber()<<" "<< dm.getTakenSeatsInCar(2, 6, comp.getCarNumber())<<std::endl;
+		std::cout<<comp.getCarNumber()<<" "<< comp.getTakenSeats(2,6)<<std::endl;
 	}
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);

@@ -1,4 +1,6 @@
 #include "Compartment.h"
+#include <SQLiteCpp/SQLiteCpp.h>
+#include "GlobalConsts.h"
 
 Compartment::Compartment() : compartmentNumber(0) {};
 Compartment::Compartment(int compartmentNumber) :compartmentNumber(compartmentNumber) {};
@@ -18,4 +20,22 @@ int Compartment::getCompartmentNumber() {
 
 bool Compartment::getIsAnActualCompartment() {
 	return isAnActualCompartment;
+}
+
+int Compartment::getTakenSeats(int stationStartNumber, int stationEndNumber) {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers WHERE "
+        "TripID = ? AND "
+        "CarNumber = ? AND "
+        "SeatNumber >= ? AND SeatNumber <= ? AND "
+        "FromStation < ? AND "
+        "ToStation >= ?");
+    query.bind(1, tripID);
+    query.bind(2, carNumber);
+    query.bind(3, compartmentNumber * 10);
+    query.bind(4, compartmentNumber * 10 + 9);
+    query.bind(5, stationEndNumber);
+    query.bind(6, stationStartNumber);
+    query.executeStep();
+    return query.getColumn(0).getInt();
 }

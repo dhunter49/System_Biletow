@@ -40,10 +40,5 @@ public:
 
 	void getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
 	Seat getSeatByNumber(int seatNumber);
-
-	//METHODS TO COUNT AVAILABLE SPOTS
-	int getTakenSeatsInTrain(int stationStartNumber, int stationEndNumber);
-	int getTakenSeatsInCar(int stationStartNumber, int stationEndNumber, int carNumber);
-	int getTakenSeatsInCompartment(int stationStartNumber, int stationEndNumber, int carNumber, int compartmentNumber);
 };
 

@@ -15,6 +15,9 @@ public:
 	void setCarNumber(int newCarNumber);
 	void setCarModel(std::string newCarModel);
 
+	// methods
+	int getTakenSeats(int stationStartNumber, int stationEndNumber);
+
 	// constructors
 	Car();
 	Car(int);
