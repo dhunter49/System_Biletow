@@ -98,15 +98,18 @@ Trip DataManager::getTripByID(int tripID) {
 }
 
 void DataManager::getTrainByTripID(int tripID) {
+    int routeID = getTripByID(tripID).getRouteID();
+
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT DISTINCT TrainID FROM TrainSets WHERE TripID = ?");
-    query.bind(1, tripID);
+    SQLite::Statement query(db, "SELECT ID, Name FROM Trains WHERE RouteID = ?");
+    query.bind(1, routeID);
 
     if (!query.executeStep()) {
         throw std::runtime_error("Nie znaleziono pociągu dla przejazdu: " + std::to_string(tripID));
     }
 
    std::string trainID = query.getColumn(0).getString();
+   std::string trainName = query.getColumn(1).getString();
 
     // Trying to get another row, as there should be only one
     if (query.executeStep()) { 
@@ -115,16 +118,7 @@ void DataManager::getTrainByTripID(int tripID) {
 
     currentTrain = Train(getTripByID(tripID));
     currentTrain.setTrainID(trainID);
-
-    query = SQLite::Statement(db, "SELECT Name FROM Trains WHERE ID = ?");
-    query.bind(1, trainID);
-
-    if (!query.executeStep()) {
-        currentTrain.setTrainName("");
-    }
-    else {
-        currentTrain.setTrainName(query.getColumn(0).getString());
-    }
+    currentTrain.setTrainName(trainName);
 }
 
 Train DataManager::getTrain() {
