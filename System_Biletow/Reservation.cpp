@@ -31,7 +31,17 @@ bool Reservation::findASeat() {
 		std::vector<MenuOption> yesOrNo;
 		yesOrNo.push_back(MenuOption{ 1, "Tak" });
 		yesOrNo.push_back(MenuOption{ 0, "Nie" });
-		showMenu("Pociąg nie ma miejsc spełniającyh preferecje, lecz są dostępne miejsca. Czy chcesz wyczyścić preferencje?", yesOrNo);
+		if (showMenu("Pociąg nie ma miejsc spełniających preferecje, lecz są dostępne miejsca. Czy chcesz wyczyścić preferencje?", yesOrNo)) {
+			facingFront.isChosen = false;
+			byTable.isChosen = false;
+			window.isChosen = false;
+			middle.isChosen = false;
+			corridor.isChosen = false;
+			return findASeat();
+		}
+		else {
+			return false;
+		}
 	}
 	else {
 		std::cout << "Pociąg nie ma wolnych miejsc!\n";
