@@ -15,6 +15,11 @@ public:
 	int getCompartmentNumber();
 	bool getIsAnActualCompartment();
 
+	// methods
+	int getTakenSeats(int stationStartNumber, int stationEndNumber);
+	int getSeatCount(int stationStartNumber, int stationEndNumber);
+	int getFreeSeats(int stationStartNumber, int stationEndNumber);
+
 	// constructors
 	Compartment();
 	Compartment(int);

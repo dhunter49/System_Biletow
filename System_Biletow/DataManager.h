@@ -14,31 +14,32 @@ private:
 	static DataManager* instance;
 	std::unordered_map<int, Route> routes;
 
+public:
 	std::vector<Trip> currentTrips;
 	Train currentTrain; // Only one train should match with one trip, else throw exception
 	std::vector<Car> currentCars;
 	std::vector<Compartment> currentCompartments;
 	std::vector<Seat> currentSeats;
 
-public:
 	static DataManager& getInstance();
 
+	// LOADING FROM DATABASE
 	void loadAllRoutesFromDatabase();
 	std::vector<MenuOption> generateMenuList();
 
-	std::vector<Trip> getTripsByDateAndRouteID(Date date, int routeID);
+	void getTripsByDateAndRouteID(Date date, int routeID);
 	Trip getTripByID(int tripID);
 
-	Train getTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
+	void getTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
 	Train getTrain();
 
-	std::vector<Car> getCarsByTrainID(std::string trainID);
+	void getCarsByTrainID(std::string trainID);
 	Car getCarByNumber(int carNumber);
 
-	std::vector<Compartment> getCompartmentsByCarNumber(int carNumber);
+	void getCompartmentsByCarNumber(int carNumber);
 	Compartment getCompartmentByNumber(int compartmentNumber);
 
-	std::vector<Seat> getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
+	void getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
 	Seat getSeatByNumber(int seatNumber);
 };
 
