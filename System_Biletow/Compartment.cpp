@@ -29,7 +29,7 @@ int Compartment::getTakenSeats(int stationStartNumber, int stationEndNumber) {
         "CarNumber = ? AND "
         "SeatNumber >= ? AND SeatNumber <= ? AND "
         "FromStation < ? AND "
-        "ToStation >= ?");
+        "ToStation > ?");
     query.bind(1, tripID);
     query.bind(2, carNumber);
     query.bind(3, compartmentNumber * 10);

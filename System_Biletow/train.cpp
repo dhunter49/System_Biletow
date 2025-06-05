@@ -31,7 +31,7 @@ int Train::getTakenSeats(int stationStartNumber, int stationEndNumber) {
     SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers WHERE "
         "TripID = ? AND "
         "FromStation < ? AND "
-        "ToStation >= ?");
+        "ToStation > ?");
     query.bind(1, tripID);
     query.bind(2, stationEndNumber);
     query.bind(3, stationStartNumber);

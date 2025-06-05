@@ -28,7 +28,7 @@ int Car::getTakenSeats(int stationStartNumber, int stationEndNumber) {
         "TripID = ? AND "
         "CarNumber = ? AND "
         "FromStation < ? AND "
-        "ToStation >= ?");
+        "ToStation > ?");
     query.bind(1, tripID);
     query.bind(2, carNumber);
     query.bind(3, stationEndNumber);
