@@ -28,10 +28,12 @@ Train::Train(Trip trip) {
 
 int Train::getTakenSeats(int stationStartNumber, int stationEndNumber) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers WHERE "
-        "TripID = ? AND "
-        "FromStation < ? AND "
-        "ToStation > ?");
+    SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
+        "Passenger.TripID = ? AND "
+        "Passenger.FromStation < ? AND "
+        "Passenger.ToStation > ? "
+        "AND Seats.Special IS NULL");
+
     query.bind(1, tripID);
     query.bind(2, stationEndNumber);
     query.bind(3, stationStartNumber);
@@ -43,7 +45,8 @@ int Train::getSeatCount(int stationStartNumber, int stationEndNumber) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT COUNT(Seats.Number) "
         "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
-        "WHERE TrainSets.TrainID = ?");
+        "WHERE TrainSets.TrainID = ? "
+        "AND Special IS NULL");
     query.bind(1, trainID);
     query.executeStep();
     return query.getColumn(0).getInt();
