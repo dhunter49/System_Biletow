@@ -42,20 +42,15 @@ int main() {
 	dm.getTripsByDateAndRouteID({ 24, 6, 2025 },2);
 	dm.getTrainByTripID(2);
 	dm.getCarsByTrainID(dm.getTrain().getTrainID());
-	dm.getCompartmentsByCarNumber(11);
-	try {
-		dm.getSeatsByCompartmentNumber(1, 11);
-	}
-	catch (SQLite::Exception& e) {
-		std::cerr << e.what();
-	}
 
-
-	// Throws exceptions now, need to change db;
-	//std::cout<<dm.currentTrain.getFreeSeats(2, 6)<<std::endl<<std::endl;
-	//for (auto& comp : dm.currentCars) {
-	//	std::cout<<comp.getCarNumber()<<" "<< comp.getFreeSeats(2,6)<<std::endl;
-	//}
+	std::cout<<dm.currentTrain.getFreeSeats(2, 6)<<std::endl<<std::endl;
+	for (auto& car : dm.currentCars) {
+		dm.getCompartmentsByCarNumber(car.getCarNumber());
+		std::cout<<car.getCarNumber()<<" "<< car.getFreeSeats(2,6)<<std::endl;
+		for (auto& comp : dm.currentCompartments) {
+			std::cout << "    " << comp.getCompartmentNumber() << " " << comp.getFreeSeats(2, 6) << std::endl;
+		}
+	}
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
