@@ -44,14 +44,17 @@ int main() {
 	}
 	auto& dm = DataManager::getInstance();
 
-	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
-	dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
-	dm.getCompartmentsByCarNumber(11);
-	try {
-		dm.getSeatsByCompartmentNumber(1, 11);
-	}
-	catch (SQLite::Exception& e) {
-		std::cerr << e.what();
+	dm.getTripsByDateAndRouteID({ 24, 6, 2025 },2);
+	dm.getTrainByTripID(2);
+	dm.getCarsByTrainID(dm.getTrain().getTrainID());
+
+	std::cout<<dm.currentTrain.getFreeSeats(2, 6)<<std::endl<<std::endl;
+	for (auto& car : dm.currentCars) {
+		dm.getCompartmentsByCarNumber(car.getCarNumber());
+		std::cout<<car.getCarNumber()<<" "<< car.getFreeSeats(2,6)<<std::endl;
+		for (auto& comp : dm.currentCompartments) {
+			std::cout << "    " << comp.getCompartmentNumber() << " " << comp.getFreeSeats(2, 6) << std::endl;
+		}
 	}
 	
 	//std::vector<MenuOption> menu = generateMenuList(routes);
