@@ -25,6 +25,7 @@ public:
 
 	// LOADING FROM DATABASE
 	void loadAllRoutesFromDatabase();
+	std::vector<MenuOption> generateMenuList();
 
 	void getTripsByDateAndRouteID(Date date, int routeID);
 	Trip getTripByID(int tripID);

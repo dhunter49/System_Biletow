@@ -29,36 +29,20 @@ int main() {
 		std::cerr << "nieznany problem" << std::endl;
 	}
 
-
-	std::vector<MenuOption> menu; //= generateMenuList(routes);
-	for (int i = 0; i < 10000; i++) {
-		menu.push_back({ i,"Opcja " +  std::to_string(i)});
-	}
-	//menu[14] = { 14,std::string(2358,'s')};
-	//menu[16] = { 16,"Opcja 16 sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss" };
-	try {
-		showMenu("bbbb", menu);
-	}
-	catch (const std::exception& e) {
-		std::cerr << e.what();
-	}
 	auto& dm = DataManager::getInstance();
 
-	dm.getTripsByDateAndRouteID({ 24, 6, 2025 },2);
-	dm.getTrainByTripID(2);
-	dm.getCarsByTrainID(dm.getTrain().getTrainID());
-
-	std::cout<<dm.currentTrain.getFreeSeats(2, 6)<<std::endl<<std::endl;
-	for (auto& car : dm.currentCars) {
-		dm.getCompartmentsByCarNumber(car.getCarNumber());
-		std::cout<<car.getCarNumber()<<" "<< car.getFreeSeats(2,6)<<std::endl;
-		for (auto& comp : dm.currentCompartments) {
-			std::cout << "    " << comp.getCompartmentNumber() << " " << comp.getFreeSeats(2, 6) << std::endl;
-		}
-	}
+	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
+	//dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
+	//dm.getCompartmentsByCarNumber(11);
+	//try {
+	//	dm.getSeatsByCompartmentNumber(1, 11);
+	//}
+	//catch (SQLite::Exception& e) {
+	//	std::cerr << e.what();
+	//}
 	
-	//std::vector<MenuOption> menu = generateMenuList(routes);
-	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
+	std::vector<MenuOption> menu = routes.generateMenuList();
+	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 
 	

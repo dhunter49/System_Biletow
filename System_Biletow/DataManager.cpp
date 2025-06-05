@@ -40,6 +40,17 @@ void DataManager::loadAllRoutesFromDatabase() {
     routes[currentRouteID] = currentRoute;
 }
 
+// Generates vector of menu options for function showMenu, it uses all loaded routes to give user possiblity to choose a route.
+std::vector<MenuOption> DataManager::generateMenuList() {
+    std::vector<MenuOption> out;
+    MenuOption oneOption;
+    for (auto& routePair : routes) {
+    	oneOption = routePair.second.getMenuOption();
+    	out.push_back(oneOption);
+    }
+    return out;
+}
+
 // Gets all trips in a vector that are matching routeID and matching inputted date. Supposedly should find one Trip, although not always.
 // Returns vector with Trips with matching criteria.
 void DataManager::getTripsByDateAndRouteID(Date date, int routeID) {
