@@ -69,7 +69,7 @@ void clearScreen() {
 // ONLY WINDOWS
 void gotoXY(int x, int y) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD coordScreen = { x, y };
+    COORD coordScreen = { static_cast<short>(x), static_cast<short>(y) };
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
@@ -77,6 +77,7 @@ void gotoXY(int x, int y) {
 const int MAX_OPTIONS_ON_MENU = 20; // represents the maximum amount of options shown on the menu. Adjustable to liking
 
 //Calculates first and last indexes of elements on each page
+//ONLY USE IN SHOWMENU FUNCTION
 void calculateIndexesOfMenu(int* firstIndexes, int* lastindexes, const std::vector<MenuOption> menuOptions) {
     int lines, columns;
     firstIndexes[0] = 0;
@@ -84,12 +85,12 @@ void calculateIndexesOfMenu(int* firstIndexes, int* lastindexes, const std::vect
     int spaceLeftForOptions = MAX_OPTIONS_ON_MENU;
     int page{};
     for (int i = 0; i < menuOptions.size(); i++) {
-        spaceLeftForOptions -= (menuOptions[i].menuText.length()-1) / columns;
+        spaceLeftForOptions -= (static_cast<int>(menuOptions[i].menuText.length())-1 + 2) / columns; // +2 because there is always 2 elements before option" >"
         if (i > firstIndexes[page] + spaceLeftForOptions-1) {
             lastindexes[page] = i - 1;
             firstIndexes[page + 1] = i; // validation not required because there is no way that there wouldn't be next page if last element is too long. It comes from calculation of MAX_PAGES in showMenu function
             page++;
-            spaceLeftForOptions = MAX_OPTIONS_ON_MENU - (menuOptions[i].menuText.length()-1) / columns;
+            spaceLeftForOptions = MAX_OPTIONS_ON_MENU - (static_cast<int>(menuOptions[i].menuText.length())-1+2) / columns;// +2 because there is always 2 elements before option" >"
             continue;
         }
         if (i == menuOptions.size() - 1) {
@@ -125,13 +126,13 @@ void refreshMenuOptions(int firstIndex,int lastIndex ,int currentSelection, cons
 // If string is empty ("") it won't print any title
 // ONLY WINDOWS
 int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
-    if (menuOptions.empty())
-        throw std::invalid_argument("Menu options can't be empty");
+    if (menuOptions.empty()) throw std::invalid_argument("Menu options can't be empty");
     int lines, columns;
     getConsoleDimensions(lines, columns);
     int count{};
     for (int i = 0; i < menuOptions.size(); i++) {
-        count += 1 + menuOptions[i].menuText.length() / columns;
+        if ((menuOptions[i].menuText.length() - 1+2)/ columns >= MAX_OPTIONS_ON_MENU) throw std::invalid_argument("Menu option exceeds maximum lines available, OptionLines >= MAX_OPTIONS_ON_MENU");
+        count += 1 + (static_cast<int>(menuOptions[i].menuText.length())-1 + 2) / columns; // +2 because there is always 2 elements before option" >"
     }
     const int MAX_PAGES = (count-1) / MAX_OPTIONS_ON_MENU + 1;
     int* firstIndexes = new int[MAX_PAGES] {}; // dynamic table that will store first indexes of elements on each page, index of element represents number of page
@@ -149,9 +150,11 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
         while (true) {
             if (menuPage<0 || menuPage>=MAX_PAGES) menuPage = 0;
             refreshMenuOptions(firstIndexes[menuPage], lastIndexes[menuPage], currentSelection, menuOptions);
-            gotoXY(columns-17, 23);
-            if (menuPage >= 999) std::cout << "Strona nr. 999+";
-            else std::cout << "Strona nr. " << std::setw(3) << menuPage + 1 << " ";
+            gotoXY(columns-19, 23);
+            if (menuPage >= 999) std::cout << "Strona nr. 999+/";
+            else std::cout << "Strona nr. " << std::setw(3) << menuPage + 1 << "/";
+            if (MAX_PAGES >= 999) std::cout << "999+";
+            else std::cout << MAX_PAGES;
             key = _getch();
             if (key == 0 || key == 224) {
                 switch (_getch()) {
