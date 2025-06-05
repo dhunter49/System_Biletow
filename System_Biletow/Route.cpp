@@ -9,6 +9,19 @@ Route::Route() : routeID(1) {}
 
 Route::Route(int routeID) : routeID(routeID) {}
 
+MenuOption Route::getMenuOption() {
+    std::string optionName{};
+    bool first = true;
+    for (auto& stationPair : stationList) {
+        if (!first) {
+            optionName += " - ";
+        }
+        optionName += stationPair.second.name;
+        first = false;
+    }
+    return MenuOption{ routeID, optionName };
+}
+
 void Route::addStation(int stationNum, Station newStation) {
 	if (stationList.count(stationNum) != 0) return;
 	stationList[stationNum] = newStation;

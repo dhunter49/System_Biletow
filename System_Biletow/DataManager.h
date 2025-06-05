@@ -24,6 +24,7 @@ public:
 	static DataManager& getInstance();
 
 	void loadAllRoutesFromDatabase();
+	std::vector<MenuOption> generateMenuList();
 
 	std::vector<Trip> getTripsByDateAndRouteID(Date date, int routeID);
 	Trip getTripByID(int tripID);
