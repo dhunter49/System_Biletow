@@ -136,6 +136,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Passenger.cpp" />
+    <ClCompile Include="Reservation.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="Seat.cpp" />
     <ClCompile Include="SQLiteCpp\sqlite3\sqlite3.c" />
@@ -158,6 +159,7 @@
     <ClInclude Include="headers.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Passenger.h" />
+    <ClInclude Include="Reservation.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="Seat.h" />
     <ClInclude Include="SQLiteCpp\include\SQLiteCpp\Assertion.h" />
