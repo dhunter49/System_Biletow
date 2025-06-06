@@ -67,3 +67,7 @@ void gotoXY(int x, int y) {
     COORD coordScreen = { static_cast<short>(x), static_cast<short>(y) };
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
+
+void waitForEsc() {
+    while (_getch() != 27) {}
+}
