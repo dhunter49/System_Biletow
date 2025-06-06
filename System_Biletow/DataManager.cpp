@@ -242,7 +242,7 @@ void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int car
     Seat currentSeat;
 
     query = SQLite::Statement(db,
-        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFirstClass "
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special "
         "FROM Seats "
         "WHERE Number = ? AND CarModel = ?");
     for (int seatNumber : freeSeatsNumbers) {
@@ -258,7 +258,6 @@ void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int car
             currentSeat.setIsCorridor(query.getColumn(3).getInt());
             currentSeat.setIsByTable(query.getColumn(4).getInt());
             currentSeat.setSpecial(query.getColumn(5).getInt());
-            currentSeat.setIsFirstClass(query.getColumn(6).getInt());
 
             currentSeats.push_back(currentSeat);
         }
