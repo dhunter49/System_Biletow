@@ -5,7 +5,7 @@
 class Seat : public Compartment {
 protected:
 	// variables
-	bool isFirstClass{}, isFacingFront{}, isByTable{};
+	bool isFacingFront{}, isByTable{};
 	bool isWindow{}, isMiddle{}, isCorridor{};
 	char special{}; // 'b' - for passengers with bikes, 'd' - for passengers with disabilities, TBA
 	int seatNumber{};
