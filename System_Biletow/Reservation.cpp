@@ -47,7 +47,7 @@ bool Reservation::findASeat() {
 			yesOrNo.push_back(MenuOption{ 1, "Tak, zmień klasę na " +  classToChangeTo + "."});
 			yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
 			std::string menuTitle = "Pociąg nie ma miejsc w wybranej klasie. Czy chcesz zmienić klasę?";
-			// Lets user choose if they want to make a reservation in  different class, if so it changes prefered class
+			// Lets user choose if they want to make a reservation in different class, if so it changes prefered class
 			// and calls this method once again.
 			if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
 				firstClass = !firstClass;

@@ -34,5 +34,6 @@ public:
 	bool findASeat();
 	bool meetsPreferences(Seat& seat);
 	float calculateTicketPrice();
+	void saveReservationToDatabase();
 };
 
