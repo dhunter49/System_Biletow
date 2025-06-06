@@ -1,0 +1,1 @@
+SELECT * FROM (Seats FULL JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel) WHERE TrainSets.CarNumber = 17 AND Seats.Number = 84;

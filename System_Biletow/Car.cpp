@@ -24,11 +24,12 @@ void Car::setCarModel(std::string newCarModel) {
 
 int Car::getTakenSeats(int stationStartNumber, int stationEndNumber) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers WHERE "
-        "TripID = ? AND "
-        "CarNumber = ? AND "
-        "FromStation < ? AND "
-        "ToStation > ?");
+    SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
+        "Passenger.TripID = ? AND "
+        "Passenger.CarNumber = ? AND "
+        "Passenger.FromStation < ? AND "
+        "Passenger.ToStation > ? "
+        "AND Seats.Special IS NULL");
     query.bind(1, tripID);
     query.bind(2, carNumber);
     query.bind(3, stationEndNumber);
@@ -42,7 +43,8 @@ int Car::getSeatCount(int stationStartNumber, int stationEndNumber) {
     SQLite::Statement query(db, "SELECT COUNT(Seats.Number) "
         "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
         "WHERE TrainSets.TrainID = ? "
-        "AND TrainSets.CarNumber = ?");
+        "AND TrainSets.CarNumber = ? "
+        "AND Seats.Special IS NULL");
     query.bind(1, trainID);
     query.bind(2, carNumber);
     query.executeStep();
