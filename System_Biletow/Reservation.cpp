@@ -1,9 +1,11 @@
 ﻿#include "Reservation.h"
 #include "DataManager.h"
 
+// Tries to find a seat
+// Returns true when seat is found and saved into the object variables, returns false if not found.
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
-	// check if there is enough spots in the entire train
+	// check if there is enough spots in the entire train, if not instantly returns false value.
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) != 0) {
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
@@ -12,12 +14,14 @@ bool Reservation::findASeat() {
 				data.getCompartmentsByCarNumber(carPair.getCarNumber());
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
-					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) != 0) {
+					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) != 0) { 
+						// CHANGE NECCESSARY: should load only free seats!!!
 						data.getSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber());
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
 							if (meetsPreferences(seatPair)) {
-								carNumber = carPair.getCarNumber();
+								// Saves seat info to an object.
+								carNumber = seatPair.getCarNumber();
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
 								//ticketPrice = getPrice();
@@ -33,6 +37,8 @@ bool Reservation::findASeat() {
 		yesOrNo.push_back(MenuOption{ 1, "Tak, wybierz dowolne miejsce w pociągu" });
 		yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
 		std::string menuTitle = "Pociąg nie ma miejsc spełniających preferecje, lecz są dostępne miejsca. Czy chcesz wyczyścić preferencje?";
+		// Lets user choose if they want to make a reservation withoud initial preferences, if so it removes preferences
+		// and calls this method once again.
 		if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
 			facingFront.isChosen = false;
 			byTable.isChosen = false;
@@ -51,7 +57,8 @@ bool Reservation::findASeat() {
 	}
 }
 
-bool Reservation::meetsPreferences(Seat seat) {
+// Checks if preferations declared in object meet seat real values.
+bool Reservation::meetsPreferences(Seat& seat) {
 	if (!facingFront.isChosen || facingFront.value == seat.getIsFacingFront()
 		&& !byTable.isChosen || byTable.value == seat.getIsByTable()
 		&& !window.isChosen || window.value == seat.getIsWindow()

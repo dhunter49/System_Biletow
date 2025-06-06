@@ -27,6 +27,6 @@ private:
 	float ticketPrice{};
 public:
 	bool findASeat();
-	bool meetsPreferences(Seat seat);
+	bool meetsPreferences(Seat& seat);
 };
 
