@@ -15,8 +15,7 @@ bool Reservation::findASeat() {
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
 					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) != 0) { 
-						// CHANGE NECCESSARY: should load only free seats!!!
-						data.getSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber());
+						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
 							if (meetsPreferences(seatPair)) {

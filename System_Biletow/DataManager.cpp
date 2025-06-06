@@ -221,18 +221,14 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
 
 void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT SeatNumber FROM Passengers WHERE "
-        "TripID = ? AND "
-        "CarNumber = ? AND "
-        "SeatNumber >= ? AND SeatNumber <= ? AND "
-        "FromStation < ? AND "
-        "ToStation > ?");
-    query.bind(1, currentTrain.getTripID());
+    SQLite::Statement query(db, "SELECT Seats.Number "
+        "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
+        "WHERE TrainSets.TrainID = ? "
+        "AND TrainSets.CarNumber = ? "
+        "AND Seats.Number/10 = ?");
+    query.bind(1, currentTrain.getTrainID());
     query.bind(2, carNumber);
-    query.bind(3, compartmentNumber * 10);
-    query.bind(4, compartmentNumber * 10 + 9);
-    query.bind(5, stationNumberEnd);
-    query.bind(6, stationNumberStart);
+    query.bind(3, compartmentNumber);
 
     std::vector<int> freeSeatsNumbers;
     while (query.executeStep()) {
