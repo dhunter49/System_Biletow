@@ -12,9 +12,11 @@ struct Preference {
 class Reservation {
 private:
 	// Variables required before making a reservation
+	int numberOfPeople = 1;
 	int fromStationNumber{};
 	int toStationNumber{};
 	bool firstClass{};
+	Preference isCompartment{};
 	Preference facingFront{};
 	Preference byTable{};
 	Preference window{};

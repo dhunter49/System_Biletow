@@ -6,15 +6,16 @@
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
 	// check if there is enough spots in the entire train, if not instantly returns false value.
-	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) != 0) {
+	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car
-			if (carPair.getFreeSeats(fromStationNumber, toStationNumber) != 0) {
+			if (carPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
 				data.getCompartmentsByCarNumber(carPair.getCarNumber());
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
-					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) != 0) { 
+					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople
+						&& (!isCompartment.isChosen || isCompartment.value==compartmentPair.getIsAnActualCompartment())) {
 						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
