@@ -225,7 +225,8 @@ void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int car
         "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
         "WHERE TrainSets.TrainID = ? "
         "AND TrainSets.CarNumber = ? "
-        "AND Seats.Number/10 = ?");
+        "AND Seats.Number/10 = ? "
+        "AND Seats.Special IS NULL");
     query.bind(1, currentTrain.getTrainID());
     query.bind(2, carNumber);
     query.bind(3, compartmentNumber);

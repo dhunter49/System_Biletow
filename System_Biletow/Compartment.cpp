@@ -33,11 +33,11 @@ bool Compartment::getIsFirstClass() {
 int Compartment::getTakenSeats(int stationStartNumber, int stationEndNumber) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
-        "Passenger.TripID = ? AND "
-        "Passenger.CarNumber = ? AND "
-        "Passenger.SeatNumber >= ? AND Passenger.SeatNumber <= ? AND "
-        "Passenger.FromStation < ? AND "
-        "Passenger.ToStation > ? "
+        "Passengers.TripID = ? AND "
+        "Passengers.CarNumber = ? AND "
+        "Passengers.SeatNumber >= ? AND Passengers.SeatNumber <= ? AND "
+        "Passengers.FromStation < ? AND "
+        "Passengers.ToStation > ? "
         "AND Seats.Special IS NULL");
 
     query.bind(1, tripID);
