@@ -40,6 +40,7 @@ public:
 	Compartment getCompartmentByNumber(int compartmentNumber);
 
 	void getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
+	void getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd);
 	Seat getSeatByNumber(int seatNumber);
 };
 

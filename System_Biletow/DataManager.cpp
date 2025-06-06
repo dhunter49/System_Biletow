@@ -219,6 +219,59 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
     }
 }
 
+void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd) {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT SeatNumber FROM Passengers WHERE "
+        "TripID = ? AND "
+        "CarNumber = ? AND "
+        "SeatNumber >= ? AND SeatNumber <= ? AND "
+        "FromStation < ? AND "
+        "ToStation > ?");
+    query.bind(1, currentTrain.getTripID());
+    query.bind(2, carNumber);
+    query.bind(3, compartmentNumber * 10);
+    query.bind(4, compartmentNumber * 10 + 9);
+    query.bind(5, stationNumberEnd);
+    query.bind(6, stationNumberStart);
+
+    std::vector<int> freeSeatsNumbers;
+    while (query.executeStep()) {
+        freeSeatsNumbers.push_back(query.getColumn(0).getInt());
+    }
+    currentSeats = std::vector<Seat>();
+    if (freeSeatsNumbers.empty())
+        return;
+
+    std::string carModel = getCarByNumber(carNumber).getCarModel();
+    Seat currentSeat;
+
+    query = SQLite::Statement(db,
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFirstClass "
+        "FROM Seats "
+        "WHERE Number = ? AND CarModel = ?");
+    for (int seatNumber : freeSeatsNumbers) {
+        query.bind(1, seatNumber);
+        query.bind(2, carModel);
+
+        if (query.executeStep()) {
+            currentSeat = Seat(getCompartmentByNumber(compartmentNumber));
+
+            currentSeat.setSeatNumber(query.getColumn(0).getInt());
+            currentSeat.setIsWindow(query.getColumn(1).getInt());
+            currentSeat.setIsMiddle(query.getColumn(2).getInt());
+            currentSeat.setIsCorridor(query.getColumn(3).getInt());
+            currentSeat.setIsByTable(query.getColumn(4).getInt());
+            currentSeat.setSpecial(query.getColumn(5).getInt());
+            currentSeat.setIsFirstClass(query.getColumn(6).getInt());
+
+            currentSeats.push_back(currentSeat);
+        }
+
+        // Reset the query for the next iteration
+        query.reset();
+    }
+}
+
 Seat DataManager::getSeatByNumber(int seatNumber) {
     auto it = std::find_if(currentSeats.begin(), currentSeats.end(),
         [seatNumber](Seat t) {return t.getSeatNumber() == seatNumber;});
