@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+// Struct will stare freferances with it's value and whether or not a user choosed, if it wasn't chosen
+// value should never be taken into consideration
 struct Preference {
 	bool isChosen;
 	bool value;
@@ -8,7 +10,7 @@ struct Preference {
 
 class Reservation {
 private:
-	// before reservation
+	// Variables required before making a reservation
 	int fromStationNumber{};
 	int toStationNumber{};
 	bool firstClass{};
@@ -20,7 +22,7 @@ private:
 	std::string firstName{};
 	std::string lastName{};
 
-	// after reservation
+	// Variables that will be filled after finding a seat in findASeat method
 	int carNumber{};
 	int seatNumber{};
 	int tripID{};
