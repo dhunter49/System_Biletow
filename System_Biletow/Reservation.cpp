@@ -1,7 +1,7 @@
 ﻿#include "Reservation.h"
 #include "DataManager.h"
 
-// Tries to find a seat
+// Tries to find a seat. In DataManager should be already loaded Train.
 // Returns true when seat is found and saved into the object variables, returns false if not found.
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
