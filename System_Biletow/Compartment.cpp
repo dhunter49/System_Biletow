@@ -14,12 +14,20 @@ void Compartment::setIsAnActualCompartment(bool is) {
 	isAnActualCompartment = is;
 }
 
+void Compartment::setIsFirstClass(bool is) {
+    isFirstClass = is;
+}
+
 int Compartment::getCompartmentNumber() {
 	return compartmentNumber;
 }
 
 bool Compartment::getIsAnActualCompartment() {
 	return isAnActualCompartment;
+}
+
+bool Compartment::getIsFirstClass() {
+    return isFirstClass;
 }
 
 int Compartment::getTakenSeats(int stationStartNumber, int stationEndNumber) {
