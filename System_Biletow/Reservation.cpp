@@ -24,7 +24,7 @@ bool Reservation::findASeat() {
 								carNumber = seatPair.getCarNumber();
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
-								//ticketPrice = getPrice();
+								//calculateTicketPrice();
 								return true;
 							}
 						}

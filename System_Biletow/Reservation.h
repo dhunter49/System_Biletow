@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Seat.h"
 
 // Struct will stare freferances with it's value and whether or not a user choosed, if it wasn't chosen
 // value should never be taken into consideration
@@ -30,5 +31,6 @@ private:
 public:
 	bool findASeat();
 	bool meetsPreferences(Seat& seat);
+	float calculateTicketPrice();
 };
 
