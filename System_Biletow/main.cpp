@@ -6,6 +6,7 @@
 #include "Route.h"
 #include "DataManager.h"
 #include "Trip.h"
+#include "Reservation.h"
 #include <Windows.h>
 int main() {
 	// Allows to display polish characters in console (user should ensure that their console is using font that is compatible with polish chars)
@@ -15,7 +16,7 @@ int main() {
 	ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar // TO MUSI BYĆ W PĘTLI WHILE ŻEBY DZIAŁAŁO, BO JAK UŻYTKOWNIK ZESCROLLUJE MYSZKĄ, TO SIĘ POKAZUJE SCROLLBAR
 
 	// Loads all routes
-	DataManager routes;
+	auto& routes = DataManager::getInstance();
 	try {
 		routes.loadAllRoutesFromDatabase();
 	}
@@ -32,6 +33,7 @@ int main() {
 	auto& dm = DataManager::getInstance();
 
 	dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
+	dm.getTrainByTripID(6);
 	//dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
 	//dm.getCompartmentsByCarNumber(11);
 	//try {
@@ -44,7 +46,8 @@ int main() {
 	std::vector<MenuOption> menu = routes.generateMenuList();
 	std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
-
+	Reservation reser;
+	reser.findASeat();
 	
 	return 0;
 }

@@ -1,12 +1,8 @@
 #include "Seat.h"
 
-Seat::Seat() : seatNumber(0), isFirstClass(0), isFacingFront(0), isByTable(0) {};
+Seat::Seat() : seatNumber(0), isFacingFront(0), isByTable(0) {};
 Seat::Seat(int seatNumber) :seatNumber(seatNumber) {};
 Seat::Seat(Compartment compartment) : Compartment(compartment) {};
-
-bool Seat::getIsFirstClass() {
-	return isFirstClass;
-}
 
 bool Seat::getIsFacingFront() {
 	return isFacingFront;
@@ -38,10 +34,6 @@ int Seat::getSeatNumber() {
 
 std::map<int, int> Seat::getTakenBy() {
     return takenBy;
-}
-
-void Seat::setIsFirstClass(bool newIsFirstClass) {
-    isFirstClass = newIsFirstClass;
 }
 
 void Seat::setIsFacingFront(bool newIsFacingFront) {

@@ -168,13 +168,14 @@ void DataManager::getCompartmentsByCarNumber(int carNumber) {
     std::string carModel = getCarByNumber(carNumber).getCarModel();
     Compartment currentCompartment;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT Number, IsCompartment FROM Compartments WHERE CarModel = ?");
+    SQLite::Statement query(db, "SELECT Number, IsCompartment, IsFirstClass FROM Compartments WHERE CarModel = ?");
     query.bind(1, carModel);
 
     while (query.executeStep()) {
         currentCompartment = Compartment(getCarByNumber(carNumber));
         currentCompartment.setCompartmentNumber(query.getColumn(0).getInt());
         currentCompartment.setIsAnActualCompartment(query.getColumn(1).getInt());
+        currentCompartment.setIsFirstClass(query.getColumn(2).getInt());
 
         currentCompartments.push_back(currentCompartment);
     }
@@ -197,7 +198,7 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
     Seat currentSeat;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, 
-        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFirstClass "
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special "
         "FROM Seats "
         "WHERE Number >= ? AND Number <= ? AND CarModel = ?");
     query.bind(1, compartmentNumber * 10);
@@ -213,9 +214,56 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
         currentSeat.setIsCorridor(query.getColumn(3).getInt());
         currentSeat.setIsByTable(query.getColumn(4).getInt());
         currentSeat.setSpecial(query.getColumn(5).getInt());
-        currentSeat.setIsFirstClass(query.getColumn(6).getInt());
 
         currentSeats.push_back(currentSeat);
+    }
+}
+
+void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd) {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT Seats.Number "
+        "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
+        "WHERE TrainSets.TrainID = ? "
+        "AND TrainSets.CarNumber = ? "
+        "AND Seats.Number/10 = ?");
+    query.bind(1, currentTrain.getTrainID());
+    query.bind(2, carNumber);
+    query.bind(3, compartmentNumber);
+
+    std::vector<int> freeSeatsNumbers;
+    while (query.executeStep()) {
+        freeSeatsNumbers.push_back(query.getColumn(0).getInt());
+    }
+    currentSeats = std::vector<Seat>();
+    if (freeSeatsNumbers.empty())
+        return;
+
+    std::string carModel = getCarByNumber(carNumber).getCarModel();
+    Seat currentSeat;
+
+    query = SQLite::Statement(db,
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special "
+        "FROM Seats "
+        "WHERE Number = ? AND CarModel = ?");
+    for (int seatNumber : freeSeatsNumbers) {
+        query.bind(1, seatNumber);
+        query.bind(2, carModel);
+
+        if (query.executeStep()) {
+            currentSeat = Seat(getCompartmentByNumber(compartmentNumber));
+
+            currentSeat.setSeatNumber(query.getColumn(0).getInt());
+            currentSeat.setIsWindow(query.getColumn(1).getInt());
+            currentSeat.setIsMiddle(query.getColumn(2).getInt());
+            currentSeat.setIsCorridor(query.getColumn(3).getInt());
+            currentSeat.setIsByTable(query.getColumn(4).getInt());
+            currentSeat.setSpecial(query.getColumn(5).getInt());
+
+            currentSeats.push_back(currentSeat);
+        }
+
+        // Reset the query for the next iteration
+        query.reset();
     }
 }
 
