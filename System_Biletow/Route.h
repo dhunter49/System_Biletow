@@ -22,6 +22,7 @@ public:
 	// methods
 	void addStation(int stationNum, Station newStation);
 	void loadStations(bool all);
+	void showInfo();
 
 	// getters
 	int getRouteID();

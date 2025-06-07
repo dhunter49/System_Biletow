@@ -64,3 +64,14 @@ Station Route::getStation(int stationNum) {
 void Route::setRouteID(int routeID) {
     this->routeID = routeID;
 }
+
+void Route::showInfo() {
+    clearScreen();
+    loadStations(1);
+    int i{};
+    std::cout << "Stacje: " << std::endl;
+    for (auto station : stationList) {
+        std::cout << i << ". " << station.second.name << std::endl;
+        i++;
+    }
+}

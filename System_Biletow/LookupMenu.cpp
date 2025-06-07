@@ -6,9 +6,9 @@ void showLookupMenuRoutes() {
     clearScreen();
 
     // Loads all routes
-    DataManager routes;
+    DataManager routesList;
     try {
-        routes.loadAllRoutesFromDatabase();
+        routesList.loadAllRoutesFromDatabase();
     }
     catch (std::exception& e) {
         std::cerr << "err: " << e.what() << std::endl;
@@ -21,8 +21,12 @@ void showLookupMenuRoutes() {
     }
 
     auto& dm = DataManager::getInstance();
-    std::vector<MenuOption> menu = routes.generateMenuListRoutes();
-    std::cout << showMenu("Wybierz trasê, o której chcesz wyœwietliæ informacje", menu);
+    std::vector<MenuOption> menu = routesList.generateMenuListRoutes();
+    int choice = showMenu("Wybierz trasê, o której chcesz wyœwietliæ informacje", menu);
+    if (choice == -2)
+        return;
+    Route chosenRoute = routesList.routes[choice];
+    chosenRoute.showInfo();
 }
 
 void showLookupMenuTrains() {
@@ -50,7 +54,7 @@ void showLookupMenuTrains() {
 
 void showLookupMenuPassengers() {
     clearScreen();
-
+    std::cout << "Tutaj info o pasa¿erze";
 }
 
 void showLookupMenu() {
@@ -62,15 +66,12 @@ void showLookupMenu() {
         lookupChoice = showMenu("Poka¿ informacje:", lookupMenu);
         switch (lookupChoice) {
         case 0:
-            std::cout << "Tutaj info o trasie";
             showLookupMenuRoutes();
             break;
         case 1:
-            std::cout << "Tutaj info o poci¹gu";
             showLookupMenuTrains();
             break;
         case 2:
-            std::cout << "Tutaj info o pasa¿erze";
             showLookupMenuPassengers();
             break;
         case -2:
