@@ -40,12 +40,44 @@ void DataManager::loadAllRoutesFromDatabase() {
     routes[currentRouteID] = currentRoute;
 }
 
+// Loades all trains to a map
+void DataManager::loadAllTrainsFromDatabase() {
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT ID, Name FROM Trains");
+
+    if (!query.executeStep()) {
+        throw std::runtime_error("No trains found in database!");
+    }
+
+    int i{};
+
+    do {
+        std::string trainID = query.getColumn(0).getString();
+        Train train(trainID);
+        trains[i] = train;
+        
+        i++;
+
+    } while (query.executeStep());
+}
+
 // Generates vector of menu options for function showMenu, it uses all loaded routes to give user possiblity to choose a route.
-std::vector<MenuOption> DataManager::generateMenuList() {
+std::vector<MenuOption> DataManager::generateMenuListRoutes() {
     std::vector<MenuOption> out;
     MenuOption oneOption;
     for (auto& routePair : routes) {
-    	oneOption = routePair.second.getMenuOption();
+    	oneOption = routePair.second.getMenuOptionRoute();
+    	out.push_back(oneOption);
+    }
+    return out;
+}
+
+// Generates vector of menu options for function showMenu, it uses all loaded trains to give user possiblity to choose a train.
+std::vector<MenuOption> DataManager::generateMenuListTrains() {
+    std::vector<MenuOption> out;
+    MenuOption oneOption;
+    for (auto& train : trains) {
+        oneOption = train.second.getMenuOptionTrain();
     	out.push_back(oneOption);
     }
     return out;

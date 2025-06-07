@@ -133,6 +133,7 @@
     <ClCompile Include="Compartment.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="generateMenu.cpp" />
+    <ClCompile Include="LookupMenu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="displayFunctions.cpp" />

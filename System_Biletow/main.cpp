@@ -46,8 +46,6 @@ int main() {
 	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
 
 	std::vector<MenuOption> mainMenu = { { 0, "Zarezerwuj bilet na przejazd" }, {1, "Pokaż informacje o danym obiekcie" } };
-	std::vector<MenuOption> lookupMenu = { {0, "o relacji"}, {1, "o pociągu"}, {2, "o pasażerze"}, {3, "o modelu wagonu"} };
-	int lookupChoice{};
 
 	while (true) {
 		clearScreen();
@@ -59,30 +57,7 @@ int main() {
 			break;
 		case 1:
 			clearScreen();
-			lookupChoice = showMenu("Pokaż informacje:", lookupMenu);
-			if (lookupChoice == -2)
-				break;
-			clearScreen();
-			switch (lookupChoice) {
-			case 0:
-				std::cout << "Tutaj info o pociągu";
-				waitForEsc();
-				break;
-			case 1:
-				std::cout << "Tutaj info o trasie";
-				waitForEsc();
-				break;
-			case 2:
-				std::cout << "Tutaj info o pasażerze";
-				waitForEsc();
-				break;
-			case 3:
-				std::cout << "Tutaj info o modelu wagonu";
-				waitForEsc();
-				break;
-			default:
-				break;
-			}
+			showLookupMenu();
 			break;
 		default: 
 			break;

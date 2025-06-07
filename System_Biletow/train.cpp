@@ -26,6 +26,26 @@ Train::Train(Trip trip) {
 	date = trip.getDate();
 }
 
+MenuOption Train::getMenuOptionTrain() {
+    std::string optionName{};
+    optionName += trainID;
+    optionName += ' ';
+    optionName += trainName;
+
+    int trainIDInt{};
+    int i = trainID.length()-1;
+    int d = 1;
+    while (trainID[i] != '/')
+        i--;
+    while (trainID[i] != ' ') {
+        i--;
+        trainIDInt += d * (trainID[i] - (int)'0');
+        d *= 10;
+    }
+    
+    return MenuOption{ trainIDInt, optionName };
+}
+
 int Train::getTakenSeats(int stationStartNumber, int stationEndNumber) {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT COUNT(*) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "

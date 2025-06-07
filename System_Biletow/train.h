@@ -16,6 +16,7 @@ public:
 	void setTrainName(std::string newTrainName);
 
 	// methods
+	MenuOption getMenuOptionTrain();
 	int getTakenSeats(int stationStartNumber, int stationEndNumber);
 	int getSeatCount(int stationStartNumber, int stationEndNumber);
 	int getFreeSeats(int stationStartNumber, int stationEndNumber);

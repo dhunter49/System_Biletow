@@ -9,7 +9,7 @@ Route::Route() : routeID(1) {}
 
 Route::Route(int routeID) : routeID(routeID) {}
 
-MenuOption Route::getMenuOption() {
+MenuOption Route::getMenuOptionRoute() {
     std::string optionName{};
     bool first = true;
     for (auto& stationPair : stationList) {
