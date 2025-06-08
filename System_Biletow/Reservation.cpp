@@ -5,9 +5,10 @@
 // Returns true when seat is found and saved into the object variables, returns false if not found.
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
+	bool isFirstClassPreferenceAProblem = false;
 	// check if there is enough spots in the entire train, if not instantly returns false value.
-	bool isFirstClassPreferenceAProblem = true;
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
+		isFirstClassPreferenceAProblem = true;
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car
@@ -15,7 +16,7 @@ bool Reservation::findASeat() {
 				data.getCompartmentsByCarNumber(carPair.getCarNumber());
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
-					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople && compartmentPair.getIsFirstClass()) {
+					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople && compartmentPair.getIsFirstClass() == firstClass) {
 						// As of right now there should be at least numberOfPeople seats with the matching class preference
 						isFirstClassPreferenceAProblem = false;
 						if (!isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment()) {
@@ -65,6 +66,7 @@ bool Reservation::findASeat() {
 			// Lets user choose if they want to make a reservation without initial preferences, if so it removes preferences
 			// and calls this method once again.
 			if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+				isCompartment.isChosen = false;
 				facingFront.isChosen = false;
 				byTable.isChosen = false;
 				window.isChosen = false;
