@@ -11,7 +11,11 @@ struct Preference {
 
 class Reservation {
 private:
-	// Variables required before making a reservation
+	bool isTryingToReserve = false; // Used to prevent infinite loop in case of no seats available
+
+	// Variables required before making a reservation:
+	// WARNING: for 1 person all vars could be changed, but for more than 1 person only: firstClass, isCompartment, byTable.
+	//          other preferences won't be taken into consideration.
 	int numberOfPeople = 1;
 	int fromStationNumber{};
 	int toStationNumber{};
@@ -28,13 +32,14 @@ private:
 	std::string firstName{};
 	std::string lastName{};
 
-	// Variables that will be filled after finding a seat in findASeat method
+	// Variables that will be filled after finding a seat in findASeat method:
 	int carNumber{};
 	int seatNumber{};
 	int tripID{};
 	float ticketPrice{};
 public:
 	bool findASeat();
+	bool findASeatWithConflicts();
 	bool meetsPreferences(Seat& seat);
 	float calculateTicketPrice();
 	void saveReservationToDatabase();

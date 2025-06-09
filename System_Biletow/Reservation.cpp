@@ -37,51 +37,153 @@ bool Reservation::findASeat() {
 				}
 			}
 		}
-		// creating vector to use in showMenu func
-		if (isFirstClassPreferenceAProblem) {
-			std::string classToChangeTo;
-			if (firstClass)
-				classToChangeTo = "drugą";
-			else
-				classToChangeTo = "pierwszą";
-			std::vector<MenuOption> yesOrNo;
-			yesOrNo.push_back(MenuOption{ 1, "Tak, zmień klasę na " +  classToChangeTo + "."});
-			yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
-			std::string menuTitle = "Pociąg nie ma miejsc w wybranej klasie. Czy chcesz zmienić klasę?";
-			// Lets user choose if they want to make a reservation in different class, if so it changes prefered class
-			// and calls this method once again.
-			if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
-				firstClass = !firstClass;
-				return findASeat();
+		// If we are here, it means that there is no compartment fitting all numberOfPeople with matching preferences.
+		if (!isTryingToReserve) {
+			// If we are here, it means we are not yet checking for other preferences, so we run procedure of finding seats without matching prefences.
+			isTryingToReserve = true;
+			if (findASeatWithConflicts()) {
+				// We found a seat, and user agreed to continue with reservation without matching preferences.
+				return true;
 			}
 			else {
+				// We didn't find a seat or user didn't agree to continue with reservation without matching preferences.
+				std::cout << "Pociąg nie ma wolnych miejsc!\n";
 				return false;
 			}
 		}
-		else {
-			std::vector<MenuOption> yesOrNo;
-			yesOrNo.push_back(MenuOption{ 1, "Tak, wybierz dowolne miejsce w pociągu" });
-			yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
-			std::string menuTitle = "Pociąg nie ma miejsc spełniających preferecje, lecz są dostępne miejsca. Czy chcesz wyczyścić preferencje?";
-			// Lets user choose if they want to make a reservation without initial preferences, if so it removes preferences
-			// and calls this method once again.
-			if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
-				isCompartment.isChosen = false;
-				facingFront.isChosen = false;
-				byTable.isChosen = false;
-				window.isChosen = false;
-				middle.isChosen = false;
-				corridor.isChosen = false;
-				return findASeat();
+		else
+			// If we are here, we are checking for a seat with changed preferences, but still no seat was found.
+			return false; // That's info for findASeatWithConflicts method.
+	}
+	else {
+		// If we are here, it means that there is not enough free seats in the entire train.
+		std::cout << "Pociąg nie ma wolnych miejsc!\n";
+		return false;
+	}
+
+	return false; // Should never get here, backup return value.
+}
+
+bool Reservation::findASeatWithConflicts() {
+	Reservation startingProperties = *this; // Saves current properties of the reservation, so it can be restored later if needed.
+
+	// If there are multiple people program should treat this differently
+	if (numberOfPeople != 1) {
+
+		// Trying to change the preferences
+		if (!byTable.isChosen || !isCompartment.isChosen) {
+			byTable.isChosen = false;
+			isCompartment.isChosen = false;
+			if (findASeat()) {
+				// There is a compartment fitting all people, but without preferences. 
+				// Ask user if they want to continue with reservation without table preference.
+				std::vector<MenuOption> yesOrNo;
+				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami. Czy chcesz zarezerwować miejsce bez preferencji?";
+				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
+				}
+				else {
+					return false; // User doesn't want to continue with reservation.
+				}
 			}
-			else {
-				return false;
+			// RESET TO STARTING
+		}
+	}
+	else {
+		if (!byTable.isChosen ||
+			!isCompartment.isChosen ||
+			!window.isChosen ||
+			!corridor.isChosen ||
+			!middle.isChosen ||
+			!facingFront.isChosen) {
+			byTable.isChosen = false;
+			isCompartment.isChosen = false;
+			window.isChosen = false;
+			corridor.isChosen = false;
+			middle.isChosen = false;
+			facingFront.isChosen = false;
+			if (findASeat()) {
+				std::vector<MenuOption> yesOrNo;
+				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami. Czy chcesz zarezerwować miejsce bez preferencji?";
+				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
+				}
+				else {
+					return false; // User doesn't want to continue with reservation.
+				}
+			}
+			// RESET TO STARTING
+		}
+	}
+
+	// Trying to change the class without changing preferences
+	firstClass = !firstClass;
+	if (findASeat()) {
+		std::vector<MenuOption> yesOrNo;
+		yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+		yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+		std::string menuTitle = "Nie znaleziono miejsc w danej klasie. Czy chcesz zarezerwować miejsce w innej klasie?";
+		if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+			return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
+		}
+		else {
+			return false; // User doesn't want to continue with reservation.
+		}
+	}
+
+	// Trying to change class and reset preferences
+	if (numberOfPeople != 1) {
+
+		// Trying to change the preferences
+		if (!byTable.isChosen || !isCompartment.isChosen) {
+			byTable.isChosen = false;
+			isCompartment.isChosen = false;
+			if (findASeat()) {
+				// There is a compartment fitting all people, but without preferences. 
+				// Ask user if they want to continue with reservation without table preference.
+				std::vector<MenuOption> yesOrNo;
+				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami oraz daną klasą. Czy chcesz zarezerwować miejsce bez preferencji oraz w innej klasie?";
+				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
+				}
+				else {
+					return false; // User doesn't want to continue with reservation.
+				}
 			}
 		}
 	}
 	else {
-		std::cout << "Pociąg nie ma wolnych miejsc!\n";
-		return false;
+		if (!byTable.isChosen ||
+			!isCompartment.isChosen ||
+			!window.isChosen ||
+			!corridor.isChosen ||
+			!middle.isChosen ||
+			!facingFront.isChosen) {
+			byTable.isChosen = false;
+			isCompartment.isChosen = false;
+			window.isChosen = false;
+			corridor.isChosen = false;
+			middle.isChosen = false;
+			facingFront.isChosen = false;
+			if (findASeat()) {
+				std::vector<MenuOption> yesOrNo;
+				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami oraz daną klasą. Czy chcesz zarezerwować miejsce bez preferencji oraz w innej klasie?";
+				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
+				}
+				else {
+					return false; // User doesn't want to continue with reservation.
+				}
+			}
+		}
 	}
 }
 
