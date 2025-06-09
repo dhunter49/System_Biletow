@@ -20,6 +20,7 @@ public:
 	int getTakenSeats(int stationStartNumber, int stationEndNumber);
 	int getSeatCount(int stationStartNumber, int stationEndNumber);
 	int getFreeSeats(int stationStartNumber, int stationEndNumber);
+	void showInfo();
 
 	// constructors
 	Train();

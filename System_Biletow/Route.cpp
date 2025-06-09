@@ -4,6 +4,7 @@
 #include <queue>
 #include <unordered_map>
 #include "StationManager.h"
+#include <iomanip>
 
 Route::Route() : routeID(1) {}
 
@@ -65,13 +66,14 @@ void Route::setRouteID(int routeID) {
     this->routeID = routeID;
 }
 
+// Displays info for lookup menu
 void Route::showInfo() {
     clearScreen();
     loadStations(1);
-    int i{};
-    std::cout << "Stacje: " << std::endl;
+    int i=1;
+    std::cout << "Stacje na wybranej trasie:" << std::endl;
     for (auto station : stationList) {
-        std::cout << i << ". " << station.second.name << std::endl;
+        std::cout << std::setw(2) << i << ". " << station.second.name << std::endl;
         i++;
     }
 }

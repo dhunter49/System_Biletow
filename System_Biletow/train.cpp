@@ -41,7 +41,7 @@ MenuOption Train::getMenuOptionTrain() {
         i--;
         trainIDInt += d * (trainID[i] - (int)'0');
         d *= 10;
-    }
+    } 
     
     return MenuOption{ trainIDInt, optionName };
 }
@@ -74,4 +74,18 @@ int Train::getSeatCount(int stationStartNumber, int stationEndNumber) {
 
 int Train::getFreeSeats(int stationStartNumber, int stationEndNumber) {
     return getSeatCount(stationStartNumber, stationEndNumber) - getTakenSeats(stationStartNumber, stationEndNumber);
+}
+
+void Train::showInfo() {
+    clearScreen();
+    std::cout << "Wagony w poci¹gu " << trainID << ":" << std::endl;
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db, "SELECT CarNumber, CarModel "
+        "FROM TrainSets "
+        "WHERE TrainSets.TrainID = ? "
+        "ORDER BY CarNumber");
+    query.bind(1, trainID);
+    while(query.executeStep()) {
+        std::cout << query.getColumn(0).getString() << " - " << query.getColumn(1).getString() << std::endl;
+    }
 }

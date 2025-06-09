@@ -2,7 +2,8 @@
 #include "DataManager.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 
-void showLookupMenuRoutes() {
+// Displays a menu, user chooses route to see info about
+void DataManager::showLookupMenuRoutes() {
     clearScreen();
 
     // Loads all routes
@@ -29,13 +30,13 @@ void showLookupMenuRoutes() {
     chosenRoute.showInfo();
 }
 
-void showLookupMenuTrains() {
+void DataManager::showLookupMenuTrains() {
     clearScreen();
 
     // Loads all trains
-    DataManager trains;
+    DataManager trainsList;
     try {
-        trains.loadAllTrainsFromDatabase();
+        trainsList.loadAllTrainsFromDatabase();
     }
     catch (std::exception& e) {
         std::cerr << "err: " << e.what() << std::endl;
@@ -47,17 +48,20 @@ void showLookupMenuTrains() {
         std::cerr << "nieznany problem" << std::endl;
     }
 
-    auto& dm = DataManager::getInstance();
-    std::vector<MenuOption> menu = trains.generateMenuListTrains();
-    std::cout << showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
+    std::vector<MenuOption> menu = trainsList.generateMenuListTrains();
+    int choice = showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
+    if (choice == -2)
+        return;
+    Train chosenTrain = trainsList.trains[choice];
+    chosenTrain.showInfo();
 }
 
-void showLookupMenuPassengers() {
+void DataManager::showLookupMenuPassengers() {
     clearScreen();
     std::cout << "Tutaj info o pasa¿erze";
 }
 
-void showLookupMenu() {
+void DataManager::showLookupMenu() {
     std::vector<MenuOption> lookupMenu = { {0, "o trasie"}, {1, "o poci¹gu"}, {2, "o pasa¿erze"} };
     int lookupChoice{};
 

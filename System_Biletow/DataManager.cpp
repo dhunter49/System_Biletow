@@ -50,7 +50,6 @@ void DataManager::loadAllTrainsFromDatabase() {
     }
 
     int i{};
-
     do {
         std::string trainID = query.getColumn(0).getString();
         Train train(trainID);
@@ -77,7 +76,7 @@ std::vector<MenuOption> DataManager::generateMenuListTrains() {
     std::vector<MenuOption> out;
     MenuOption oneOption;
     for (auto& train : trains) {
-        oneOption = train.second.getMenuOptionTrain();
+        oneOption = train.getMenuOptionTrain();
     	out.push_back(oneOption);
     }
     return out;

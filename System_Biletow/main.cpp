@@ -47,6 +47,8 @@ int main() {
 
 	std::vector<MenuOption> mainMenu = { { 0, "Zarezerwuj bilet na przejazd" }, {1, "Pokaż informacje o danym obiekcie" } };
 
+	auto& dm = DataManager::getInstance();
+
 	while (true) {
 		clearScreen();
 		switch (showMenu("Witaj w systemie rezerwacji biletów kolejowych", mainMenu)) {
@@ -57,7 +59,7 @@ int main() {
 			break;
 		case 1:
 			clearScreen();
-			showLookupMenu();
+			dm.showLookupMenu();
 			break;
 		default: 
 			break;
