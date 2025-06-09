@@ -40,8 +40,12 @@ private:
 public:
 	bool findASeat();
 	bool findASeatWithConflicts();
+	bool findASeatSplit();
 	bool meetsPreferences(Seat& seat);
 	float calculateTicketPrice();
 	void saveReservationToDatabase();
+
+	Reservation(const Reservation& obj);
+	Reservation();
 };
 

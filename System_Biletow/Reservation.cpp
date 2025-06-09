@@ -157,6 +157,8 @@ bool Reservation::findASeatWithConflicts() {
 				}
 			}
 		}
+		// Split all buyers
+		//CODE
 	}
 	else {
 		if (!byTable.isChosen ||
@@ -187,6 +189,19 @@ bool Reservation::findASeatWithConflicts() {
 	}
 }
 
+bool Reservation::findASeatSplit() {
+	Reservation person;
+	for (int i = numberOfPeople;i > 0;i--) {
+		person = Reservation(*this);
+		if (person.findASeat()) {
+			// OVERLOAD this=person;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
 // Checks if preferations declared in object meet seat real values.
 bool Reservation::meetsPreferences(Seat& seat) {
 	if (!facingFront.isChosen || facingFront.value == seat.getIsFacingFront()
@@ -197,4 +212,24 @@ bool Reservation::meetsPreferences(Seat& seat) {
 		return true;
 	}
 	return false;
+}
+
+Reservation::Reservation(const Reservation& obj) {
+    isTryingToReserve = obj.isTryingToReserve;
+    numberOfPeople = obj.numberOfPeople;
+    fromStationNumber = obj.fromStationNumber;
+    toStationNumber = obj.toStationNumber;
+    firstClass = obj.firstClass;
+    isCompartment = obj.isCompartment;
+    facingFront = obj.facingFront;
+    byTable = obj.byTable;
+    window = obj.window;
+    middle = obj.middle;
+    corridor = obj.corridor;
+    firstName = obj.firstName;
+    lastName = obj.lastName;
+    carNumber = obj.carNumber;
+    seatNumber = obj.seatNumber;
+    tripID = obj.tripID;
+    ticketPrice = obj.ticketPrice;
 }
