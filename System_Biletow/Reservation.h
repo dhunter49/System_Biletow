@@ -19,6 +19,9 @@ private:
 	Preference isCompartment{};
 	Preference facingFront{};
 	Preference byTable{};
+	// If user chooses to get a certain position, ex. Window, values should look like this:
+	// window = true,true, corridor = false, false, middle = false, false
+	// only the prefered position should have true in isChosen
 	Preference window{};
 	Preference middle{};
 	Preference corridor{};
