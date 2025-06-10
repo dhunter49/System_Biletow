@@ -4,8 +4,6 @@
 
 // Displays a menu, user chooses route to see info about
 void DataManager::showLookupMenuRoutes() {
-    clearScreen();
-
     // Loads all routes
     DataManager routesList;
     try {
@@ -23,15 +21,18 @@ void DataManager::showLookupMenuRoutes() {
 
     auto& dm = DataManager::getInstance();
     std::vector<MenuOption> menu = routesList.generateMenuListRoutes();
-    int choice = showMenu("Wybierz trasê, o której chcesz wyœwietliæ informacje", menu);
-    if (choice == -2)
-        return;
-    Route chosenRoute = routesList.routes[choice];
-    chosenRoute.showInfo();
+
+    while (true) {
+        clearScreen();
+        int choice = showMenu("Wybierz trasê, o której chcesz wyœwietliæ informacje", menu);
+        if (choice == -2)
+            return;
+        Route chosenRoute = routesList.routes[choice];
+        chosenRoute.showInfo();
+    }
 }
 
 void DataManager::showLookupMenuTrains() {
-    clearScreen();
 
     // Loads all trains
     DataManager trainsList;
@@ -49,18 +50,21 @@ void DataManager::showLookupMenuTrains() {
     }
 
     std::vector<MenuOption> menu = trainsList.generateMenuListTrains();
-    int choice = showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
-    if (choice == -2)
-        return;
-    try {
-        if (choice < 0)
-            throw std::runtime_error("wyst¹pi³ b³¹d");
-        trains[choice].showInfo();
+    while (true) {
+        clearScreen();
+        int choice = showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
+        if (choice == -2)
+            return;
+        try {
+            if (choice < 0)
+                throw std::runtime_error("wyst¹pi³ b³¹d");
+            trains[choice].showInfo();
+            waitForEsc();
+        }
+        catch (std::runtime_error& e) {
+            std::cerr << "err: " << e.what() << std::endl;
+        }
     }
-    catch (std::runtime_error& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-        
 }
 
 void DataManager::showLookupMenuPassengers() {
@@ -81,16 +85,18 @@ void DataManager::showLookupMenu() {
             break;
         case 1:
             showLookupMenuTrains();
+            waitForEsc();
             break;
         case 2:
             showLookupMenuPassengers();
+            waitForEsc();
             break;
         case -2:
+            lookupChoice = 0;
             return;
         default:
             break;
         }
-        waitForEsc();
-    } while (lookupChoice != -2);
+    } while (true);
 }
 
