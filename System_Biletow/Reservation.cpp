@@ -139,7 +139,7 @@ bool Reservation::findASeatWithConflicts() {
 	}
 
 	// Trying to reserve individually for each person in the reservation.
-	if (numberOfPeople > 0) {
+	if (numberOfPeople > 1) {
 		std::vector<MenuOption> yesOrNo;
 		yesOrNo.push_back(MenuOption{ 1, "Tak, spróbuj zarezerwować miejsca, które są oddalone od siebie" });
 		yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
