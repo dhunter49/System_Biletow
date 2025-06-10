@@ -6,6 +6,7 @@
 #include "Route.h"
 #include "DataManager.h"
 #include "Trip.h"
+#include "Reservation.h"
 #include <Windows.h>
 #include <vector>
 int main() {
@@ -15,20 +16,9 @@ int main() {
 
 	ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar // TO MUSI BYĆ W PĘTLI WHILE ŻEBY DZIAŁAŁO, BO JAK UŻYTKOWNIK ZESCROLLUJE MYSZKĄ, TO SIĘ POKAZUJE SCROLLBAR
 
-	//// Loads all routes
-	//DataManager routes;
-	//try {
-	//	routes.loadAllRoutesFromDatabase();
-	//}
-	//catch (std::exception& e) {
-	//	std::cerr << "err: " << e.what() << std::endl;
-	//}
-	//catch (SQLite::Exception& e) {
-	//	std::cerr << "err: " << e.what() << std::endl;
-	//}
-	//catch (...) {
-	//	std::cerr << "nieznany problem" << std::endl;
-	//}
+	// Loads all routes
+	auto& data = DataManager::getInstance();
+	data.loadAllRoutesFromDatabase();
 
 	//auto& dm = DataManager::getInstance();
 
@@ -65,7 +55,5 @@ int main() {
 			break;
 		}
 	}
-
-	
 	return 0;
 }
