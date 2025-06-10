@@ -13,6 +13,7 @@ class DataManager {
 private:
 	static DataManager* instance;
 	std::unordered_map<int, Route> routes;
+	std::map<int, Train> trains;
 
 public:
 	std::vector<Trip> currentTrips;
@@ -25,7 +26,10 @@ public:
 
 	// LOADING FROM DATABASE
 	void loadAllRoutesFromDatabase();
-	std::vector<MenuOption> generateMenuList();
+	std::vector<MenuOption> generateMenuListRoutes();
+	
+	void loadAllTrainsFromDatabase();
+	std::vector<MenuOption> generateMenuListTrains();
 
 	void getTripsByDateAndRouteID(Date date, int routeID);
 	Trip getTripByID(int tripID);
@@ -42,5 +46,11 @@ public:
 	void getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
 	void getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd);
 	Seat getSeatByNumber(int seatNumber);
+
+	// Lookup menu
+	void showLookupMenu();
+	void showLookupMenuRoutes();
+	void showLookupMenuTrains();
+	void showLookupMenuPassengers();
 };
 
