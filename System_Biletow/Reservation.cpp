@@ -67,57 +67,32 @@ bool Reservation::findASeat() {
 bool Reservation::findASeatWithConflicts() {
 	Reservation startingProperties = *this; // Saves current properties of the reservation, so it can be restored later if needed.
 
-	// If there are multiple people program should treat this differently
-	if (numberOfPeople != 1) {
-
-		// Trying to change the preferences
-		if (!byTable.isChosen || !isCompartment.isChosen) {
-			byTable.isChosen = false;
-			isCompartment.isChosen = false;
-			if (findASeat()) {
-				// There is a compartment fitting all people, but without preferences. 
-				// Ask user if they want to continue with reservation without table preference.
-				std::vector<MenuOption> yesOrNo;
-				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
-				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
-				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami. Czy chcesz zarezerwować miejsce bez preferencji?";
-				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
-					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
-				}
-				else {
-					return false; // User doesn't want to continue with reservation.
-				}
+	// Trying to change the preferences without changing class
+	if (!byTable.isChosen ||
+		!isCompartment.isChosen ||
+		!window.isChosen ||
+		!corridor.isChosen ||
+		!middle.isChosen ||
+		!facingFront.isChosen) {
+		byTable.isChosen = false;
+		isCompartment.isChosen = false;
+		window.isChosen = false;
+		corridor.isChosen = false;
+		middle.isChosen = false;
+		facingFront.isChosen = false;
+		if (findASeat()) {
+			std::vector<MenuOption> yesOrNo;
+			yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+			yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+			std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami. Czy chcesz zarezerwować miejsce bez preferencji?";
+			if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+				return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 			}
-			// RESET TO STARTING
-		}
-	}
-	else {
-		if (!byTable.isChosen ||
-			!isCompartment.isChosen ||
-			!window.isChosen ||
-			!corridor.isChosen ||
-			!middle.isChosen ||
-			!facingFront.isChosen) {
-			byTable.isChosen = false;
-			isCompartment.isChosen = false;
-			window.isChosen = false;
-			corridor.isChosen = false;
-			middle.isChosen = false;
-			facingFront.isChosen = false;
-			if (findASeat()) {
-				std::vector<MenuOption> yesOrNo;
-				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
-				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
-				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami. Czy chcesz zarezerwować miejsce bez preferencji?";
-				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
-					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
-				}
-				else {
-					return false; // User doesn't want to continue with reservation.
-				}
+			else {
+				return false; // User doesn't want to continue with reservation.
 			}
-			// RESET TO STARTING
 		}
+		*this = startingProperties; // Restore original properties of the reservation.
 	}
 
 	// Trying to change the class without changing preferences
@@ -136,55 +111,45 @@ bool Reservation::findASeatWithConflicts() {
 	}
 
 	// Trying to change class and reset preferences
-	if (numberOfPeople != 1) {
-
-		// Trying to change the preferences
-		if (!byTable.isChosen || !isCompartment.isChosen) {
-			byTable.isChosen = false;
-			isCompartment.isChosen = false;
-			if (findASeat()) {
-				// There is a compartment fitting all people, but without preferences. 
-				// Ask user if they want to continue with reservation without table preference.
-				std::vector<MenuOption> yesOrNo;
-				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
-				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
-				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami oraz daną klasą. Czy chcesz zarezerwować miejsce bez preferencji oraz w innej klasie?";
-				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
-					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
-				}
-				else {
-					return false; // User doesn't want to continue with reservation.
-				}
+	if (!byTable.isChosen ||
+		!isCompartment.isChosen ||
+		!window.isChosen ||
+		!corridor.isChosen ||
+		!middle.isChosen ||
+		!facingFront.isChosen) {
+		byTable.isChosen = false;
+		isCompartment.isChosen = false;
+		window.isChosen = false;
+		corridor.isChosen = false;
+		middle.isChosen = false;
+		facingFront.isChosen = false;
+		if (findASeat()) {
+			std::vector<MenuOption> yesOrNo;
+			yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
+			yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+			std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami oraz daną klasą. Czy chcesz zarezerwować miejsce bez preferencji oraz w innej klasie?";
+			if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+				return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
+			}
+			else {
+				return false; // User doesn't want to continue with reservation.
 			}
 		}
-		// Split all buyers
-		//CODE
 	}
-	else {
-		if (!byTable.isChosen ||
-			!isCompartment.isChosen ||
-			!window.isChosen ||
-			!corridor.isChosen ||
-			!middle.isChosen ||
-			!facingFront.isChosen) {
-			byTable.isChosen = false;
-			isCompartment.isChosen = false;
-			window.isChosen = false;
-			corridor.isChosen = false;
-			middle.isChosen = false;
-			facingFront.isChosen = false;
-			if (findASeat()) {
-				std::vector<MenuOption> yesOrNo;
-				yesOrNo.push_back(MenuOption{ 1, "Tak, zarezerwuj mimo wszystko" });
-				yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
-				std::string menuTitle = "Nie znaleziono miejsc zgodnie z preferencjami oraz daną klasą. Czy chcesz zarezerwować miejsce bez preferencji oraz w innej klasie?";
-				if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
-					return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
-				}
-				else {
-					return false; // User doesn't want to continue with reservation.
-				}
-			}
+
+	// Trying to reserve individually for each person in the reservation.
+	if (numberOfPeople > 0) {
+		std::vector<MenuOption> yesOrNo;
+		yesOrNo.push_back(MenuOption{ 1, "Tak, spróbuj zarezerwować miejsca, które są oddalone od siebie" });
+		yesOrNo.push_back(MenuOption{ 0, "Nie, zrezygnuj z rezerwacji" });
+		std::string menuTitle = "Nie udało się znaleźć wystarczającej liczby miejsc w przedziale. Czy chcesz zarezerwować miejsca oddalone?";
+		if (static_cast<bool>(showMenu(menuTitle, yesOrNo))) {
+			// User wants to reserve seats individually for each person.
+			*this = startingProperties; // Restore original properties of the reservation.
+			return findASeatSplit();
+		}
+		else {
+			return false; // User doesn't want to continue with reservation.
 		}
 	}
 }
@@ -196,6 +161,7 @@ bool Reservation::findASeatSplit() {
 	while (numberOfPeople > 0) {
 		person = Reservation(*this);
 		if (person.findASeat()) {
+			*this = person; // Ensure that the current object gotten the changes from the person object. For example removed preferences.
 			people.push_back(person);
 			numberOfPeople--; // Decrease number of people, because we found a seat for one person.
 			// We found a seat for 1 person, we are not saving it until we ensure all people got their spot.
