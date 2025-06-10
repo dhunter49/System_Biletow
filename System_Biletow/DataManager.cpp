@@ -43,7 +43,7 @@ void DataManager::loadAllRoutesFromDatabase() {
 // Loades all trains to a vector
 void DataManager::loadAllTrainsFromDatabase() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT ID, ID_Number, Name FROM Trains");
+    SQLite::Statement query(db, "SELECT ID, IDNumber, Name FROM Trains");
 
     if (!query.executeStep()) {
         throw std::runtime_error("No trains found in database!");
