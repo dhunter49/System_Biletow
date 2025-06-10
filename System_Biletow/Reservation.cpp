@@ -159,24 +159,28 @@ bool Reservation::findASeatWithConflicts() {
 bool Reservation::findASeatSplit() {
 	Reservation person;
 	std::vector<Reservation> people;
-	while (numberOfPeople > 0) {
+	for (int i = numberOfPeople; i > 0; i--) {
 		person = Reservation(*this);
+		person.numberOfPeople = 1;
 		if (person.findASeat()) {
 			*this = person; // Ensure that the current object gotten the changes from the person object. For example removed preferences.
+			numberOfPeople = i + people.size();
 			people.push_back(person);
-			numberOfPeople--; // Decrease number of people, because we found a seat for one person.
-			// We found a seat for 1 person, we are not saving it until we ensure all people got their spot.
+			//person.saveToDatabase(); // Save each person reservation to database
 		}
 		else {
 			// We didn't find a seat for one of the people, we need to restore numberOfPeople and return false.
-			numberOfPeople += people.size();
+			numberOfPeople = i + people.size();
+			//removeFromDatabaseMultiple(people);
 			return false;
 		}
 	}
-	for (auto& personPair : people) {
-		// Save each person reservation to database
-		// If all people got their spot
-		personPair.saveReservationToDatabase();
+}
+
+void Reservation::removeFromDatabaseMultiple(std::vector<Reservation>& reservations) {
+	// Removes all reservations from database
+	for (auto& reservation : reservations) {
+		reservation.removeFromDatabase();
 	}
 }
 
@@ -211,6 +215,8 @@ bool Reservation::meetsPreferences(Seat& seat) {
 	}
 	return false;
 }
+
+Reservation::Reservation() {}
 
 Reservation::Reservation(const Reservation& obj) {
     isTryingToReserve = obj.isTryingToReserve;

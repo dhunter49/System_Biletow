@@ -16,9 +16,9 @@ private:
 	// Variables required before making a reservation:
 	// WARNING: for 1 person all vars could be changed, but for more than 1 person only: firstClass, isCompartment, byTable.
 	//          other preferences won't be taken into consideration.
-	int numberOfPeople = 1;
-	int fromStationNumber{};
-	int toStationNumber{};
+	int numberOfPeople = 9;
+	int fromStationNumber = 2;
+	int toStationNumber = 6;
 	bool firstClass{};
 	Preference isCompartment{};
 	Preference facingFront{};
@@ -43,7 +43,10 @@ public:
 	bool findASeatSplit();
 	bool meetsPreferences(Seat& seat);
 	float calculateTicketPrice();
-	void saveReservationToDatabase();
+
+	void saveToDatabase();
+	void removeFromDatabaseMultiple(std::vector<Reservation>& reservations);
+	void removeFromDatabase();
 
 	// Assign overload operator
 	void operator=(const Reservation& obj);
