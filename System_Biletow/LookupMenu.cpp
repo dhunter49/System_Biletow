@@ -4,81 +4,49 @@
 
 // Displays a menu, user chooses route to see info about
 void DataManager::showLookupMenuRoutes() {
-    // Loads all routes
-    DataManager routesList;
-    try {
-        routesList.loadAllRoutesFromDatabase();
-    }
-    catch (std::exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (SQLite::Exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (...) {
-        std::cerr << "nieznany problem" << std::endl;
-    }
-
-    auto& dm = DataManager::getInstance();
-    std::vector<MenuOption> menu = routesList.generateMenuListRoutes();
+    DataManager& data = DataManager::getInstance();
+    std::vector<MenuOption> menu = data.generateMenuListRoutes();
 
     while (true) {
         clearScreen();
-        int choice = showMenu("Wybierz trasê, o której chcesz wyœwietliæ informacje", menu);
+        int choice = showMenu("Wybierz trasÄ™, o ktÃ³rej chcesz wyÅ›wietliÄ‡ informacje", menu);
         if (choice == -2)
             return;
-        Route chosenRoute = routesList.routes[choice];
-        chosenRoute.showInfo();
+        data.routes[choice].showInfo();
     }
 }
 
 void DataManager::showLookupMenuTrains() {
-
     // Loads all trains
-    DataManager trainsList;
-    try {
-        trainsList.loadAllTrainsFromDatabase();
-    }
-    catch (std::exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (SQLite::Exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (...) {
-        std::cerr << "nieznany problem" << std::endl;
-    }
+    DataManager& data = DataManager::getInstance();
+    data.loadAllTrainsFromDatabase();
 
-    std::vector<MenuOption> menu = trainsList.generateMenuListTrains();
+    std::vector<MenuOption> menu = data.generateMenuListTrains();
     while (true) {
         clearScreen();
-        int choice = showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
+        int choice = showMenu("Wybierz pociÄ…g, o ktÃ³rym chcesz wyÅ›wietliÄ‡ informacje", menu);
         if (choice == -2)
             return;
-        try {
-            if (choice < 0)
-                throw std::runtime_error("wyst¹pi³ b³¹d");
-            trains[choice].showInfo();
-            waitForEsc();
-        }
-        catch (std::runtime_error& e) {
-            std::cerr << "err: " << e.what() << std::endl;
-        }
+        if (choice < 0)
+                throw std::runtime_error("wystÂ¹piÂ³ bÂ³Â¹d");
+            throw std::runtime_error("wystÄ…piÅ‚ bÅ‚Ä…d");
+        trains[choice].showInfo();
+        waitForEsc();
     }
 }
 
 void DataManager::showLookupMenuPassengers() {
     clearScreen();
-    std::cout << "Tutaj info o pasa¿erze";
+    std::cout << "Tutaj info o pasaÂ¿erze";
 }
 
 void DataManager::showLookupMenu() {
-    std::vector<MenuOption> lookupMenu = { {0, "o trasie"}, {1, "o poci¹gu"}, {2, "o pasa¿erze"} };
+    std::vector<MenuOption> lookupMenu = { {0, "o trasie"}, {1, "o pociÂ¹gu"}, {2, "o pasaÂ¿erze"} };
     int lookupChoice{};
 
     do {
         clearScreen();
-        lookupChoice = showMenu("Poka¿ informacje:", lookupMenu);
+        lookupChoice = showMenu("PokaÂ¿ informacje:", lookupMenu);
         switch (lookupChoice) {
         case 0:
             showLookupMenuRoutes();

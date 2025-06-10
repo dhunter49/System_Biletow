@@ -180,7 +180,7 @@ bool Reservation::findASeatSplit() {
 void Reservation::removeFromDatabaseMultiple(std::vector<Reservation>& reservations) {
 	// Removes all reservations from database
 	for (auto& reservation : reservations) {
-		reservation.removeFromDatabase();
+		//reservation.removeFromDatabase();
 	}
 }
 
