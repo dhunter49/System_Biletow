@@ -5,10 +5,8 @@
 // Returns true when seat is found and saved into the object variables, returns false if not found.
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
-	bool isFirstClassPreferenceAProblem = false;
 	// check if there is enough spots in the entire train, if not instantly returns false value.
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
-		isFirstClassPreferenceAProblem = true;
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car
@@ -16,21 +14,19 @@ bool Reservation::findASeat() {
 				data.getCompartmentsByCarNumber(carPair.getCarNumber());
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
-					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople && compartmentPair.getIsFirstClass() == firstClass) {
-						// As of right now there should be at least numberOfPeople seats with the matching class preference
-						isFirstClassPreferenceAProblem = false;
-						if (!isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment()) {
-							data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
-							for (auto& seatPair : data.currentSeats) {
-								// check if seat meets preferences
-								if (meetsPreferences(seatPair)) {
-									// Saves seat info to an object.
-									carNumber = seatPair.getCarNumber();
-									seatNumber = seatPair.getSeatNumber();
-									tripID = seatPair.getTripID();
-									//calculateTicketPrice();
-									return true;
-								}
+					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople 
+						&& compartmentPair.getIsFirstClass() == firstClass
+						&& !isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment()) {
+						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
+						for (auto& seatPair : data.currentSeats) {
+							// check if seat meets preferences
+							if (meetsPreferences(seatPair)) {
+								// Saves seat info to an object.
+								carNumber = seatPair.getCarNumber();
+								seatNumber = seatPair.getSeatNumber();
+								tripID = seatPair.getTripID();
+								//calculateTicketPrice();
+								return true;
 							}
 						}
 					}
@@ -65,7 +61,7 @@ bool Reservation::findASeat() {
 }
 
 bool Reservation::findASeatWithConflicts() {
-	Reservation startingProperties = *this; // Saves current properties of the reservation, so it can be restored later if needed.
+	Reservation startingProperties(*this); // Saves current properties of the reservation, so it can be restored later if needed.
 
 	// Trying to change the preferences without changing class
 	if (!byTable.isChosen ||
