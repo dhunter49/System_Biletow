@@ -28,7 +28,6 @@ void DataManager::showLookupMenuTrains() {
         if (choice == -2)
             return;
         if (choice < 0)
-                throw std::runtime_error("wyst¹pi³ b³¹d");
             throw std::runtime_error("wystąpił błąd");
         trains[choice].showInfo();
         waitForEsc();
