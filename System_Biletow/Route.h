@@ -11,7 +11,7 @@
 class Route {
 public:
 	// methods
-	MenuOption getMenuOption();
+	MenuOption getMenuOptionRoute();
 protected:
 	// variables
 	int routeID;
@@ -22,6 +22,7 @@ public:
 	// methods
 	void addStation(int stationNum, Station newStation);
 	void loadStations(bool all);
+	void showInfo();
 
 	// getters
 	int getRouteID();

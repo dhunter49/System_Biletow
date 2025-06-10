@@ -1,1 +1,1 @@
-DELETE FROM Seats WHERE CarModel = "B9nopuvz" AND Number = 84 AND Special IS NULL;
+SELECT * FROM Trains;
