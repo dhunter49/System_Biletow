@@ -28,7 +28,7 @@ void DataManager::showLookupMenuTrains() {
         if (choice == -2)
             return;
         if (choice < 0)
-            throw std::runtime_error("wystąpił błąd");
+            throw std::runtime_error("Wystąpił błąd!");
         trains[choice].showInfo();
         waitForEsc();
     }
@@ -40,23 +40,21 @@ void DataManager::showLookupMenuPassengers() {
 }
 
 void DataManager::showLookupMenu() {
-    std::vector<MenuOption> lookupMenu = { {0, "o trasie"}, {1, "o poci¹gu"}, {2, "o pasa¿erze"} };
+    std::vector<MenuOption> lookupMenu = { {0, "trasie"}, {1, "pociągu"}, {2, "pasażerze"} };
     int lookupChoice{};
 
     do {
         clearScreen();
-        lookupChoice = showMenu("Poka¿ informacje:", lookupMenu);
+        lookupChoice = showMenu("Pokaż informacje o:", lookupMenu);
         switch (lookupChoice) {
         case 0:
             showLookupMenuRoutes();
             break;
         case 1:
             showLookupMenuTrains();
-            waitForEsc();
             break;
         case 2:
             showLookupMenuPassengers();
-            waitForEsc();
             break;
         case -2:
             lookupChoice = 0;
