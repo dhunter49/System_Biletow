@@ -52,8 +52,15 @@ void DataManager::showLookupMenuTrains() {
     int choice = showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
     if (choice == -2)
         return;
-    Train chosenTrain = trainsList.trains[choice];
-    chosenTrain.showInfo();
+    try {
+        if (choice < 0)
+            throw std::runtime_error("wyst¹pi³ b³¹d");
+        trains[choice].showInfo();
+    }
+    catch (std::runtime_error& e) {
+        std::cerr << "err: " << e.what() << std::endl;
+    }
+        
 }
 
 void DataManager::showLookupMenuPassengers() {

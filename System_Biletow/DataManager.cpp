@@ -40,23 +40,21 @@ void DataManager::loadAllRoutesFromDatabase() {
     routes[currentRouteID] = currentRoute;
 }
 
-// Loades all trains to a map
+// Loades all trains to a vector
 void DataManager::loadAllTrainsFromDatabase() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT ID, Name FROM Trains");
+    SQLite::Statement query(db, "SELECT ID, ID_Number, Name FROM Trains");
 
     if (!query.executeStep()) {
         throw std::runtime_error("No trains found in database!");
     }
 
-    int i{};
     do {
         std::string trainID = query.getColumn(0).getString();
-        Train train(trainID);
-        trains[i] = train;
-        
-        i++;
-
+        int trainIDNumber = query.getColumn(1).getInt();
+        std::string trainName = query.getColumn(2).getString();
+        Train train(trainID, trainIDNumber, trainName);
+        trains[trainIDNumber]=train;
     } while (query.executeStep());
 }
 
@@ -76,7 +74,7 @@ std::vector<MenuOption> DataManager::generateMenuListTrains() {
     std::vector<MenuOption> out;
     MenuOption oneOption;
     for (auto& train : trains) {
-        oneOption = train.getMenuOptionTrain();
+        oneOption = train.second.getMenuOptionTrain();
     	out.push_back(oneOption);
     }
     return out;

@@ -13,7 +13,7 @@ class DataManager {
 private:
 	static DataManager* instance;
 	std::unordered_map<int, Route> routes;
-	std::vector<Train> trains;
+	std::map<int, Train> trains;
 
 public:
 	std::vector<Trip> currentTrips;

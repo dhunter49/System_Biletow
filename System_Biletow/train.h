@@ -5,6 +5,7 @@ class Train : public Trip {
 protected:
 	// variables
 	std::string trainID;
+	int trainIDNumber;
 	std::string trainName;
 public:
 	// getters
@@ -25,6 +26,7 @@ public:
 	// constructors
 	Train();
 	Train(std::string);
+	Train(std::string, int, std::string);
 	Train(Trip);
 };
 

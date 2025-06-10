@@ -18,6 +18,7 @@ void Train::setTrainName(std::string newTrainName) {
 
 Train::Train() {};
 Train::Train(std::string trainID) :trainID(trainID) {};
+Train::Train(std::string trainID, int trainIDNumber, std::string trainName) :trainID(trainID), trainIDNumber(trainIDNumber), trainName(trainName) {};
 Train::Train(Trip trip) {
 	routeID = trip.getRouteID();
 	stationList = trip.getStationList();
@@ -31,19 +32,8 @@ MenuOption Train::getMenuOptionTrain() {
     optionName += trainID;
     optionName += ' ';
     optionName += trainName;
-
-    int trainIDInt{};
-    int i = trainID.length()-1;
-    int d = 1;
-    while (trainID[i] != '/')
-        i--;
-    while (trainID[i] != ' ') {
-        i--;
-        trainIDInt += d * (trainID[i] - (int)'0');
-        d *= 10;
-    } 
     
-    return MenuOption{ trainIDInt, optionName };
+    return MenuOption{ trainIDNumber, optionName };
 }
 
 int Train::getTakenSeats(int stationStartNumber, int stationEndNumber) {
@@ -78,7 +68,7 @@ int Train::getFreeSeats(int stationStartNumber, int stationEndNumber) {
 
 void Train::showInfo() {
     clearScreen();
-    std::cout << "Wagony w poci¹gu " << trainID << ":" << std::endl;
+    std::cout << "Wagony w poci¹gu " << trainID << " - " << trainName << ":" << std::endl;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT CarNumber, CarModel "
         "FROM TrainSets "
