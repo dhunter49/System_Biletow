@@ -7,6 +7,11 @@ bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
 	// check if there is enough spots in the entire train, if not instantly returns false value.
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
+		if (numberOfPeople > 8) {
+			// Number of people exceeds all compartments sizes, tries to split users
+			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje!";
+			return findASeatSplit();
+		}
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car
