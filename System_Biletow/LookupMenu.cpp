@@ -5,24 +5,22 @@
 
 // Displays a menu, user chooses route to see info about
 void DataManager::showLookupMenuRoutes() {
-    DataManager& data = DataManager::getInstance();
-    std::vector<MenuOption> menu = data.generateMenuListRoutes();
+    std::vector<MenuOption> menu = generateMenuListRoutes();
 
     while (true) {
         clearScreen();
         int choice = showMenu("Wybierz trasę, o której chcesz wyświetlić informacje", menu);
         if (choice == -2)
             return;
-        data.routes[choice].showInfo();
+        routes[choice].showInfo();
     }
 }
 
 void DataManager::showLookupMenuTrains() {
     // Loads all trains
-    DataManager& data = DataManager::getInstance();
-    data.loadAllTrainsFromDatabase();
+    loadAllTrainsFromDatabase();
 
-    std::vector<MenuOption> menu = data.generateMenuListTrains();
+    std::vector<MenuOption> menu = generateMenuListTrains();
     while (true) {
         clearScreen();
         int choice = showMenu("Wybierz pociąg, o którym chcesz wyświetlić informacje", menu);
@@ -62,9 +60,8 @@ void DataManager::showLookupMenuPassengers() {
             continue;
 		}
         
-		DataManager& data = DataManager::getInstance();
-		data.loadTripByID(query.getColumn(0).getInt());
-		Trip trip = data.getTripByID(query.getColumn(0).getInt());
+		loadTripByID(query.getColumn(0).getInt());
+		Trip trip = getTripByID(query.getColumn(0).getInt());
 
 		std::string fullName = query.getColumn(5).getString() + " " + query.getColumn(6).getString();
         std::string fromStationName = trip.getStation(query.getColumn(3).getInt()).name;
