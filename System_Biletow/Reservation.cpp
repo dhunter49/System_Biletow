@@ -189,17 +189,48 @@ bool Reservation::findASeatWithConflicts() {
 	}
 }
 
+// Finds a seat for each person in the reservation, if there is no seat for one of the people, returns false.
 bool Reservation::findASeatSplit() {
 	Reservation person;
-	for (int i = numberOfPeople;i > 0;i--) {
+	std::vector<Reservation> people;
+	while (numberOfPeople > 0) {
 		person = Reservation(*this);
 		if (person.findASeat()) {
-			// OVERLOAD this=person;
+			people.push_back(person);
+			numberOfPeople--; // Decrease number of people, because we found a seat for one person.
+			// We found a seat for 1 person, we are not saving it until we ensure all people got their spot.
 		}
 		else {
+			// We didn't find a seat for one of the people, we need to restore numberOfPeople and return false.
+			numberOfPeople += people.size();
 			return false;
 		}
 	}
+	for (auto& personPair : people) {
+		// Save each person reservation to database
+		// If all people got their spot
+		personPair.saveReservationToDatabase();
+	}
+}
+
+void Reservation::operator=(const Reservation& obj) {
+	isTryingToReserve = obj.isTryingToReserve;
+	numberOfPeople = obj.numberOfPeople;
+	fromStationNumber = obj.fromStationNumber;
+	toStationNumber = obj.toStationNumber;
+	firstClass = obj.firstClass;
+	isCompartment = obj.isCompartment;
+	facingFront = obj.facingFront;
+	byTable = obj.byTable;
+	window = obj.window;
+	middle = obj.middle;
+	corridor = obj.corridor;
+	firstName = obj.firstName;
+	lastName = obj.lastName;
+	carNumber = obj.carNumber;
+	seatNumber = obj.seatNumber;
+	tripID = obj.tripID;
+	ticketPrice = obj.ticketPrice;
 }
 
 // Checks if preferations declared in object meet seat real values.

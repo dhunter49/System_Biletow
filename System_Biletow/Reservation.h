@@ -45,6 +45,9 @@ public:
 	float calculateTicketPrice();
 	void saveReservationToDatabase();
 
+	// Assign overload operator
+	void operator=(const Reservation& obj);
+
 	Reservation(const Reservation& obj);
 	Reservation();
 };
