@@ -288,6 +288,7 @@ bool Reservation::findASeatWithConflicts() {
 				return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 			}
 			else {
+				removeFromDatabase();
 				return false; // User doesn't want to continue with reservation.
 			}
 		}
@@ -305,6 +306,7 @@ bool Reservation::findASeatWithConflicts() {
 			return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 		}
 		else {
+			removeFromDatabase();
 			return false; // User doesn't want to continue with reservation.
 		}
 	}
@@ -331,6 +333,7 @@ bool Reservation::findASeatWithConflicts() {
 				return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 			}
 			else {
+				removeFromDatabase();
 				return false; // User doesn't want to continue with reservation.
 			}
 		}
