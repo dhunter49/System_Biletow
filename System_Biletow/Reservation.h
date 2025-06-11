@@ -51,7 +51,7 @@ public:
 	Preference getPreferenceValues(std::string menuTitle);
 
 	void saveToDatabase();
-	void removeFromDatabaseMultiple(std::vector<Reservation>& reservations);
+	void removeFromDatabaseMultiple();
 	void removeFromDatabase();
 
 	// Assign overload operator

@@ -165,6 +165,7 @@ bool Reservation::makeAReservation() {
 			return true; // Reservation was made successfully
 		else
 			return false; // User cancelled the reservation
+	return false;
 }
 
 Preference Reservation::getPreferenceValues(std::string menuTitle) {
@@ -215,7 +216,7 @@ bool Reservation::findASeat() {
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
 								//calculateTicketPrice();
-								//saveToDatabase();
+								saveToDatabase();
 								Reservation temp = *this;
 								reservations.push_back(temp);
 								if (numberOfPeopleLeft > 1) {
@@ -356,7 +357,6 @@ bool Reservation::findASeatSplit() {
 			*this = person; // Ensure that the current object gotten the changes from the person object. For example removed preferences.
 			numberOfPeople = i + reservations.size();
 			reservations.push_back(person);
-			//person.saveToDatabase(); // Save each person reservation to database
 		}
 		else {
 			// We didn't find a seat for one of the people, we need to restore numberOfPeople and return false.
@@ -367,10 +367,10 @@ bool Reservation::findASeatSplit() {
 	}
 }
 
-void Reservation::removeFromDatabaseMultiple(std::vector<Reservation>& reservations) {
+void Reservation::removeFromDatabaseMultiple() {
 	// Removes all reservations from database
 	for (auto& reservation : reservations) {
-		//reservation.removeFromDatabase();
+		reservation.removeFromDatabase();
 	}
 }
 
