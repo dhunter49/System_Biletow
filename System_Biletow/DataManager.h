@@ -27,6 +27,7 @@ public:
 	// LOADING FROM DATABASE
 	void loadAllRoutesFromDatabase();
 	std::vector<MenuOption> generateMenuListRoutes();
+	Route getRouteByID(int routeID);
 	
 	void loadAllTrainsFromDatabase();
 	std::vector<MenuOption> generateMenuListTrains();

@@ -1,5 +1,53 @@
 ﻿#include "Reservation.h"
 #include "DataManager.h"
+#include <limits>
+#include <iostream>
+
+bool Reservation::makeAReservation() {
+	DataManager& data = DataManager::getInstance();
+	clearScreen();
+
+	// Input route
+	std::vector<MenuOption> menu = data.generateMenuListRoutes();
+	int routeChoice = showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
+	Route chosenRoute = data.getRouteByID(routeChoice);
+	chosenRoute.loadStations(true);
+
+	// Input date
+	Date date;
+	std::cout << "Podaj datę przejazdu (D.M.YYYY): ";
+	while (true) {
+		std::cin >> date.day >> date.month >> date.year;
+		if (std::cin.fail() || date.day < 1 || date.month < 1 || date.year < 1 || date.month > 12 || date.day > 31) {
+			std::cin.clear(); // Clear the error flag
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie D.M.YYYY: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+
+	data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+	if (data.currentTrips.size() != 1) {
+
+	}
+
+	// Input number of people
+	std::cout << "Podaj liczbę osób do zarezerwowania: ";
+	while (true) {
+		std::cin >> numberOfPeople;
+		if (std::cin.fail() || numberOfPeople < 1) {
+			std::cin.clear(); // Clear the error flag
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+			std::cout << "Nieprawidłowa liczba osób. Proszę podać liczbę osób: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+	return true;
+}
 
 // Tries to find a seat. In DataManager should be already loaded Train.
 // Returns true when seat is found and saved into the object variables, returns false if not found.

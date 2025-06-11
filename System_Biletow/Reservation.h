@@ -44,6 +44,8 @@ public:
 	bool meetsPreferences(Seat& seat);
 	float calculateTicketPrice();
 
+	bool makeAReservation();
+
 	void saveToDatabase();
 	void removeFromDatabaseMultiple(std::vector<Reservation>& reservations);
 	void removeFromDatabase();

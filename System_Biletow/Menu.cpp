@@ -1,4 +1,9 @@
 #include "Menu.h"
+#include <vector>
+#include <iostream>
+#include <Windows.h>
+#include <conio.h>
+#include <iomanip>
 
 const int MAX_OPTIONS_ON_MENU = 20; // represents the maximum amount of options shown on the menu. Adjustable to liking
 

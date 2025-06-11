@@ -2,6 +2,7 @@
 #include "DataManager.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "GlobalConsts.h"
+#include <conio.h>
 
 // Displays a menu, user chooses route to see info about
 void DataManager::showLookupMenuRoutes() {

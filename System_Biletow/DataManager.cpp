@@ -11,6 +11,13 @@ DataManager& DataManager::getInstance() {
     return *instance;
 }
 
+Route DataManager::getRouteByID(int routeID) {
+    if (routes.find(routeID) != routes.end()) {
+        return routes[routeID];
+    }
+    throw std::runtime_error("Route not found");
+}
+
 // Loades all routes to a map. Station List in only filled with station's that are supposed to show in menu - skipped unimportant stations.
 void DataManager::loadAllRoutesFromDatabase() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
