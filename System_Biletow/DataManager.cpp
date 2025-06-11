@@ -137,7 +137,7 @@ void DataManager::loadTripByID(int tripID) {
     currentTrips = std::vector<Trip>(); // Empty vector
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db,
-        "SELECT ID, RouteID "
+        "SELECT ID, RouteID, "
         "CAST(strftime('%H', Time) AS INTEGER) AS hour, "
         "CAST(strftime('%M', Time) AS INTEGER) AS minute, "
         "CAST(strftime('%d', Date) AS INTEGER) AS day, "
