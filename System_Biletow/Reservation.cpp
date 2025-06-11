@@ -167,8 +167,12 @@ bool Reservation::makeAReservation() {
 			removeFromDatabaseMultiple();
 			return false;
 		}
-	removeFromDatabaseMultiple();
-	return false;
+	else {
+		std::cout << "Nie znaleziono miejsc(a). Kliknij przycisk aby kontynouwać." << std::endl;
+		removeFromDatabaseMultiple();
+		_getch(); // Wait for user to press a key
+		return false;
+	}
 }
 
 Preference Reservation::getPreferenceValues(std::string menuTitle) {
@@ -243,7 +247,6 @@ bool Reservation::findASeat() {
 			}
 			else {
 				// We didn't find a seat or user didn't agree to continue with reservation without matching preferences.
-				std::cout << "Pociąg nie ma wolnych miejsc!\n";
 				return false;
 			}
 		}
@@ -253,7 +256,6 @@ bool Reservation::findASeat() {
 	}
 	else {
 		// If we are here, it means that there is not enough free seats in the entire train.
-		std::cout << "Pociąg nie ma wolnych miejsc!\n";
 		return false;
 	}
 
