@@ -1,1 +1,1 @@
-SELECT * FROM Trains;
+SELECT * FROM Passengers;
