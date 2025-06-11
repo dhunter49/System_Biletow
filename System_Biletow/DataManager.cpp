@@ -306,51 +306,54 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
 }
 
 void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd) {
-    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT Seats.Number "
-        "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
-        "WHERE TrainSets.TrainID = ? "
-        "AND TrainSets.CarNumber = ? "
-        "AND Seats.Number/10 = ? "
-        "AND Seats.Special IS NULL");
-    query.bind(1, currentTrain.getTrainID());
-    query.bind(2, carNumber);
-    query.bind(3, compartmentNumber);
-
-    std::vector<int> freeSeatsNumbers;
-    while (query.executeStep()) {
-        freeSeatsNumbers.push_back(query.getColumn(0).getInt());
-    }
     currentSeats = std::vector<Seat>();
-    if (freeSeatsNumbers.empty())
-        return;
-
     std::string carModel = getCarByNumber(carNumber).getCarModel();
-    Seat currentSeat;
+    int tripID = currentTrain.getTripID();
 
-    query = SQLite::Statement(db,
-        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special "
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    // Select all seats in the compartment where special IS NULL
+    SQLite::Statement seatQuery(db, 
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable "
         "FROM Seats "
-        "WHERE Number = ? AND CarModel = ?");
-    for (int seatNumber : freeSeatsNumbers) {
-        query.bind(1, seatNumber);
-        query.bind(2, carModel);
+        "WHERE Number >= ? AND Number <= ? AND CarModel = ? AND Special IS NULL");
 
-        if (query.executeStep()) {
-            currentSeat = Seat(getCompartmentByNumber(compartmentNumber));
+    seatQuery.bind(1, compartmentNumber * 10);
+    seatQuery.bind(2, compartmentNumber * 10 + 9);
+    seatQuery.bind(3, carModel);
 
-            currentSeat.setSeatNumber(query.getColumn(0).getInt());
-            currentSeat.setIsWindow(query.getColumn(1).getInt());
-            currentSeat.setIsMiddle(query.getColumn(2).getInt());
-            currentSeat.setIsCorridor(query.getColumn(3).getInt());
-            currentSeat.setIsByTable(query.getColumn(4).getInt());
-            currentSeat.setSpecial(query.getColumn(5).getInt());
+    while (seatQuery.executeStep()) {
+        int seatNumber = seatQuery.getColumn(0).getInt();
 
+        // Check if seat is reserved for this trip and for any overlapping segment
+        SQLite::Statement reservationQuery(db,
+            "SELECT COUNT(*) FROM Passengers "
+            "WHERE TripID = ? AND SeatNumber = ? AND CarNumber = ? "
+            "AND ((FromStation < ? AND ToStation > ?) "
+            "  OR (FromStation < ? AND ToStation > ?) "
+            "  OR (FromStation >= ? AND ToStation <= ?))");
+
+        reservationQuery.bind(1, tripID);
+        reservationQuery.bind(2, seatNumber);
+        reservationQuery.bind(3, carNumber);
+        reservationQuery.bind(4, stationNumberEnd);
+        reservationQuery.bind(5, stationNumberStart);
+        reservationQuery.bind(6, stationNumberEnd);
+        reservationQuery.bind(7, stationNumberStart);
+        reservationQuery.bind(8, stationNumberStart);
+        reservationQuery.bind(9, stationNumberEnd);
+
+        reservationQuery.executeStep();
+        int reservedCount = reservationQuery.getColumn(0).getInt();
+
+        if (reservedCount == 0) {
+            Seat currentSeat(getCompartmentByNumber(compartmentNumber));
+            currentSeat.setSeatNumber(seatNumber);
+            currentSeat.setIsWindow(seatQuery.getColumn(1).getInt());
+            currentSeat.setIsMiddle(seatQuery.getColumn(2).getInt());
+            currentSeat.setIsCorridor(seatQuery.getColumn(3).getInt());
+            currentSeat.setIsByTable(seatQuery.getColumn(4).getInt());
             currentSeats.push_back(currentSeat);
         }
-
-        // Reset the query for the next iteration
-        query.reset();
     }
 }
 
