@@ -98,6 +98,49 @@ bool Reservation::makeAReservation() {
 		}
 	}
 
+	// How to aplly discount
+	bool discountChoice{};
+	if (numberOfPeople > 1) {
+		std::vector<MenuOption> discountYesOrNo;
+		discountYesOrNo.push_back(MenuOption{ 1, "Tak, wybierz dla każdego podróżnego z osobna" });
+		discountYesOrNo.push_back(MenuOption{ 0, "Nie, wybierz jeden rodzaj zniżki dla całej grupy" });
+		int tempChoice = showMenu("Czy chcesz wybrać zniżkę dla każdego podróżnego z osobna?", discountYesOrNo);
+		if(tempChoice == -2)
+			return false; // User cancelled the menu
+		discountChoice = static_cast<bool>(tempChoice);
+	}
+
+	// Discount
+	for (int i = 1; i <= numberOfPeople; i++) {
+		std::vector<MenuOption> discountOptions;
+		discountOptions.push_back(MenuOption{ 0, "Brak zniżki (0%)" });
+		discountOptions.push_back(MenuOption{ 33, "Nauczyciele (33%)" });
+		discountOptions.push_back(MenuOption{ 37, "Dzieci i uczniowie (37%)" });
+		discountOptions.push_back(MenuOption{ 37, "Karta Dużej Rodziny (37%)" });
+		discountOptions.push_back(MenuOption{ 37, "Karta Polaka (37%)" });
+		discountOptions.push_back(MenuOption{ 37, "Emeryci/Renciści (37%)" });
+		discountOptions.push_back(MenuOption{ 51, "Studenci/Doktoranci (51%)" });
+		discountOptions.push_back(MenuOption{ 78, "Żołnierze (78%)" });
+		discountOptions.push_back(MenuOption{ 100, "Dzieci do 4 roku życia (100%)" });
+		std::string discountMenuTitle;
+		if (numberOfPeople > 1 && discountChoice)
+			discountMenuTitle = "Wybierz zniżke dla osoby nr " + std::to_string(i);
+		else
+			discountMenuTitle = "Wybierz zniżkę";
+		int choice = showMenu(discountMenuTitle, discountOptions);
+		if(choice == -2)
+			return false; // User cancelled the menu
+		if (!discountChoice) {
+			for (int i = 1;i <= numberOfPeople;i++) {
+				float value = static_cast<float>(choice) / 100;
+				discounts.push_back(value);
+			}
+			break;
+		}
+		float value = static_cast<float>(choice) / 100;
+		discounts.push_back(value);
+	}
+
 	// Class
 	std::vector<MenuOption> classPreference;
 	classPreference.push_back(MenuOption{ 1, "Pierwsza klasa" });
@@ -163,8 +206,16 @@ bool Reservation::makeAReservation() {
 	if(findASeat())
 		if (askIfUserAgrees())
 			return true; // Reservation was made successfully
-		else
-			return false; // User cancelled the reservation
+		else { // User cancelled the reservation
+			// Removes all reservations from database inside of askIfUserAgrees method
+			return false;
+		}
+	else {
+		std::cout << "Nie znaleziono miejsc(a). Kliknij przycisk aby kontynouwać." << std::endl;
+		removeFromDatabaseMultiple();
+		_getch(); // Wait for user to press a key
+		return false;
+	}
 }
 
 Preference Reservation::getPreferenceValues(std::string menuTitle) {
@@ -193,7 +244,8 @@ bool Reservation::findASeat() {
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
 		if (numberOfPeople > 8) {
 			// Number of people exceeds all compartments sizes, tries to split users
-			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje!";
+			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje! \nKliknij przycisk aby kontynuować...";
+			_getch(); // Wait for user to press a key
 			return findASeatSplit();
 		}
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
@@ -215,8 +267,8 @@ bool Reservation::findASeat() {
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
 								//calculateTicketPrice();
-								//saveToDatabase();
-								Reservation temp = *this;
+								saveToDatabase();
+								Reservation temp(*this);
 								reservations.push_back(temp);
 								if (numberOfPeopleLeft > 1) {
 									numberOfPeopleLeft--;
@@ -239,7 +291,6 @@ bool Reservation::findASeat() {
 			}
 			else {
 				// We didn't find a seat or user didn't agree to continue with reservation without matching preferences.
-				std::cout << "Pociąg nie ma wolnych miejsc!\n";
 				return false;
 			}
 		}
@@ -249,7 +300,6 @@ bool Reservation::findASeat() {
 	}
 	else {
 		// If we are here, it means that there is not enough free seats in the entire train.
-		std::cout << "Pociąg nie ma wolnych miejsc!\n";
 		return false;
 	}
 
@@ -281,6 +331,7 @@ bool Reservation::findASeatWithConflicts() {
 				return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 			}
 			else {
+				removeFromDatabase();
 				return false; // User doesn't want to continue with reservation.
 			}
 		}
@@ -298,6 +349,7 @@ bool Reservation::findASeatWithConflicts() {
 			return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 		}
 		else {
+			removeFromDatabase();
 			return false; // User doesn't want to continue with reservation.
 		}
 	}
@@ -324,6 +376,7 @@ bool Reservation::findASeatWithConflicts() {
 				return true; // Returns true, because there is a compartment fitting all people. Should be already saved in object variables.
 			}
 			else {
+				removeFromDatabase();
 				return false; // User doesn't want to continue with reservation.
 			}
 		}
@@ -356,21 +409,20 @@ bool Reservation::findASeatSplit() {
 			*this = person; // Ensure that the current object gotten the changes from the person object. For example removed preferences.
 			numberOfPeople = i + reservations.size();
 			reservations.push_back(person);
-			//person.saveToDatabase(); // Save each person reservation to database
 		}
 		else {
 			// We didn't find a seat for one of the people, we need to restore numberOfPeople and return false.
 			numberOfPeople = i + reservations.size();
-			//removeFromDatabaseMultiple(people);
+			removeFromDatabaseMultiple();
 			return false;
 		}
 	}
 }
 
-void Reservation::removeFromDatabaseMultiple(std::vector<Reservation>& reservations) {
+void Reservation::removeFromDatabaseMultiple() {
 	// Removes all reservations from database
 	for (auto& reservation : reservations) {
-		//reservation.removeFromDatabase();
+		reservation.removeFromDatabase();
 	}
 }
 
@@ -399,7 +451,7 @@ bool Reservation::askIfUserAgrees() {
 			key = _getch();
 			if (key == 27) { // ESC pressed
 				// Remove all reservations from database
-				//removeFromDatabaseMultiple(reservations);
+				removeFromDatabaseMultiple();
 				reservations.clear();
 				return false; // User cancelled the reservation
 			}
@@ -434,6 +486,8 @@ void Reservation::operator=(const Reservation& obj) {
 	seatNumber = obj.seatNumber;
 	tripID = obj.tripID;
 	ticketPrice = obj.ticketPrice;
+	reservationID = obj.reservationID;
+	discounts = obj.discounts;
 }
 
 // Checks if preferations declared in object meet seat real values.
@@ -468,6 +522,8 @@ Reservation::Reservation(const Reservation& obj) {
     seatNumber = obj.seatNumber;
     tripID = obj.tripID;
     ticketPrice = obj.ticketPrice;
+	reservationID = obj.reservationID;
+	discounts = obj.discounts;
 }
 
 // Adds a new reservation to database and sets unique reservationID
@@ -500,8 +556,11 @@ void Reservation::saveToDatabase() {
 void Reservation::removeFromDatabase(){
 	try
 	{
+		if( reservationID == 0) {
+			return; // Reservation not saved yet, nothing to remove.
+		}
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
-		SQLite::Statement query{ db, "DELETE FROM Passengers"
+		SQLite::Statement query{ db, "DELETE FROM Passengers "
 			"WHERE ID=?" };
 
 		query.bind(1, reservationID);
