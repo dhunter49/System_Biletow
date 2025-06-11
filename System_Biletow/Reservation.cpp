@@ -54,6 +54,7 @@ bool Reservation::makeAReservation() {
 	tripID = showMenu("Wybierz opcje", menuTrips);
 	if (tripID == -2)
 		return false;
+	data.getTrainByTripID(tripID); // Load the train associated with the trip
 
 	// Number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
