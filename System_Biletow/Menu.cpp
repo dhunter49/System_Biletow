@@ -58,6 +58,7 @@ void refreshMenuOptions(int firstIndex,int lastIndex ,int currentSelection, cons
 // ONLY WINDOWS
 int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
     if (menuOptions.empty()) throw std::invalid_argument("Menu options can't be empty");
+    clearScreen();
     int lines, columns;
     getConsoleDimensions(lines, columns);
     int count{};
@@ -112,12 +113,14 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
                 setConsoleCursorVisibility(true);
                 delete[] firstIndexes;
                 delete[] lastIndexes;
+                clearScreen();
                 return menuOptions[currentSelection].id;
             }
             else if (key == 27) { // ESC pressed
                 setConsoleCursorVisibility(true);
                 delete[] firstIndexes;
                 delete[] lastIndexes;
+                clearScreen();
                 return -2;
             }
         }

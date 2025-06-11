@@ -8,10 +8,15 @@ bool Reservation::makeAReservation() {
 	clearScreen();
 
 	// Input route
-	std::vector<MenuOption> menu = data.generateMenuListRoutes();
-	int routeChoice = showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
+	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
+	int routeChoice = showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menuRoutes);
 	Route chosenRoute = data.getRouteByID(routeChoice);
 	chosenRoute.loadStations(true);
+
+	std::vector<MenuOption> menuStationsFrom = chosenRoute.generateMenuListStations(false);
+	fromStationNumber = showMenu("Od jakiej stacji?", menuStationsFrom);
+	std::vector<MenuOption> menuStationsTo = chosenRoute.generateMenuListStations(true, fromStationNumber);
+	toStationNumber = showMenu("Do jakiej stacji?", menuStationsTo);
 
 	// Input date
 	Date date;
@@ -29,9 +34,9 @@ bool Reservation::makeAReservation() {
 	}
 
 	data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
-	if (data.currentTrips.size() != 1) {
-		std::vector<MenuOption> menu = data.generateMenuListTrips(fromStationNumber, toStationNumber);
-	}
+	
+	std::vector<MenuOption> menuTrips = data.generateMenuListTrips(fromStationNumber, toStationNumber);
+	tripID = showMenu("Wybierz opcje", menuTrips);
 
 	// Input number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
