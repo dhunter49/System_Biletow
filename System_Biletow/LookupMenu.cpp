@@ -35,6 +35,13 @@ void DataManager::showLookupMenuTrains() {
 }
 
 void DataManager::showLookupMenuPassengers() {
+	SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+	SQLite::Statement queryCheck(db, "SELECT COUNT(ID) FROM Passengers");
+	if (!queryCheck.executeStep() || queryCheck.getColumn(0).getInt() == 0) {
+        std::cout << "Brak pasażerów w bazie danych! Kliknij przycisk aby kontynuować..." << std::endl;
+        _getch();
+        return;
+	}
     while (true) {
         clearScreen();
 		std::cout << "Podaj numer biletu/numer pasażera, o którym chcesz wyświetlić informacje: ";
@@ -48,7 +55,6 @@ void DataManager::showLookupMenuPassengers() {
             }
             continue;
         }
-        SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
         SQLite::Statement query(db, "SELECT TripID, CarNumber, SeatNumber, FromStation, ToStation, Name, Surname, Price FROM Passengers WHERE ID = ?");
 		query.bind(1, input);
 
