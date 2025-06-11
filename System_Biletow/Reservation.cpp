@@ -154,7 +154,7 @@ bool Reservation::makeAReservation() {
 		throw std::runtime_error("Błąd menu!");
 		break;
 	}
-	return true;
+	return findASeat();
 }
 
 Preference Reservation::getPreferenceValues(std::string menuTitle) {
@@ -178,6 +178,7 @@ Preference Reservation::getPreferenceValues(std::string menuTitle) {
 // Returns true when seat is found and saved into the object variables, returns false if not found.
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
+	int numberOfPeopleLeft = numberOfPeople;
 	// check if there is enough spots in the entire train, if not instantly returns false value.
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
 		if (numberOfPeople > 8) {
@@ -204,6 +205,10 @@ bool Reservation::findASeat() {
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
 								//calculateTicketPrice();
+								//saveToDatabase();
+								if (numberOfPeopleLeft > 1) {
+									continue;
+								}
 								return true;
 							}
 						}
