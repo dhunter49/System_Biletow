@@ -10,33 +10,50 @@ bool Reservation::makeAReservation() {
 	// Input route
 	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
 	int routeChoice = showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menuRoutes);
+	if (routeChoice == -2)
+		return false;
 	Route chosenRoute = data.getRouteByID(routeChoice);
 	chosenRoute.loadStations(true);
 
 	std::vector<MenuOption> menuStationsFrom = chosenRoute.generateMenuListStations(false);
 	fromStationNumber = showMenu("Od jakiej stacji?", menuStationsFrom);
+	if (fromStationNumber == -2)
+		return false;
 	std::vector<MenuOption> menuStationsTo = chosenRoute.generateMenuListStations(true, fromStationNumber);
 	toStationNumber = showMenu("Do jakiej stacji?", menuStationsTo);
+	if (toStationNumber == -2)
+		return false;
 
 	// Input date
 	Date date;
-	std::cout << "Podaj datę przejazdu (D.M.YYYY): ";
+	char temp;
+	std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
 	while (true) {
-		std::cin >> date.day >> date.month >> date.year;
+		std::cin >> date.day >> temp >> date.month >> temp >> date.year;
 		if (std::cin.fail() || date.day < 1 || date.month < 1 || date.year < 1 || date.month > 12 || date.day > 31) {
 			std::cin.clear(); // Clear the error flag
 			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie D.M.YYYY: ";
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY: ";
 		}
 		else {
+			try {
+				data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+			}
+			catch (const std::runtime_error& e) {
+				std::cout << "Błąd: " << e.what() << "\n";
+				std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
+				continue;
+			}
 			break; // Valid input, exit the loop
 		}
 	}
 
-	data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+	
 	
 	std::vector<MenuOption> menuTrips = data.generateMenuListTrips(fromStationNumber, toStationNumber);
 	tripID = showMenu("Wybierz opcje", menuTrips);
+	if (tripID == -2)
+		return false;
 
 	// Input number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
