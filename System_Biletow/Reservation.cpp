@@ -505,6 +505,9 @@ void Reservation::saveToDatabase() {
 void Reservation::removeFromDatabase(){
 	try
 	{
+		if( reservationID == 0) {
+			return; // Reservation not saved yet, nothing to remove.
+		}
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
 		SQLite::Statement query{ db, "DELETE FROM Passengers"
 			"WHERE ID=?" };
