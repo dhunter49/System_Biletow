@@ -2,6 +2,7 @@
 #include "DataManager.h"
 #include <limits>
 #include <iostream>
+#include <conio.h>
 
 bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
@@ -157,7 +158,9 @@ bool Reservation::makeAReservation() {
 			break;
 		}
 	}
-	return findASeat();
+	findASeat();
+
+	askIfUserAgrees();
 }
 
 Preference Reservation::getPreferenceValues(std::string menuTitle) {
@@ -198,7 +201,7 @@ bool Reservation::findASeat() {
 					// check if there is enough spots in a compartment
 					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople 
 						&& compartmentPair.getIsFirstClass() == firstClass
-						&& !isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment()) {
+						&& (!isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment())) {
 						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
@@ -209,6 +212,8 @@ bool Reservation::findASeat() {
 								tripID = seatPair.getTripID();
 								//calculateTicketPrice();
 								//saveToDatabase();
+								Reservation temp = *this;
+								reservations.push_back(temp);
 								if (numberOfPeopleLeft > 1) {
 									numberOfPeopleLeft--;
 									continue;
@@ -366,6 +371,49 @@ void Reservation::removeFromDatabaseMultiple(std::vector<Reservation>& reservati
 	}
 }
 
+bool Reservation::askIfUserAgrees() {
+	int i = 1;
+	int key = 0;
+
+	auto& data = DataManager::getInstance();
+
+	for (auto& reservationPair : reservations) {
+		clearScreen();
+		if(reservations.size() == 1 || i == reservations.size())
+			std::cout << "Znaleziono miejsca: (ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl;
+		else
+			std::cout << "Znaleziono miejsca: (SPACE - następne, ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl;
+		std::cout << "Trasa: " << data.getTripByID(reservationPair.tripID).getMenuOptionTrip(reservationPair.fromStationNumber, reservationPair.toStationNumber).menuText << std::endl;
+		std::cout << "Klasa: ";
+		if (reservationPair.firstClass)
+			std::cout << "Pierwsza" << std::endl;
+		else
+			std::cout << "Druga" << std::endl;
+		std::cout << "Wagon: " << reservationPair.carNumber << ", Miejsce: " << reservationPair.seatNumber << std::endl;
+		std::cout << "Cena biletu: " << reservationPair.ticketPrice << " zł" << std::endl;
+
+		while (true) {
+			key = _getch();
+			if (key == 27) { // ESC pressed
+				// Remove all reservations from database
+				//removeFromDatabaseMultiple(reservations);
+				return false; // User cancelled the reservation
+			}
+			else if (key == 13) { // ENTER pressed
+				// Save all reservations to database
+				for (auto& reservation : reservations) {
+					//reservation.saveToDatabase();
+				}
+				return true; // User agreed to make a reservation
+			}
+			else if (key == ' ' && i <= reservations.size()) { // SPACE pressed
+				break; // Show next reservation
+			}
+		}
+		i++;
+	}
+}
+
 void Reservation::operator=(const Reservation& obj) {
 	isTryingToReserve = obj.isTryingToReserve;
 	numberOfPeople = obj.numberOfPeople;
@@ -388,11 +436,11 @@ void Reservation::operator=(const Reservation& obj) {
 
 // Checks if preferations declared in object meet seat real values.
 bool Reservation::meetsPreferences(Seat& seat) {
-	if (!facingFront.isChosen || facingFront.value == seat.getIsFacingFront()
-		&& !byTable.isChosen || byTable.value == seat.getIsByTable()
-		&& !window.isChosen || window.value == seat.getIsWindow()
-		&& !middle.isChosen || middle.value == seat.getIsMiddle()
-		&& !corridor.isChosen || corridor.value == seat.getIsCorridor()) {
+	if ((!facingFront.isChosen || facingFront.value == seat.getIsFacingFront())
+		&& (!byTable.isChosen || byTable.value == seat.getIsByTable())
+		&& (!window.isChosen || window.value == seat.getIsWindow())
+		&& (!middle.isChosen || middle.value == seat.getIsMiddle())
+		&& (!corridor.isChosen || corridor.value == seat.getIsCorridor())) {
 		return true;
 	}
 	return false;
