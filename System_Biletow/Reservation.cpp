@@ -574,7 +574,15 @@ void Reservation::removeFromDatabase(){
 }
 
 float Reservation::calculateTicketPrice() {
-	float price{}, distance{};
+	float price{}, distance{}, discount{};
+	if(discounts.empty()) {
+		// Should never happen, but just in case
+		discount = 0;
+	}
+	else {
+		discount = discounts.back();
+		discounts.pop_back(); // Remove the last discount, because it was already used
+	}
 
 	if (fromStationNumber > toStationNumber) // This should not happen
 		std::swap(fromStationNumber, toStationNumber);
@@ -632,5 +640,5 @@ float Reservation::calculateTicketPrice() {
 			distance -= 1000;
 	} while (distance > 1000);
 	
-	return price; // * discount
+	return price - (price * discount);
 }
