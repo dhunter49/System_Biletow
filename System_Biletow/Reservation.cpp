@@ -158,9 +158,11 @@ bool Reservation::makeAReservation() {
 			break;
 		}
 	}
-	findASeat();
-
-	askIfUserAgrees();
+	if(findASeat())
+		if (askIfUserAgrees())
+			return true; // Reservation was made successfully
+		else
+			return false; // User cancelled the reservation
 }
 
 Preference Reservation::getPreferenceValues(std::string menuTitle) {
@@ -379,9 +381,9 @@ bool Reservation::askIfUserAgrees() {
 	for (auto& reservationPair : reservations) {
 		clearScreen();
 		if(reservations.size() == 1 || i == reservations.size())
-			std::cout << "Znaleziono miejsca: (ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl;
+			std::cout << "Znaleziono miejsca ("<< i<<'/' << reservations.size() << "): (ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl << std::endl;
 		else
-			std::cout << "Znaleziono miejsca: (SPACE - następne, ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl;
+			std::cout << "Znaleziono miejsca (" << i << '/' << reservations.size() << "): (SPACE - następne, ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl << std::endl;
 		std::cout << "Trasa: " << data.getTripByID(reservationPair.tripID).getMenuOptionTrip(reservationPair.fromStationNumber, reservationPair.toStationNumber).menuText << std::endl;
 		std::cout << "Klasa: ";
 		if (reservationPair.firstClass)
@@ -396,16 +398,15 @@ bool Reservation::askIfUserAgrees() {
 			if (key == 27) { // ESC pressed
 				// Remove all reservations from database
 				//removeFromDatabaseMultiple(reservations);
+				reservations.clear();
 				return false; // User cancelled the reservation
 			}
 			else if (key == 13) { // ENTER pressed
-				// Save all reservations to database
-				for (auto& reservation : reservations) {
-					//reservation.saveToDatabase();
-				}
+				// All reservations are already saved, so just return true
+				reservations.clear();
 				return true; // User agreed to make a reservation
 			}
-			else if (key == ' ' && i <= reservations.size()) { // SPACE pressed
+			else if (key == ' ' && i < reservations.size()) { // SPACE pressed
 				break; // Show next reservation
 			}
 		}

@@ -46,7 +46,6 @@ int main() {
 		case 0:
 			clearScreen();
 			reservation.makeAReservation();
-			waitForEsc();
 			break;
 		case 1:
 			clearScreen();
