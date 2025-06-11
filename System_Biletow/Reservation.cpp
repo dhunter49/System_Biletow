@@ -163,8 +163,11 @@ bool Reservation::makeAReservation() {
 	if(findASeat())
 		if (askIfUserAgrees())
 			return true; // Reservation was made successfully
-		else
-			return false; // User cancelled the reservation
+		else { // User cancelled the reservation
+			removeFromDatabaseMultiple();
+			return false;
+		}
+	removeFromDatabaseMultiple();
 	return false;
 }
 
@@ -361,7 +364,7 @@ bool Reservation::findASeatSplit() {
 		else {
 			// We didn't find a seat for one of the people, we need to restore numberOfPeople and return false.
 			numberOfPeople = i + reservations.size();
-			//removeFromDatabaseMultiple(people);
+			removeFromDatabaseMultiple();
 			return false;
 		}
 	}
