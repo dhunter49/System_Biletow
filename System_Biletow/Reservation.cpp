@@ -208,6 +208,7 @@ bool Reservation::findASeat() {
 								//calculateTicketPrice();
 								//saveToDatabase();
 								if (numberOfPeopleLeft > 1) {
+									numberOfPeopleLeft--;
 									continue;
 								}
 								return true;
