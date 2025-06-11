@@ -21,6 +21,7 @@ private:
 	int fromStationNumber = 2;
 	int toStationNumber = 6;
 	bool firstClass{};
+	std::vector<float> discounts{}; // Discount in percents, 0-1
 	Preference isCompartment{};
 	Preference facingFront{};
 	Preference byTable{};
@@ -51,7 +52,7 @@ public:
 	Preference getPreferenceValues(std::string menuTitle);
 
 	void saveToDatabase();
-	void removeFromDatabaseMultiple(std::vector<Reservation>& reservations);
+	void removeFromDatabaseMultiple();
 	void removeFromDatabase();
 
 	// Assign overload operator
