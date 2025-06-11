@@ -249,6 +249,10 @@ bool Reservation::findASeat() {
 			_getch(); // Wait for user to press a key
 			return findASeatSplit();
 		}
+		clearScreen();
+		if (!searchingMessageShown) {
+			std::cout << "Szukanie miejsc..." << std::endl; // Just in case, if this will take a while, user will know what is happening.
+		}
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car

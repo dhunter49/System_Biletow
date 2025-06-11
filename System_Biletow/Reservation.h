@@ -13,6 +13,7 @@ class Reservation {
 private:
 	std::vector<Reservation> reservations; // Stores all reservations made by user, used to remove them from database if needed
 	bool isTryingToReserve = false; // Used to prevent infinite loop in case of no seats available
+	bool searchingMessageShown = false; // Used to show searching message only once
 
 	// Variables required before making a reservation:
 	// WARNING: for 1 person all vars could be changed, but for more than 1 person only: firstClass, isCompartment, byTable.
