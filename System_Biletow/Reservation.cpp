@@ -5,6 +5,7 @@
 #include <limits>
 #include <iostream>
 #include <conio.h>
+#include <algorithm>
 
 bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
@@ -266,7 +267,7 @@ bool Reservation::findASeat() {
 								carNumber = seatPair.getCarNumber();
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
-								//calculateTicketPrice();
+								ticketPrice = calculateTicketPrice();
 								saveToDatabase();
 								Reservation temp(*this);
 								reservations.push_back(temp);
@@ -570,4 +571,66 @@ void Reservation::removeFromDatabase(){
 	{
 		std::cout << "err: " << e.what() << std::endl;
 	}
+}
+
+float Reservation::calculateTicketPrice() {
+	float price{}, distance{};
+
+	if (fromStationNumber > toStationNumber) // This should not happen
+		std::swap(fromStationNumber, toStationNumber);
+
+	SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+	SQLite::Statement queryC(db, "SELECT Distance "
+		"FROM Distances FULL JOIN (Routes FULL JOIN Trips ON Routes.ID = Trips.RouteID) ON Distances.StationA = Routes.StationID "
+		"WHERE Routes.StationNumber = 1 "
+		"AND Trips.ID = ?");
+	queryC.bind(1, tripID);
+	queryC.executeStep();
+	if (!queryC.getColumn(0).getInt()) {
+		std::cout << "kurwa";
+		waitForEsc();
+		fromStationNumber++;
+		toStationNumber++;
+	}
+
+	// Calculates total distance between stations
+	SQLite::Statement queryDistance(db, "SELECT SUM(Distance) "
+		"FROM Distances FULL JOIN(Routes FULL JOIN Trips ON Routes.ID = Trips.RouteID) ON Distances.StationA = Routes.StationID "
+		"WHERE Trips.ID = ? "
+		"AND Routes.StationNumber >= ? "
+		"AND Routes.StationNumber + 1 <= ? "
+		"ORDER BY StationNumber");
+	queryDistance.bind(1, tripID);
+	queryDistance.bind(2, fromStationNumber);
+	queryDistance.bind(3, toStationNumber);
+	queryDistance.executeStep();
+	distance = queryDistance.getColumn(0).getDouble();
+
+	// Calculates price based on distance and seat class
+	do {
+		if (firstClass) {
+			SQLite::Statement queryPrice(db, "SELECT FirstClassPrice "
+				"FROM Prices "
+				"WHERE Distance >= ? "
+				"ORDER BY Distance "
+				"LIMIT 1");
+			queryPrice.bind(1, distance);
+			queryPrice.executeStep();
+			price += queryPrice.getColumn(0).getDouble();
+		}
+		else {
+			SQLite::Statement queryPrice(db, "SELECT SecondClassPrice "
+				"FROM Prices "
+				"WHERE Distance >= ? "
+				"ORDER BY Distance "
+				"LIMIT 1");
+			queryPrice.bind(1, distance);
+			queryPrice.executeStep();
+			price += queryPrice.getColumn(0).getDouble();
+		}
+		if (distance > 1000)
+			distance -= 1000;
+	} while (distance > 1000);
+	
+	return price; // * discount
 }
