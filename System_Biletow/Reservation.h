@@ -21,6 +21,7 @@ private:
 	int fromStationNumber = 2;
 	int toStationNumber = 6;
 	bool firstClass{};
+	std::vector<float> discounts{}; // Discount in percents, 0-1
 	Preference isCompartment{};
 	Preference facingFront{};
 	Preference byTable{};

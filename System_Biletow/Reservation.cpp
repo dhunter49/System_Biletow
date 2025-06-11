@@ -98,6 +98,49 @@ bool Reservation::makeAReservation() {
 		}
 	}
 
+	// How to aplly discount
+	bool discountChoice{};
+	if (numberOfPeople > 1) {
+		std::vector<MenuOption> discountYesOrNo;
+		discountYesOrNo.push_back(MenuOption{ 1, "Tak, wybierz dla każdego podróżnego z osobna" });
+		discountYesOrNo.push_back(MenuOption{ 0, "Nie, wybierz jeden rodzaj zniżki dla całej grupy" });
+		int tempChoice = showMenu("Czy chcesz wybrać zniżkę dla każdego podróżnego z osobna?", discountYesOrNo);
+		if(tempChoice == -2)
+			return false; // User cancelled the menu
+		discountChoice = static_cast<bool>(tempChoice);
+	}
+
+	// Discount
+	for (int i = 1; i <= numberOfPeople; i++) {
+		std::vector<MenuOption> discountOptions;
+		discountOptions.push_back(MenuOption{ 0, "Brak zniżki (0%)" });
+		discountOptions.push_back(MenuOption{ 33, "Nauczyciele (33%)" });
+		discountOptions.push_back(MenuOption{ 37, "Dzieci i uczniowie (37%)" });
+		discountOptions.push_back(MenuOption{ 37, "Karta Dużej Rodziny (37%)" });
+		discountOptions.push_back(MenuOption{ 37, "Karta Polaka (37%)" });
+		discountOptions.push_back(MenuOption{ 37, "Emeryci/Renciści (37%)" });
+		discountOptions.push_back(MenuOption{ 51, "Studenci/Doktoranci (51%)" });
+		discountOptions.push_back(MenuOption{ 78, "Żołnierze (78%)" });
+		discountOptions.push_back(MenuOption{ 100, "Dzieci do 4 roku życia (100%)" });
+		std::string discountMenuTitle;
+		if (numberOfPeople > 1 && discountChoice)
+			discountMenuTitle = "Wybierz zniżke dla osoby nr " + std::to_string(i);
+		else
+			discountMenuTitle = "Wybierz zniżkę";
+		int choice = showMenu(discountMenuTitle, discountOptions);
+		if(choice == -2)
+			return false; // User cancelled the menu
+		if (!discountChoice) {
+			for (int i = 1;i <= numberOfPeople;i++) {
+				float value = static_cast<float>(choice) / 100;
+				discounts.push_back(value);
+			}
+			break;
+		}
+		float value = static_cast<float>(choice) / 100;
+		discounts.push_back(value);
+	}
+
 	// Class
 	std::vector<MenuOption> classPreference;
 	classPreference.push_back(MenuOption{ 1, "Pierwsza klasa" });
@@ -444,6 +487,7 @@ void Reservation::operator=(const Reservation& obj) {
 	tripID = obj.tripID;
 	ticketPrice = obj.ticketPrice;
 	reservationID = obj.reservationID;
+	discounts = obj.discounts;
 }
 
 // Checks if preferations declared in object meet seat real values.
@@ -479,6 +523,7 @@ Reservation::Reservation(const Reservation& obj) {
     tripID = obj.tripID;
     ticketPrice = obj.ticketPrice;
 	reservationID = obj.reservationID;
+	discounts = obj.discounts;
 }
 
 // Adds a new reservation to database and sets unique reservationID
