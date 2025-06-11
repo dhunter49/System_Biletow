@@ -7,7 +7,7 @@ bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
 	clearScreen();
 
-	// Input route
+	// Route
 	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
 	int routeChoice = showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menuRoutes);
 	if (routeChoice == -2)
@@ -15,6 +15,7 @@ bool Reservation::makeAReservation() {
 	Route chosenRoute = data.getRouteByID(routeChoice);
 	chosenRoute.loadStations(true);
 
+	// Station -> Station
 	std::vector<MenuOption> menuStationsFrom = chosenRoute.generateMenuListStations(false);
 	fromStationNumber = showMenu("Od jakiej stacji?", menuStationsFrom);
 	if (fromStationNumber == -2)
@@ -24,7 +25,7 @@ bool Reservation::makeAReservation() {
 	if (toStationNumber == -2)
 		return false;
 
-	// Input date
+	// Date
 	Date date;
 	char temp;
 	std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
@@ -48,14 +49,13 @@ bool Reservation::makeAReservation() {
 		}
 	}
 
-	
-	
+	// Trip
 	std::vector<MenuOption> menuTrips = data.generateMenuListTrips(fromStationNumber, toStationNumber);
 	tripID = showMenu("Wybierz opcje", menuTrips);
 	if (tripID == -2)
 		return false;
 
-	// Input number of people
+	// Number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
 	while (true) {
 		std::cin >> numberOfPeople;
@@ -68,7 +68,109 @@ bool Reservation::makeAReservation() {
 			break; // Valid input, exit the loop
 		}
 	}
+
+	// Name
+	std::cout << "Podaj imię głównego podróżnego: ";
+	while (true) {
+		std::cin >> firstName;
+		if (firstName.empty()) {
+			std::cout << "Imię nie może być puste. Proszę podać imię: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+
+	// Surname
+	std::cout << "Podaj nazwisko głównego podróżnego: ";
+	while (true) {
+		std::cin >> lastName;
+		if (lastName.empty()) {
+			std::cout << "Nazwisko nie może być puste. Proszę podać nazwisko: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+
+	// Class
+	std::vector<MenuOption> classPreference;
+	classPreference.push_back(MenuOption{ 1, "Pierwsza klasa" });
+	classPreference.push_back(MenuOption{ 0, "Druga klasa" });
+	int choice = showMenu("Wybierz klasę", classPreference);
+	if (choice == -2)
+		return false;
+	firstClass = static_cast<bool>(choice);
+	
+	// Preferences
+	isCompartment = getPreferenceValues("Czy chcesz rezerwować miejsce/a w przedziale?");
+	byTable = getPreferenceValues("Czy chcesz rezerwować miejsce/a przy stoliku?");
+	if(numberOfPeople == 1)
+		facingFront = getPreferenceValues("Czy chcesz siedzieć twarzą do kierunku jazdy?");
+
+	// Position
+	std::vector<MenuOption> positionOptions;
+	positionOptions.push_back(MenuOption{ 1, "Przy oknie" });
+	positionOptions.push_back(MenuOption{ 0, "Przy przejściu" });
+	positionOptions.push_back(MenuOption{ 2, "Pośrodku" });
+	positionOptions.push_back(MenuOption{ -2, "Dowolne" });
+	choice = showMenu("Wybierz preferowane miejsce", positionOptions);
+	switch (choice)
+	{
+	case 1: // Przy oknie
+		window.isChosen = true;
+		window.value = true;
+		corridor.isChosen = false;
+		corridor.value = false;
+		middle.isChosen = false;
+		middle.value = false;
+		break;
+	case 0: // Przy przejściu
+		window.isChosen = false;
+		window.value = false;
+		corridor.isChosen = true;
+		corridor.value = true;
+		middle.isChosen = false;
+		middle.value = false;
+		break;
+	case 2: // Pośrodku
+		window.isChosen = false;
+		window.value = false;
+		corridor.isChosen = false;
+		corridor.value = false;
+		middle.isChosen = true;
+		middle.value = true;
+		break;
+	case -2: // Dowolne
+		window.isChosen = false;
+		window.value = false;
+		corridor.isChosen = false;
+		corridor.value = false;
+		middle.isChosen = false;
+		middle.value = false;
+		break;
+	default:
+		throw std::runtime_error("Błąd menu!");
+		break;
+	}
 	return true;
+}
+
+Preference Reservation::getPreferenceValues(std::string menuTitle) {
+	Preference pref{};
+	std::vector<MenuOption> options;
+	options.push_back(MenuOption{ 1, "Tak" });
+	options.push_back(MenuOption{ 0, "Nie" });
+	options.push_back(MenuOption{ -2, "Obojętne" });
+	int choice = showMenu(menuTitle, options);
+	if (choice == -2) {
+		pref.isChosen = false; // User cancelled the menu
+	}
+	else {
+		pref.isChosen = true; // User chose "Tak" or "Nie"
+		pref.value = static_cast<bool>(choice);
+	}
+	return pref;
 }
 
 // Tries to find a seat. In DataManager should be already loaded Train.

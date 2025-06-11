@@ -45,6 +45,7 @@ public:
 	float calculateTicketPrice();
 
 	bool makeAReservation();
+	Preference getPreferenceValues(std::string menuTitle);
 
 	void saveToDatabase();
 	void removeFromDatabaseMultiple(std::vector<Reservation>& reservations);
