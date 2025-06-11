@@ -111,49 +111,51 @@ bool Reservation::makeAReservation() {
 		facingFront = getPreferenceValues("Czy chcesz siedzieć twarzą do kierunku jazdy?");
 
 	// Position
-	std::vector<MenuOption> positionOptions;
-	positionOptions.push_back(MenuOption{ 1, "Przy oknie" });
-	positionOptions.push_back(MenuOption{ 0, "Przy przejściu" });
-	positionOptions.push_back(MenuOption{ 2, "Pośrodku" });
-	positionOptions.push_back(MenuOption{ -2, "Dowolne" });
-	choice = showMenu("Wybierz preferowane miejsce", positionOptions);
-	switch (choice)
-	{
-	case 1: // Przy oknie
-		window.isChosen = true;
-		window.value = true;
-		corridor.isChosen = false;
-		corridor.value = false;
-		middle.isChosen = false;
-		middle.value = false;
-		break;
-	case 0: // Przy przejściu
-		window.isChosen = false;
-		window.value = false;
-		corridor.isChosen = true;
-		corridor.value = true;
-		middle.isChosen = false;
-		middle.value = false;
-		break;
-	case 2: // Pośrodku
-		window.isChosen = false;
-		window.value = false;
-		corridor.isChosen = false;
-		corridor.value = false;
-		middle.isChosen = true;
-		middle.value = true;
-		break;
-	case -2: // Dowolne
-		window.isChosen = false;
-		window.value = false;
-		corridor.isChosen = false;
-		corridor.value = false;
-		middle.isChosen = false;
-		middle.value = false;
-		break;
-	default:
-		throw std::runtime_error("Błąd menu!");
-		break;
+	if (numberOfPeople == 1) {
+		std::vector<MenuOption> positionOptions;
+		positionOptions.push_back(MenuOption{ 1, "Przy oknie" });
+		positionOptions.push_back(MenuOption{ 0, "Przy przejściu" });
+		positionOptions.push_back(MenuOption{ 2, "Pośrodku" });
+		positionOptions.push_back(MenuOption{ -2, "Dowolne" });
+		choice = showMenu("Wybierz preferowane miejsce", positionOptions);
+		switch (choice)
+		{
+		case 1: // Przy oknie
+			window.isChosen = true;
+			window.value = true;
+			corridor.isChosen = false;
+			corridor.value = false;
+			middle.isChosen = false;
+			middle.value = false;
+			break;
+		case 0: // Przy przejściu
+			window.isChosen = false;
+			window.value = false;
+			corridor.isChosen = true;
+			corridor.value = true;
+			middle.isChosen = false;
+			middle.value = false;
+			break;
+		case 2: // Pośrodku
+			window.isChosen = false;
+			window.value = false;
+			corridor.isChosen = false;
+			corridor.value = false;
+			middle.isChosen = true;
+			middle.value = true;
+			break;
+		case -2: // Dowolne
+			window.isChosen = false;
+			window.value = false;
+			corridor.isChosen = false;
+			corridor.value = false;
+			middle.isChosen = false;
+			middle.value = false;
+			break;
+		default:
+			throw std::runtime_error("Błąd menu!");
+			break;
+		}
 	}
 	return findASeat();
 }
