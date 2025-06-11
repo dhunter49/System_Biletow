@@ -38,6 +38,7 @@ private:
 	int seatNumber{};
 	int tripID{};
 	float ticketPrice{};
+	int reservationID{};
 public:
 	bool findASeat();
 	bool findASeatWithConflicts();

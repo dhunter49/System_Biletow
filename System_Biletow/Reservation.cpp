@@ -1,5 +1,7 @@
 ﻿#include "Reservation.h"
 #include "DataManager.h"
+#include "GlobalConsts.h"
+#include <SQLiteCpp/SQLiteCpp.h>
 #include <limits>
 #include <iostream>
 #include <conio.h>
@@ -466,4 +468,47 @@ Reservation::Reservation(const Reservation& obj) {
     seatNumber = obj.seatNumber;
     tripID = obj.tripID;
     ticketPrice = obj.ticketPrice;
+}
+
+// Adds a new reservation to database and sets unique reservationID
+void Reservation::saveToDatabase() {
+	try
+	{
+		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
+		SQLite::Statement query{ db, "INSERT INTO Passengers (TripID, CarNumber, SeatNumber, FromStation, ToStation, Name, Surname, Price)"
+			"VALUES(?, ?, ?, ?, ?, ?, ?, ?)" };
+
+		query.bind(1, tripID);
+		query.bind(2, carNumber);
+		query.bind(3, seatNumber);
+		query.bind(4, fromStationNumber);
+		query.bind(5, toStationNumber);
+		query.bind(6, firstName);
+		query.bind(7, lastName);
+		query.bind(8, ticketPrice);
+		query.exec();
+
+		reservationID = static_cast<int>(db.getLastInsertRowid());
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "err: " << e.what() << std::endl;
+	}
+}
+
+// Removes a reservation from database by reservationID
+void Reservation::removeFromDatabase(){
+	try
+	{
+		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
+		SQLite::Statement query{ db, "DELETE FROM Passengers"
+			"WHERE ID=?" };
+
+		query.bind(1, reservationID);
+		query.exec();
+	}
+	catch (std::exception& e)
+	{
+		std::cout << "err: " << e.what() << std::endl;
+	}
 }
