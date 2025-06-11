@@ -164,7 +164,7 @@ bool Reservation::makeAReservation() {
 		if (askIfUserAgrees())
 			return true; // Reservation was made successfully
 		else { // User cancelled the reservation
-			removeFromDatabaseMultiple();
+			// Removes all reservations from database inside of askIfUserAgrees method
 			return false;
 		}
 	else {
@@ -201,7 +201,8 @@ bool Reservation::findASeat() {
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
 		if (numberOfPeople > 8) {
 			// Number of people exceeds all compartments sizes, tries to split users
-			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje!";
+			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje! \nKliknij przycisk aby kontynuować...";
+			_getch(); // Wait for user to press a key
 			return findASeatSplit();
 		}
 		data.getCarsByTrainID(data.currentTrain.getTrainID());
@@ -224,7 +225,7 @@ bool Reservation::findASeat() {
 								tripID = seatPair.getTripID();
 								//calculateTicketPrice();
 								saveToDatabase();
-								Reservation temp = *this;
+								Reservation temp(*this);
 								reservations.push_back(temp);
 								if (numberOfPeopleLeft > 1) {
 									numberOfPeopleLeft--;
@@ -404,7 +405,7 @@ bool Reservation::askIfUserAgrees() {
 			key = _getch();
 			if (key == 27) { // ESC pressed
 				// Remove all reservations from database
-				//removeFromDatabaseMultiple(reservations);
+				removeFromDatabaseMultiple();
 				reservations.clear();
 				return false; // User cancelled the reservation
 			}
@@ -439,6 +440,7 @@ void Reservation::operator=(const Reservation& obj) {
 	seatNumber = obj.seatNumber;
 	tripID = obj.tripID;
 	ticketPrice = obj.ticketPrice;
+	reservationID = obj.reservationID;
 }
 
 // Checks if preferations declared in object meet seat real values.
@@ -473,6 +475,7 @@ Reservation::Reservation(const Reservation& obj) {
     seatNumber = obj.seatNumber;
     tripID = obj.tripID;
     ticketPrice = obj.ticketPrice;
+	reservationID = obj.reservationID;
 }
 
 // Adds a new reservation to database and sets unique reservationID
@@ -509,7 +512,7 @@ void Reservation::removeFromDatabase(){
 			return; // Reservation not saved yet, nothing to remove.
 		}
 		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
-		SQLite::Statement query{ db, "DELETE FROM Passengers"
+		SQLite::Statement query{ db, "DELETE FROM Passengers "
 			"WHERE ID=?" };
 
 		query.bind(1, reservationID);
