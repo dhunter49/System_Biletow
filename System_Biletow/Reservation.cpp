@@ -5,6 +5,7 @@
 
 bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
+	data.loadAllRoutesFromDatabase();
 	clearScreen();
 
 	// Route
