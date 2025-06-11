@@ -35,6 +35,7 @@ public:
 	void getTripsByDateAndRouteID(Date date, int routeID);
 	void loadTripByID(int tripID);
 	Trip getTripByID(int tripID);
+	std::vector<MenuOption> generateMenuListTrips(int stationNumberStart, int stationNumberEnd);
 
 	void getTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
 	Train getTrain();

@@ -66,6 +66,7 @@ protected:
 public:
 	void printStationSchedule(int stationNum);
 	void loadAllOtherSchedules();
+	MenuOption getMenuOptionTrip(int stationNumberStart, int stationNumberEnd);
 
 	// getters
 	int getTripID();

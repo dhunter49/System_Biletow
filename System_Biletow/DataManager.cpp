@@ -184,6 +184,16 @@ Trip DataManager::getTripByID(int tripID) {
     return *it;
 }
 
+std::vector<MenuOption> DataManager::generateMenuListTrips(int stationNumberStart, int stationNumberEnd) {
+	std::vector<MenuOption> out;
+	MenuOption oneOption;
+	for (auto& trip : currentTrips) {
+		oneOption = trip.getMenuOptionTrip(stationNumberStart, stationNumberEnd);
+		out.push_back(oneOption);
+	}
+	return out;
+}
+
 void DataManager::getTrainByTripID(int tripID) {
     int routeID = getTripByID(tripID).getRouteID();
 

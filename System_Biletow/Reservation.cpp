@@ -30,7 +30,7 @@ bool Reservation::makeAReservation() {
 
 	data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
 	if (data.currentTrips.size() != 1) {
-
+		std::vector<MenuOption> menu = data.generateMenuListTrips(fromStationNumber, toStationNumber);
 	}
 
 	// Input number of people

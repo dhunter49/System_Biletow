@@ -60,6 +60,19 @@ void Trip::loadAllOtherSchedules() {
     }
 }
 
+MenuOption Trip::getMenuOptionTrip(int stationNumberStart, int stationNumberEnd) {
+    MenuOption out;
+    std::string text;
+    Schedule from, to;
+	from = getSchedule(stationNumberStart);
+	to = getSchedule(stationNumberEnd);
+	text = getStation(stationNumberStart).name + " " + from.departure.getTimeFormat() + " - " +
+		getStation(stationNumberEnd).name + " " + to.arrival.getTimeFormat();
+	out.menuText = text;
+	out.id = tripID;
+	return out;
+}
+
 void Trip::setDate(Date newDate) {
     date = newDate;
 }
