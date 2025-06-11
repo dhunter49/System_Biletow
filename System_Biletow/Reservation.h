@@ -11,6 +11,7 @@ struct Preference {
 
 class Reservation {
 private:
+	std::vector<Reservation> reservations; // Stores all reservations made by user, used to remove them from database if needed
 	bool isTryingToReserve = false; // Used to prevent infinite loop in case of no seats available
 
 	// Variables required before making a reservation:
@@ -44,6 +45,10 @@ public:
 	bool findASeatSplit();
 	bool meetsPreferences(Seat& seat);
 	float calculateTicketPrice();
+
+	bool makeAReservation();
+	bool askIfUserAgrees();
+	Preference getPreferenceValues(std::string menuTitle);
 
 	void saveToDatabase();
 	void removeFromDatabaseMultiple(std::vector<Reservation>& reservations);

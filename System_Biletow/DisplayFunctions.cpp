@@ -1,4 +1,8 @@
-#include "Menu.h"
+#include <vector>
+#include <iostream>
+#include <Windows.h>
+#include <conio.h>
+#include <iomanip>
 
 // Sets console output text to given color
 // ONLY WINDOWS

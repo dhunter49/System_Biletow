@@ -2,11 +2,193 @@
 #include "DataManager.h"
 #include "GlobalConsts.h"
 #include <SQLiteCpp/SQLiteCpp.h>
+#include <limits>
+#include <iostream>
+#include <conio.h>
+
+bool Reservation::makeAReservation() {
+	DataManager& data = DataManager::getInstance();
+	data.loadAllRoutesFromDatabase();
+	clearScreen();
+
+	// Route
+	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
+	int routeChoice = showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menuRoutes);
+	if (routeChoice == -2)
+		return false;
+	Route chosenRoute = data.getRouteByID(routeChoice);
+	chosenRoute.loadStations(true);
+
+	// Station -> Station
+	std::vector<MenuOption> menuStationsFrom = chosenRoute.generateMenuListStations(false);
+	fromStationNumber = showMenu("Od jakiej stacji?", menuStationsFrom);
+	if (fromStationNumber == -2)
+		return false;
+	std::vector<MenuOption> menuStationsTo = chosenRoute.generateMenuListStations(true, fromStationNumber);
+	toStationNumber = showMenu("Do jakiej stacji?", menuStationsTo);
+	if (toStationNumber == -2)
+		return false;
+
+	// Date
+	Date date;
+	char temp;
+	std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
+	while (true) {
+		std::cin >> date.day >> temp >> date.month >> temp >> date.year;
+		if (std::cin.fail() || date.day < 1 || date.month < 1 || date.year < 1 || date.month > 12 || date.day > 31) {
+			std::cin.clear(); // Clear the error flag
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY: ";
+		}
+		else {
+			try {
+				data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+			}
+			catch (const std::runtime_error& e) {
+				std::cout << "Błąd: " << e.what() << "\n";
+				std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
+				continue;
+			}
+			break; // Valid input, exit the loop
+		}
+	}
+
+	// Trip
+	std::vector<MenuOption> menuTrips = data.generateMenuListTrips(fromStationNumber, toStationNumber);
+	tripID = showMenu("Wybierz opcje", menuTrips);
+	if (tripID == -2)
+		return false;
+	data.getTrainByTripID(tripID); // Load the train associated with the trip
+
+	// Number of people
+	std::cout << "Podaj liczbę osób do zarezerwowania: ";
+	while (true) {
+		std::cin >> numberOfPeople;
+		if (std::cin.fail() || numberOfPeople < 1) {
+			std::cin.clear(); // Clear the error flag
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+			std::cout << "Nieprawidłowa liczba osób. Proszę podać liczbę osób: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+
+	// Name
+	std::cout << "Podaj imię głównego podróżnego: ";
+	while (true) {
+		std::cin >> firstName;
+		if (firstName.empty()) {
+			std::cout << "Imię nie może być puste. Proszę podać imię: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+
+	// Surname
+	std::cout << "Podaj nazwisko głównego podróżnego: ";
+	while (true) {
+		std::cin >> lastName;
+		if (lastName.empty()) {
+			std::cout << "Nazwisko nie może być puste. Proszę podać nazwisko: ";
+		}
+		else {
+			break; // Valid input, exit the loop
+		}
+	}
+
+	// Class
+	std::vector<MenuOption> classPreference;
+	classPreference.push_back(MenuOption{ 1, "Pierwsza klasa" });
+	classPreference.push_back(MenuOption{ 0, "Druga klasa" });
+	int choice = showMenu("Wybierz klasę", classPreference);
+	if (choice == -2)
+		return false;
+	firstClass = static_cast<bool>(choice);
+	
+	// Preferences
+	isCompartment = getPreferenceValues("Czy chcesz rezerwować miejsce/a w przedziale?");
+	byTable = getPreferenceValues("Czy chcesz rezerwować miejsce/a przy stoliku?");
+	if(numberOfPeople == 1)
+		facingFront = getPreferenceValues("Czy chcesz siedzieć twarzą do kierunku jazdy?");
+
+	// Position
+	if (numberOfPeople == 1) {
+		std::vector<MenuOption> positionOptions;
+		positionOptions.push_back(MenuOption{ 1, "Przy oknie" });
+		positionOptions.push_back(MenuOption{ 0, "Przy przejściu" });
+		positionOptions.push_back(MenuOption{ 2, "Pośrodku" });
+		positionOptions.push_back(MenuOption{ -2, "Dowolne" });
+		choice = showMenu("Wybierz preferowane miejsce", positionOptions);
+		switch (choice)
+		{
+		case 1: // Przy oknie
+			window.isChosen = true;
+			window.value = true;
+			corridor.isChosen = false;
+			corridor.value = false;
+			middle.isChosen = false;
+			middle.value = false;
+			break;
+		case 0: // Przy przejściu
+			window.isChosen = false;
+			window.value = false;
+			corridor.isChosen = true;
+			corridor.value = true;
+			middle.isChosen = false;
+			middle.value = false;
+			break;
+		case 2: // Pośrodku
+			window.isChosen = false;
+			window.value = false;
+			corridor.isChosen = false;
+			corridor.value = false;
+			middle.isChosen = true;
+			middle.value = true;
+			break;
+		case -2: // Dowolne
+			window.isChosen = false;
+			window.value = false;
+			corridor.isChosen = false;
+			corridor.value = false;
+			middle.isChosen = false;
+			middle.value = false;
+			break;
+		default:
+			throw std::runtime_error("Błąd menu!");
+			break;
+		}
+	}
+	if(findASeat())
+		if (askIfUserAgrees())
+			return true; // Reservation was made successfully
+		else
+			return false; // User cancelled the reservation
+}
+
+Preference Reservation::getPreferenceValues(std::string menuTitle) {
+	Preference pref{};
+	std::vector<MenuOption> options;
+	options.push_back(MenuOption{ 1, "Tak" });
+	options.push_back(MenuOption{ 0, "Nie" });
+	options.push_back(MenuOption{ -2, "Obojętne" });
+	int choice = showMenu(menuTitle, options);
+	if (choice == -2) {
+		pref.isChosen = false; // User cancelled the menu
+	}
+	else {
+		pref.isChosen = true; // User chose "Tak" or "Nie"
+		pref.value = static_cast<bool>(choice);
+	}
+	return pref;
+}
 
 // Tries to find a seat. In DataManager should be already loaded Train.
 // Returns true when seat is found and saved into the object variables, returns false if not found.
 bool Reservation::findASeat() {
 	auto& data = DataManager::getInstance();
+	int numberOfPeopleLeft = numberOfPeople;
 	// check if there is enough spots in the entire train, if not instantly returns false value.
 	if (data.currentTrain.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
 		if (numberOfPeople > 8) {
@@ -23,7 +205,7 @@ bool Reservation::findASeat() {
 					// check if there is enough spots in a compartment
 					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople 
 						&& compartmentPair.getIsFirstClass() == firstClass
-						&& !isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment()) {
+						&& (!isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment())) {
 						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
@@ -33,6 +215,13 @@ bool Reservation::findASeat() {
 								seatNumber = seatPair.getSeatNumber();
 								tripID = seatPair.getTripID();
 								//calculateTicketPrice();
+								//saveToDatabase();
+								Reservation temp = *this;
+								reservations.push_back(temp);
+								if (numberOfPeopleLeft > 1) {
+									numberOfPeopleLeft--;
+									continue;
+								}
 								return true;
 							}
 						}
@@ -160,19 +349,18 @@ bool Reservation::findASeatWithConflicts() {
 // Finds a seat for each person in the reservation, if there is no seat for one of the people, returns false.
 bool Reservation::findASeatSplit() {
 	Reservation person;
-	std::vector<Reservation> people;
 	for (int i = numberOfPeople; i > 0; i--) {
 		person = Reservation(*this);
 		person.numberOfPeople = 1;
 		if (person.findASeat()) {
 			*this = person; // Ensure that the current object gotten the changes from the person object. For example removed preferences.
-			numberOfPeople = i + people.size();
-			people.push_back(person);
+			numberOfPeople = i + reservations.size();
+			reservations.push_back(person);
 			//person.saveToDatabase(); // Save each person reservation to database
 		}
 		else {
 			// We didn't find a seat for one of the people, we need to restore numberOfPeople and return false.
-			numberOfPeople = i + people.size();
+			numberOfPeople = i + reservations.size();
 			//removeFromDatabaseMultiple(people);
 			return false;
 		}
@@ -182,7 +370,49 @@ bool Reservation::findASeatSplit() {
 void Reservation::removeFromDatabaseMultiple(std::vector<Reservation>& reservations) {
 	// Removes all reservations from database
 	for (auto& reservation : reservations) {
-		reservation.removeFromDatabase();
+		//reservation.removeFromDatabase();
+	}
+}
+
+bool Reservation::askIfUserAgrees() {
+	int i = 1;
+	int key = 0;
+
+	auto& data = DataManager::getInstance();
+
+	for (auto& reservationPair : reservations) {
+		clearScreen();
+		if(reservations.size() == 1 || i == reservations.size())
+			std::cout << "Znaleziono miejsca ("<< i<<'/' << reservations.size() << "): (ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl << std::endl;
+		else
+			std::cout << "Znaleziono miejsca (" << i << '/' << reservations.size() << "): (SPACE - następne, ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl << std::endl;
+		std::cout << "Trasa: " << data.getTripByID(reservationPair.tripID).getMenuOptionTrip(reservationPair.fromStationNumber, reservationPair.toStationNumber).menuText << std::endl;
+		std::cout << "Klasa: ";
+		if (reservationPair.firstClass)
+			std::cout << "Pierwsza" << std::endl;
+		else
+			std::cout << "Druga" << std::endl;
+		std::cout << "Wagon: " << reservationPair.carNumber << ", Miejsce: " << reservationPair.seatNumber << std::endl;
+		std::cout << "Cena biletu: " << reservationPair.ticketPrice << " zł" << std::endl;
+
+		while (true) {
+			key = _getch();
+			if (key == 27) { // ESC pressed
+				// Remove all reservations from database
+				//removeFromDatabaseMultiple(reservations);
+				reservations.clear();
+				return false; // User cancelled the reservation
+			}
+			else if (key == 13) { // ENTER pressed
+				// All reservations are already saved, so just return true
+				reservations.clear();
+				return true; // User agreed to make a reservation
+			}
+			else if (key == ' ' && i < reservations.size()) { // SPACE pressed
+				break; // Show next reservation
+			}
+		}
+		i++;
 	}
 }
 
@@ -208,11 +438,11 @@ void Reservation::operator=(const Reservation& obj) {
 
 // Checks if preferations declared in object meet seat real values.
 bool Reservation::meetsPreferences(Seat& seat) {
-	if (!facingFront.isChosen || facingFront.value == seat.getIsFacingFront()
-		&& !byTable.isChosen || byTable.value == seat.getIsByTable()
-		&& !window.isChosen || window.value == seat.getIsWindow()
-		&& !middle.isChosen || middle.value == seat.getIsMiddle()
-		&& !corridor.isChosen || corridor.value == seat.getIsCorridor()) {
+	if ((!facingFront.isChosen || facingFront.value == seat.getIsFacingFront())
+		&& (!byTable.isChosen || byTable.value == seat.getIsByTable())
+		&& (!window.isChosen || window.value == seat.getIsWindow())
+		&& (!middle.isChosen || middle.value == seat.getIsMiddle())
+		&& (!corridor.isChosen || corridor.value == seat.getIsCorridor())) {
 		return true;
 	}
 	return false;

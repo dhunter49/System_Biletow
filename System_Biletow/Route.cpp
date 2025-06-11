@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "StationManager.h"
 #include <iomanip>
+#include <conio.h>
 
 Route::Route() : routeID(1) {}
 
@@ -140,4 +141,20 @@ void Route::showInfo() {
         setColor(7);
         throw;
     }
+}
+
+std::vector<MenuOption> Route::generateMenuListStations(bool withLast, int from) {
+    MenuOption oneOption;
+    std::vector<MenuOption> out;
+    int subtract;
+    if (withLast)
+        subtract = 0;
+    else
+        subtract = 1;
+    for (int i = from+1; i <= stationList.size() - subtract; i++) {
+        oneOption.id = i;
+        oneOption.menuText = stationList[i].name;
+        out.push_back(oneOption);
+    }
+    return out;
 }

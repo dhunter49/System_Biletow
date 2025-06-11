@@ -27,12 +27,15 @@ public:
 	// LOADING FROM DATABASE
 	void loadAllRoutesFromDatabase();
 	std::vector<MenuOption> generateMenuListRoutes();
+	Route getRouteByID(int routeID);
 	
 	void loadAllTrainsFromDatabase();
 	std::vector<MenuOption> generateMenuListTrains();
 
 	void getTripsByDateAndRouteID(Date date, int routeID);
+	void loadTripByID(int tripID);
 	Trip getTripByID(int tripID);
+	std::vector<MenuOption> generateMenuListTrips(int stationNumberStart, int stationNumberEnd);
 
 	void getTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
 	Train getTrain();

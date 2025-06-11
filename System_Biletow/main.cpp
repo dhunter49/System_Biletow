@@ -39,13 +39,13 @@ int main() {
 
 	auto& dm = DataManager::getInstance();
 
+	Reservation reservation;
 	while (true) {
 		clearScreen();
 		switch (showMenu("Witaj w systemie rezerwacji biletów kolejowych", mainMenu)) {
 		case 0:
 			clearScreen();
-			std::cout << "Tutaj system rezerwacji";
-			waitForEsc();
+			reservation.makeAReservation();
 			break;
 		case 1:
 			clearScreen();

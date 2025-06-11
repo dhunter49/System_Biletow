@@ -11,6 +11,13 @@ DataManager& DataManager::getInstance() {
     return *instance;
 }
 
+Route DataManager::getRouteByID(int routeID) {
+    if (routes.find(routeID) != routes.end()) {
+        return routes[routeID];
+    }
+    throw std::runtime_error("Route not found");
+}
+
 // Loades all routes to a map. Station List in only filled with station's that are supposed to show in menu - skipped unimportant stations.
 void DataManager::loadAllRoutesFromDatabase() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
@@ -43,7 +50,7 @@ void DataManager::loadAllRoutesFromDatabase() {
 // Loades all trains to a vector
 void DataManager::loadAllTrainsFromDatabase() {
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT ID, ID_Number, Name FROM Trains");
+    SQLite::Statement query(db, "SELECT ID, IDNumber, Name FROM Trains");
 
     if (!query.executeStep()) {
         throw std::runtime_error("No trains found in database!");
@@ -126,6 +133,46 @@ void DataManager::getTripsByDateAndRouteID(Date date, int routeID) {
     }
 }
 
+void DataManager::loadTripByID(int tripID) {
+    currentTrips = std::vector<Trip>(); // Empty vector
+    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+    SQLite::Statement query(db,
+        "SELECT ID, RouteID "
+        "CAST(strftime('%H', Time) AS INTEGER) AS hour, "
+        "CAST(strftime('%M', Time) AS INTEGER) AS minute, "
+        "CAST(strftime('%d', Date) AS INTEGER) AS day, "
+        "CAST(strftime('%m', Date) AS INTEGER) AS month, "
+        "CAST(strftime('%y', Date) AS INTEGER) AS year "
+        "FROM Trips "
+        "WHERE ID = ?");
+
+    // Bind parameters
+    query.bind(1, tripID);
+
+    if (!query.executeStep())
+        throw std::runtime_error("Brak przejazdów o danym numerze!");
+    Trip trip(tripID);
+    // Set all vars in new obj
+    trip.setRouteID(query.getColumn(1).getInt());
+    trip.setDate(
+        Date{
+			query.getColumn(4).getUInt(), // day
+			query.getColumn(5).getUInt(), // month
+			query.getColumn(6).getUInt() // year
+        });
+    trip.loadStations(true);
+    trip.setSchedule(1,
+        Schedule{
+        trip.getStation(1).id,
+        Time{query.getColumn(2).getUInt(), query.getColumn(3).getUInt()}, // arrival
+        Time{query.getColumn(2).getUInt(), query.getColumn(3).getUInt()}  // departure
+        }
+    );
+    trip.loadAllOtherSchedules();
+    // Adds Trip to vector
+    currentTrips.push_back(trip);
+}
+
 Trip DataManager::getTripByID(int tripID) {
     auto it = std::find_if(currentTrips.begin(), currentTrips.end(),
         [tripID](Trip t) {return t.getTripID() == tripID;});
@@ -135,6 +182,16 @@ Trip DataManager::getTripByID(int tripID) {
     }
 
     return *it;
+}
+
+std::vector<MenuOption> DataManager::generateMenuListTrips(int stationNumberStart, int stationNumberEnd) {
+	std::vector<MenuOption> out;
+	MenuOption oneOption;
+	for (auto& trip : currentTrips) {
+		oneOption = trip.getMenuOptionTrip(stationNumberStart, stationNumberEnd);
+		out.push_back(oneOption);
+	}
+	return out;
 }
 
 void DataManager::getTrainByTripID(int tripID) {

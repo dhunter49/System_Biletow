@@ -68,7 +68,7 @@ int Train::getFreeSeats(int stationStartNumber, int stationEndNumber) {
 
 void Train::showInfo() {
     clearScreen();
-    std::cout << "Wagony w poci¹gu " << trainID << " - " << trainName << ":" << std::endl;
+    std::cout << "Wagony w pociÄ…gu " << trainID << " - " << trainName << ":" << std::endl;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT CarNumber, CarModel "
         "FROM TrainSets "

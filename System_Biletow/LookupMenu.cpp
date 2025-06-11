@@ -1,95 +1,103 @@
 #include "Menu.h"
 #include "DataManager.h"
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "GlobalConsts.h"
+#include <conio.h>
 
 // Displays a menu, user chooses route to see info about
 void DataManager::showLookupMenuRoutes() {
-    // Loads all routes
-    DataManager routesList;
-    try {
-        routesList.loadAllRoutesFromDatabase();
-    }
-    catch (std::exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (SQLite::Exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (...) {
-        std::cerr << "nieznany problem" << std::endl;
-    }
-
-    auto& dm = DataManager::getInstance();
-    std::vector<MenuOption> menu = routesList.generateMenuListRoutes();
+    std::vector<MenuOption> menu = generateMenuListRoutes();
 
     while (true) {
         clearScreen();
-        int choice = showMenu("Wybierz trasê, o której chcesz wyœwietliæ informacje", menu);
+        int choice = showMenu("Wybierz trasÄ™, o ktÃ³rej chcesz wyÅ›wietliÄ‡ informacje", menu);
         if (choice == -2)
             return;
-        Route chosenRoute = routesList.routes[choice];
-        chosenRoute.showInfo();
+        routes[choice].showInfo();
     }
 }
 
 void DataManager::showLookupMenuTrains() {
-
     // Loads all trains
-    DataManager trainsList;
-    try {
-        trainsList.loadAllTrainsFromDatabase();
-    }
-    catch (std::exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (SQLite::Exception& e) {
-        std::cerr << "err: " << e.what() << std::endl;
-    }
-    catch (...) {
-        std::cerr << "nieznany problem" << std::endl;
-    }
+    loadAllTrainsFromDatabase();
 
-    std::vector<MenuOption> menu = trainsList.generateMenuListTrains();
+    std::vector<MenuOption> menu = generateMenuListTrains();
     while (true) {
         clearScreen();
-        int choice = showMenu("Wybierz poci¹g, o którym chcesz wyœwietliæ informacje", menu);
+        int choice = showMenu("Wybierz pociÄ…g, o ktÃ³rym chcesz wyÅ›wietliÄ‡ informacje", menu);
         if (choice == -2)
             return;
-        try {
-            if (choice < 0)
-                throw std::runtime_error("wyst¹pi³ b³¹d");
-            trains[choice].showInfo();
-            waitForEsc();
-        }
-        catch (std::runtime_error& e) {
-            std::cerr << "err: " << e.what() << std::endl;
-        }
+        if (choice < 0)
+            throw std::runtime_error("WystÄ…piÅ‚ bÅ‚Ä…d!");
+        trains[choice].showInfo();
+        waitForEsc();
     }
 }
 
 void DataManager::showLookupMenuPassengers() {
-    clearScreen();
-    std::cout << "Tutaj info o pasa¿erze";
+    while (true) {
+        clearScreen();
+		std::cout << "Podaj numer biletu/numer pasaÅ¼era, o ktÃ³rym chcesz wyÅ›wietliÄ‡ informacje: ";
+        std::string input;
+        std::getline(std::cin, input);
+        if (input.empty()) {
+            std::cout << "Nie podano numeru biletu/numeru pasaÅ¼era! Kliknij przycisk aby kontynuowaÄ‡." << std::endl;
+            char key = _getch();
+            if (key == 27) { // Escape key
+                return;
+            }
+            continue;
+        }
+        SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+        SQLite::Statement query(db, "SELECT TripID, CarNumber, SeatNumber, FromStation, ToStation, Name, Surname, Price FROM Passengers WHERE ID = ?");
+		query.bind(1, input);
+
+        if(!query.executeStep()) {
+            std::cout << "Nie znaleziono pasaÅ¼era o podanym numerze! Kliknij przycisk aby kontynuowaÄ‡." << std::endl;
+            char key = _getch();
+            if( key == 27) { // Escape key
+                return;
+			}
+            continue;
+		}
+        
+		loadTripByID(query.getColumn(0).getInt());
+		Trip trip = getTripByID(query.getColumn(0).getInt());
+
+		std::string fullName = query.getColumn(5).getString() + " " + query.getColumn(6).getString();
+        std::string fromStationName = trip.getStation(query.getColumn(3).getInt()).name;
+		std::string toStationName = trip.getStation(query.getColumn(4).getInt()).name;
+        int carNumber = query.getColumn(1).getInt();
+		int seatNumber = query.getColumn(2).getInt();
+		float price = query.getColumn(7).getDouble();
+
+        std::cout << "Informacje o pasaÅ¼erze:" << std::endl;
+        std::cout << "Numer biletu: " << input << std::endl;
+        std::cout << "ImiÄ™ i nazwisko: " << fullName << std::endl;
+        std::cout << "Trasa: " << fromStationName << " - " << toStationName << std::endl;
+        std::cout << "Numer wagonu: " << carNumber << ", Numer miejsca: " << seatNumber << std::endl;
+        std::cout << "Cena biletu: " << price << " zÅ‚" << std::endl;
+		waitForEsc();
+        return;
+    }
 }
 
 void DataManager::showLookupMenu() {
-    std::vector<MenuOption> lookupMenu = { {0, "o trasie"}, {1, "o poci¹gu"}, {2, "o pasa¿erze"} };
+    std::vector<MenuOption> lookupMenu = { {0, "trasie"}, {1, "pociÄ…gu"}, {2, "pasaÅ¼erze"} };
     int lookupChoice{};
 
     do {
         clearScreen();
-        lookupChoice = showMenu("Poka¿ informacje:", lookupMenu);
+        lookupChoice = showMenu("PokaÅ¼ informacje o", lookupMenu);
         switch (lookupChoice) {
         case 0:
             showLookupMenuRoutes();
             break;
         case 1:
             showLookupMenuTrains();
-            waitForEsc();
             break;
         case 2:
             showLookupMenuPassengers();
-            waitForEsc();
             break;
         case -2:
             lookupChoice = 0;

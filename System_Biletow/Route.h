@@ -23,6 +23,7 @@ public:
 	void addStation(int stationNum, Station newStation);
 	void loadStations(bool all);
 	void showInfo();
+	std::vector<MenuOption> generateMenuListStations(bool withLast, int from = 0);
 
 	// getters
 	int getRouteID();
