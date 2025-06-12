@@ -14,6 +14,5 @@ void setConsoleCursorVisibility(bool visible);
 void clearScreen();
 void gotoXY(int x, int y);
 void waitForEsc();
-void showLookupMenu();
 
 int showMenu(std::string, const std::vector<MenuOption>);
