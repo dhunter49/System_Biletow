@@ -575,6 +575,7 @@ void Reservation::removeFromDatabase(){
 
 float Reservation::calculateTicketPrice() {
 	float price{}, distance{};
+	bool isInverted{};
 
 	if (fromStationNumber > toStationNumber) // This should not happen
 		std::swap(fromStationNumber, toStationNumber);
@@ -587,8 +588,7 @@ float Reservation::calculateTicketPrice() {
 	queryC.bind(1, tripID);
 	queryC.executeStep();
 	if (!queryC.getColumn(0).getInt()) {
-		std::cout << "kurwa";
-		waitForEsc();
+		isInverted = 1;
 		fromStationNumber++;
 		toStationNumber++;
 	}
@@ -605,6 +605,11 @@ float Reservation::calculateTicketPrice() {
 	queryDistance.bind(3, toStationNumber);
 	queryDistance.executeStep();
 	distance = queryDistance.getColumn(0).getDouble();
+
+	if (isInverted) {
+		fromStationNumber--;
+		toStationNumber--;
+	}
 
 	// Calculates price based on distance and seat class
 	do {
