@@ -1,4 +1,4 @@
-#include "Route.h"
+﻿#include "Route.h"
 #include "GlobalConsts.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <queue>
@@ -38,7 +38,7 @@ void Route::loadStations(bool all) {
     query.bind(1, routeID);
 
     if (!query.executeStep()) {
-        throw std::runtime_error("Couldn't find this route");
+        throw std::runtime_error("Nie znaleziono połączenia w bazie");
     }
 
     do {

@@ -15,7 +15,7 @@ Route DataManager::getRouteByID(int routeID) {
     if (routes.find(routeID) != routes.end()) {
         return routes[routeID];
     }
-    throw std::runtime_error("Route not found");
+    throw std::runtime_error("Nie znaleziono połączenia!");
 }
 
 // Loades all routes to a map. Station List in only filled with station's that are supposed to show in menu - skipped unimportant stations.
@@ -24,7 +24,7 @@ void DataManager::loadAllRoutesFromDatabase() {
     SQLite::Statement query(db, "SELECT ID, StationNumber, StationID FROM Routes WHERE IsShowing = 1 ORDER BY ID, StationNumber");
 
     if (!query.executeStep()) {
-        throw std::runtime_error("No routes found in database!");
+        throw std::runtime_error("Nie ma połączeń w bazie danych!");
     }
 
     int currentRouteID = query.getColumn(0).getInt();
@@ -53,7 +53,7 @@ void DataManager::loadAllTrainsFromDatabase() {
     SQLite::Statement query(db, "SELECT ID, IDNumber, Name FROM Trains");
 
     if (!query.executeStep()) {
-        throw std::runtime_error("No trains found in database!");
+        throw std::runtime_error("Nie ma pociągów w bazie danych!");
     }
 
     do {
@@ -178,7 +178,7 @@ Trip DataManager::getTripByID(int tripID) {
         [tripID](Trip t) {return t.getTripID() == tripID;});
 
     if (it == currentTrips.end()) {
-        throw std::runtime_error("Trip not found");
+        throw std::runtime_error("Przejazd nie znaleziony!");
     }
 
     return *it;
@@ -243,7 +243,7 @@ Car DataManager::getCarByNumber(int carNumber) {
         [carNumber](Car t) {return t.getCarNumber() == carNumber;});
 
     if (it == currentCars.end()) {
-        throw std::runtime_error("Car not found");
+        throw std::runtime_error("Wagon nie znaleziony!");
     }
 
     return *it;
@@ -272,7 +272,7 @@ Compartment DataManager::getCompartmentByNumber(int compartmentNumber) {
         [compartmentNumber](Compartment t) {return t.getCompartmentNumber() == compartmentNumber;});
 
     if (it == currentCompartments.end()) {
-        throw std::runtime_error("Compartment not found");
+        throw std::runtime_error("Przedział nieznaleziony");
     }
 
     return *it;
@@ -362,7 +362,7 @@ Seat DataManager::getSeatByNumber(int seatNumber) {
         [seatNumber](Seat t) {return t.getSeatNumber() == seatNumber;});
 
     if (it == currentSeats.end()) {
-        throw std::runtime_error("Seat not found");
+        throw std::runtime_error("Siedzenie nieznalezione!");
     }
 
     return *it;
