@@ -1,1 +1,1 @@
-SELECT * FROM Passengers;
+UPDATE Seats SET IsFacingFront=0 WHERE CarModel = "A9nouz" AND Number%2=1;
