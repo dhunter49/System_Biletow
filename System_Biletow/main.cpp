@@ -1,4 +1,4 @@
-﻿#include <Windows.h>
+#include <Windows.h>
 #include <vector>
 #include "Menu.h"
 #include "DataManager.h"

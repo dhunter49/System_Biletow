@@ -1,4 +1,4 @@
-﻿#include "Reservation.h"
+#include "Reservation.h"
 #include "DataManager.h"
 #include "GlobalConsts.h"
 #include <SQLiteCpp/SQLiteCpp.h>

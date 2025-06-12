@@ -1,4 +1,4 @@
-﻿#include <SQLiteCpp/SQLiteCpp.h>
+#include <SQLiteCpp/SQLiteCpp.h>
 #include "Trip.h"
 #include "GlobalConsts.h"
 

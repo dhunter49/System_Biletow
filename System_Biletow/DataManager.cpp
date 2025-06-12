@@ -1,4 +1,4 @@
-﻿#include "DataManager.h"
+#include "DataManager.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "GlobalConsts.h"
 

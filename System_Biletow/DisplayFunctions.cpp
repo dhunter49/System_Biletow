@@ -67,7 +67,7 @@ void clearScreen() {
 void gotoXY(int x, int y) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     if (hConsole == INVALID_HANDLE_VALUE) 
-        throw std::runtime_error("Problem z konsol¹");
+        throw std::runtime_error("Problem z konsolÂ¹");
     COORD coordScreen = { static_cast<short>(x), static_cast<short>(y) };
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
