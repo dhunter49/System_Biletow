@@ -5,7 +5,7 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "Route.h"
 #include "GlobalConsts.h"
-#include "StationManager.h"
+#include "Station.h"
 
 Route::Route() : routeID(1) {}
 

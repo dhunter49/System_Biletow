@@ -1,4 +1,4 @@
-#include "StationManager.h"
+#include "Station.h"
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <iostream>
 #include "GlobalConsts.h"
