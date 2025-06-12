@@ -181,15 +181,14 @@ bool Reservation::makeAReservation() {
 	// Preferences
 	isCompartment = getPreferenceValues("Czy chcesz rezerwować miejsce/a w przedziale?");
 	byTable = getPreferenceValues("Czy chcesz rezerwować miejsce/a przy stoliku?");
-	if(numberOfPeople == 1)
-		facingFront = getPreferenceValues("Czy chcesz siedzieć twarzą do kierunku jazdy?");
+	facingFront = getPreferenceValues("Czy chcesz siedzieć twarzą do kierunku jazdy?");
 
 	// Position
 	if (numberOfPeople == 1) {
 		std::vector<MenuOption> positionOptions;
 		positionOptions.push_back(MenuOption{ 1, "Przy oknie" });
 		positionOptions.push_back(MenuOption{ 0, "Przy przejściu" });
-		positionOptions.push_back(MenuOption{ 2, "Pośrodku" });
+		positionOptions.push_back(MenuOption{ 2, "Po środku" });
 		positionOptions.push_back(MenuOption{ -2, "Dowolne" });
 		choice = showMenu("Wybierz preferowane miejsce", positionOptions);
 		switch (choice)
@@ -210,7 +209,7 @@ bool Reservation::makeAReservation() {
 			middle.isChosen = false;
 			middle.value = false;
 			break;
-		case 2: // Pośrodku
+		case 2: // Po środku
 			window.isChosen = false;
 			window.value = false;
 			corridor.isChosen = false;
@@ -561,48 +560,34 @@ Reservation::Reservation(const Reservation& obj) {
 
 // Adds a new reservation to database and sets unique reservationID
 void Reservation::saveToDatabase() {
-	try
-	{
-		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
-		SQLite::Statement query{ db, "INSERT INTO Passengers (TripID, CarNumber, SeatNumber, FromStation, ToStation, Name, Surname, Price)"
-			"VALUES(?, ?, ?, ?, ?, ?, ?, ?)" };
+	SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
+	SQLite::Statement query{ db, "INSERT INTO Passengers (TripID, CarNumber, SeatNumber, FromStation, ToStation, Name, Surname, Price)"
+		"VALUES(?, ?, ?, ?, ?, ?, ?, ?)" };
 
-		query.bind(1, tripID);
-		query.bind(2, carNumber);
-		query.bind(3, seatNumber);
-		query.bind(4, fromStationNumber);
-		query.bind(5, toStationNumber);
-		query.bind(6, firstName);
-		query.bind(7, lastName);
-		query.bind(8, ticketPrice);
-		query.exec();
+	query.bind(1, tripID);
+	query.bind(2, carNumber);
+	query.bind(3, seatNumber);
+	query.bind(4, fromStationNumber);
+	query.bind(5, toStationNumber);
+	query.bind(6, firstName);
+	query.bind(7, lastName);
+	query.bind(8, ticketPrice);
+	query.exec();
 
-		reservationID = static_cast<int>(db.getLastInsertRowid());
-	}
-	catch (std::exception& e)
-	{
-		std::cout << "err: " << e.what() << std::endl;
-	}
+	reservationID = static_cast<int>(db.getLastInsertRowid());
 }
 
 // Removes a reservation from database by reservationID
 void Reservation::removeFromDatabase(){
-	try
-	{
-		if( reservationID == 0) {
-			return; // Reservation not saved yet, nothing to remove.
-		}
-		SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
-		SQLite::Statement query{ db, "DELETE FROM Passengers "
-			"WHERE ID=?" };
+	if( reservationID == 0) {
+		return; // Reservation not saved yet, nothing to remove.
+	}
+	SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READWRITE);
+	SQLite::Statement query{ db, "DELETE FROM Passengers "
+		"WHERE ID=?" };
 
-		query.bind(1, reservationID);
-		query.exec();
-	}
-	catch (std::exception& e)
-	{
-		std::cout << "err: " << e.what() << std::endl;
-	}
+	query.bind(1, reservationID);
+	query.exec();
 }
 
 float Reservation::calculateTicketPrice() {

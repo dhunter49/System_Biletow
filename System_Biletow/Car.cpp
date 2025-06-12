@@ -41,7 +41,7 @@ int Car::getTakenSeats(int stationStartNumber, int stationEndNumber) {
         return query.getColumn(0).getInt();
     }
     catch (SQLite::Exception& e) {
-        std::cerr << "Problem z baz¹ danych: " << e.what() << "\nKliknij ESC aby kontynuowaæ...";
+        std::cerr << "Problem z bazą danych: " << e.what() << "\nKliknij ESC aby kontynuowaæ...";
         waitForEsc();
         return 0;
     }
