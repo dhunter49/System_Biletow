@@ -33,6 +33,7 @@ void DataManager::showLookupMenuTrains() {
             continue;
         trains[choice].showInfo();
         waitForEsc();
+        setConsoleCursorVisibility(true);
     }
 }
 
@@ -90,7 +91,8 @@ void DataManager::showLookupMenuPassengers() {
 
             // Show info
             clearScreen();
-            std::cout << "Informacje o pasażerze:" << std::endl;
+            setConsoleCursorVisibility(false);
+            std::cout << "Informacje o pasażerze:" << std::endl << std::endl;
             std::cout << "Numer biletu: " << input << std::endl;
             std::cout << "Imię i nazwisko: " << fullName << std::endl;
             std::cout << "Trasa: " << fromStationName << " - " << toStationName << std::endl;
@@ -98,6 +100,7 @@ void DataManager::showLookupMenuPassengers() {
             std::cout << "Cena biletu: " << price << " zł" << std::endl<<std::endl;
 			std::cout << "Kliknij ESC aby wyjść..." << std::endl;
             waitForEsc();
+            setConsoleCursorVisibility(true);
             return;
         }
         catch (const SQLite::Exception& e) {

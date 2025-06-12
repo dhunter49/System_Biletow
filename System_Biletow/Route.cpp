@@ -90,7 +90,7 @@ void Route::showInfo() {
     int menuPage{};
     setConsoleCursorVisibility(false);
     try {
-        std::cout << "Stacje na wybranej trasie:" << std::endl << std::endl;
+        std::cout << "Stacje na wybranej trasie (Kliknij ESC aby wyjść):" << std::endl << std::endl;
         while (true) {
             if (menuPage < 0 || menuPage >= MAX_PAGES) menuPage = 0;
             std::string spaces(columns, ' ');

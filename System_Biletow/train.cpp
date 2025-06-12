@@ -82,14 +82,17 @@ int Train::getFreeSeats(int stationStartNumber, int stationEndNumber) {
 // Shows info (model) about all cars in the train
 void Train::showInfo() {
     clearScreen();
-    std::cout << "Wagony w pociągu " << trainID << " - " << trainName << ":" << std::endl;
+    std::cout << "Wagony w pociągu " << trainID << " - " << trainName << ":" << std::endl << std::endl;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT CarNumber, CarModel "
         "FROM TrainSets "
         "WHERE TrainSets.TrainID = ? "
         "ORDER BY CarNumber");
     query.bind(1, trainID);
+    setConsoleCursorVisibility(false);
     while(query.executeStep()) {
         std::cout << query.getColumn(0).getString() << " - " << query.getColumn(1).getString() << std::endl;
     }
+
+	std::cout << std::endl << "Naciśnij ESC aby wyjść..." << std::endl;
 }
