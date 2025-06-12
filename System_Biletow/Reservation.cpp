@@ -43,7 +43,7 @@ bool Reservation::makeAReservation() {
 		}
 		else {
 			try {
-				data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+				data.loadTripsByDateAndRouteID(date, chosenRoute.getRouteID());
 			}
 			catch (const std::runtime_error& e) {
 				std::cout << "Błąd: " << e.what() << "\n";
@@ -59,7 +59,7 @@ bool Reservation::makeAReservation() {
 	tripID = showMenu("Wybierz opcje", menuTrips);
 	if (tripID == -2)
 		return false;
-	data.getTrainByTripID(tripID); // Load the train associated with the trip
+	data.loadTrainByTripID(tripID); // Load the train associated with the trip
 
 	// Number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
@@ -254,17 +254,17 @@ bool Reservation::findASeat() {
 			std::cout << "Szukanie miejsc..." << std::endl; // Just in case, if this will take a while, user will know what is happening.
 			searchingMessageShown = true; // Show this message only once
 		}
-		data.getCarsByTrainID(data.currentTrain.getTrainID());
+		data.loadCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car
 			if (carPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
-				data.getCompartmentsByCarNumber(carPair.getCarNumber());
+				data.loadCompartmentsByCarNumber(carPair.getCarNumber());
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
 					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople 
 						&& compartmentPair.getIsFirstClass() == firstClass
 						&& (!isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment())) {
-						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
+						data.loadFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
 							if (meetsPreferences(seatPair)) {

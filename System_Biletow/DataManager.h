@@ -32,22 +32,22 @@ public:
 	void loadAllTrainsFromDatabase();
 	std::vector<MenuOption> generateMenuListTrains();
 
-	void getTripsByDateAndRouteID(Date date, int routeID);
+	void loadTripsByDateAndRouteID(Date date, int routeID);
 	void loadTripByID(int tripID);
 	Trip getTripByID(int tripID);
 	std::vector<MenuOption> generateMenuListTrips(int stationNumberStart, int stationNumberEnd);
 
-	void getTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
+	void loadTrainByTripID(int tripID); // Only one train should match with one trip, else throw exception
 	Train getTrain();
 
-	void getCarsByTrainID(std::string trainID);
+	void loadCarsByTrainID(std::string trainID);
 	Car getCarByNumber(int carNumber);
 
-	void getCompartmentsByCarNumber(int carNumber);
+	void loadCompartmentsByCarNumber(int carNumber);
 	Compartment getCompartmentByNumber(int compartmentNumber);
 
-	void getSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
-	void getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd);
+	void loadSeatsByCompartmentNumber(int compartmentNumber, int carNumber);
+	void loadFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd);
 	Seat getSeatByNumber(int seatNumber);
 
 	// Lookup menu

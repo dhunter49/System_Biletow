@@ -22,11 +22,11 @@ int main() {
 
 	//auto& dm = DataManager::getInstance();
 
-	//dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
-	////dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
-	////dm.getCompartmentsByCarNumber(11);
+	//dm.loadTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
+	////dm.loadCarsByTrainID(dm.loadTrainByTripID(6).getTrainID());
+	////dm.loadCompartmentsByCarNumber(11);
 	////try {
-	////	dm.getSeatsByCompartmentNumber(1, 11);
+	////	dm.loadSeatsByCompartmentNumber(1, 11);
 	////}
 	////catch (SQLite::Exception& e) {
 	////	std::cerr << e.what();

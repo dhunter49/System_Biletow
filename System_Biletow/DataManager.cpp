@@ -89,7 +89,7 @@ std::vector<MenuOption> DataManager::generateMenuListTrains() {
 
 // Gets all trips in a vector that are matching routeID and matching inputted date. Supposedly should find one Trip, although not always.
 // Returns vector with Trips with matching criteria.
-void DataManager::getTripsByDateAndRouteID(Date date, int routeID) {
+void DataManager::loadTripsByDateAndRouteID(Date date, int routeID) {
     currentTrips = std::vector<Trip>(); // Empty vector
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db,
@@ -194,7 +194,7 @@ std::vector<MenuOption> DataManager::generateMenuListTrips(int stationNumberStar
 	return out;
 }
 
-void DataManager::getTrainByTripID(int tripID) {
+void DataManager::loadTrainByTripID(int tripID) {
     int routeID = getTripByID(tripID).getRouteID();
 
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
@@ -222,7 +222,7 @@ Train DataManager::getTrain() {
     return currentTrain;
 }
 
-void DataManager::getCarsByTrainID(std::string trainID) {
+void DataManager::loadCarsByTrainID(std::string trainID) {
     currentCars = std::vector<Car>();
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, "SELECT CarNumber, CarModel FROM TrainSets WHERE TrainID = ?");
@@ -249,7 +249,7 @@ Car DataManager::getCarByNumber(int carNumber) {
     return *it;
 }
 
-void DataManager::getCompartmentsByCarNumber(int carNumber) {
+void DataManager::loadCompartmentsByCarNumber(int carNumber) {
     currentCompartments = std::vector<Compartment>();
     std::string carModel = getCarByNumber(carNumber).getCarModel();
     Compartment currentCompartment;
@@ -278,7 +278,7 @@ Compartment DataManager::getCompartmentByNumber(int compartmentNumber) {
     return *it;
 }
 
-void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumber) {
+void DataManager::loadSeatsByCompartmentNumber(int compartmentNumber, int carNumber) {
     currentSeats = std::vector<Seat>();
     std::string carModel = getCarByNumber(carNumber).getCarModel();
     Seat currentSeat;
@@ -305,7 +305,7 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
     }
 }
 
-void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd) {
+void DataManager::loadFreeSeatsByCompartmentNumber(int compartmentNumber, int carNumber, int stationNumberStart, int stationNumberEnd) {
     currentSeats = std::vector<Seat>();
     std::string carModel = getCarByNumber(carNumber).getCarModel();
     int tripID = currentTrain.getTripID();
