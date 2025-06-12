@@ -30,41 +30,58 @@ bool Compartment::getIsFirstClass() {
     return isFirstClass;
 }
 
+// Returns how many seats are taken in this compartment
 int Compartment::getTakenSeats(int stationStartNumber, int stationEndNumber) {
-    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT COUNT(DISTINCT ID) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
-        "Passengers.TripID = ? AND "
-        "Passengers.CarNumber = ? AND "
-        "Passengers.SeatNumber >= ? AND Passengers.SeatNumber <= ? AND "
-        "Passengers.FromStation < ? AND "
-        "Passengers.ToStation > ? "
-        "AND Seats.Special IS NULL");
+    try {
+        SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+        SQLite::Statement query(db, "SELECT COUNT(DISTINCT ID) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
+            "Passengers.TripID = ? AND "
+            "Passengers.CarNumber = ? AND "
+            "Passengers.SeatNumber >= ? AND Passengers.SeatNumber <= ? AND "
+            "Passengers.FromStation < ? AND "
+            "Passengers.ToStation > ? "
+            "AND Seats.Special IS NULL");
 
-    query.bind(1, tripID);
-    query.bind(2, carNumber);
-    query.bind(3, compartmentNumber * 10);
-    query.bind(4, compartmentNumber * 10 + 9);
-    query.bind(5, stationEndNumber);
-    query.bind(6, stationStartNumber);
-    query.executeStep();
-    return query.getColumn(0).getInt();
+        query.bind(1, tripID);
+        query.bind(2, carNumber);
+        query.bind(3, compartmentNumber * 10);
+        query.bind(4, compartmentNumber * 10 + 9);
+        query.bind(5, stationEndNumber);
+        query.bind(6, stationStartNumber);
+        query.executeStep();
+        return query.getColumn(0).getInt();
+    }
+    catch (SQLite::Exception& e) {
+        std::cerr << "Problem z baz¹ danych: " << e.what() << "\nKliknij ESC aby kontynuowaæ...";
+        waitForEsc();
+        return 0;
+    }
 }
 
+// Returns how many seats are there in this compartment
 int Compartment::getSeatCount(int stationStartNumber, int stationEndNumber) {
-    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT COUNT(Seats.Number) "
-        "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
-        "WHERE TrainSets.TrainID = ? "
-        "AND TrainSets.CarNumber = ? "
-        "AND Seats.Number/10 = ? "
-        "AND Special IS NULL");
-    query.bind(1, trainID);
-    query.bind(2, carNumber);
-    query.bind(3, compartmentNumber);
-    query.executeStep();
-    return query.getColumn(0).getInt();
+    try {
+        SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+        SQLite::Statement query(db, "SELECT COUNT(Seats.Number) "
+            "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
+            "WHERE TrainSets.TrainID = ? "
+            "AND TrainSets.CarNumber = ? "
+            "AND Seats.Number/10 = ? "
+            "AND Special IS NULL");
+        query.bind(1, trainID);
+        query.bind(2, carNumber);
+        query.bind(3, compartmentNumber);
+        query.executeStep();
+        return query.getColumn(0).getInt();
+    }
+    catch (SQLite::Exception& e) {
+        std::cerr << "Problem z baz¹ danych: " << e.what() << "\nKliknij ESC aby kontynuowaæ...";
+        waitForEsc();
+        return 0;
+    }
 }
 
+// Return amount of available seats in this compartment
 int Compartment::getFreeSeats(int stationStartNumber, int stationEndNumber) {
     return getSeatCount(stationStartNumber, stationEndNumber) - getTakenSeats(stationStartNumber, stationEndNumber);
 }
