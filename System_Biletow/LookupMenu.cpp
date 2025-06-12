@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <conio.h>
+#include <sstream>
 #include "Menu.h"
 #include "DataManager.h"
 #include "GlobalConsts.h"
@@ -65,9 +66,20 @@ void DataManager::showLookupMenuPassengers() {
         if(input == "exit") {
             return;
 		}
+        std::istringstream inputStream(input);
+		int ticketNumber;
+        if (!(inputStream >> ticketNumber)) {
+            std::cout << "Nieprawidłowy format numeru biletu! Kliknij przycisk aby kontynuować (lub ESC aby anulować)..." << std::endl;
+            char key = _getch();
+            if (key == 27) { // Escape key
+                return;
+            }
+			inputStream.clear(); // Clear the error state
+            continue;
+		}
         try {
             SQLite::Statement query(db, "SELECT TripID, CarNumber, SeatNumber, FromStation, ToStation, Name, Surname, Price FROM Passengers WHERE ID = ?");
-            query.bind(1, input);
+            query.bind(1, ticketNumber);
 
             if (!query.executeStep()) {
                 std::cout << "Nie znaleziono pasażera o podanym numerze! Kliknij przycisk aby kontynuować (lub ESC aby anulować)..." << std::endl;
