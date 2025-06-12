@@ -2,7 +2,7 @@
 #include <string>
 #include "Seat.h"
 
-// Struct will stare freferances with it's value and whether or not a user choosed, if it wasn't chosen
+// Struct will store preferances with it's value and whether or not a user choosed, if it wasn't chosen
 // value should never be taken into consideration
 struct Preference {
 	bool isChosen;
@@ -16,8 +16,6 @@ private:
 	bool searchingMessageShown = false; // Used to show searching message only once
 
 	// Variables required before making a reservation:
-	// WARNING: for 1 person all vars could be changed, but for more than 1 person only: firstClass, isCompartment, byTable.
-	//          other preferences won't be taken into consideration.
 	int numberOfPeople{};
 	int fromStationNumber{};
 	int toStationNumber{};

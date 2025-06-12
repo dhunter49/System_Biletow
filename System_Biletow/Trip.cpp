@@ -75,4 +75,3 @@ MenuOption Trip::getMenuOptionTrip(int stationNumberStart, int stationNumberEnd)
 
 Trip::Trip() :tripID(0) {};
 Trip::Trip(int tripID) :tripID(tripID) {};
-

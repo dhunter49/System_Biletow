@@ -5,6 +5,8 @@
 
 DataManager* DataManager::instance = nullptr;
 
+// Get instance of DataManager, if it doesn't exist, create it
+// This means that DataManager is a singleton, only one instance of it can exist at a time.
 DataManager& DataManager::getInstance() {
     if (!instance) {
         instance = new DataManager();

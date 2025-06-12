@@ -5,10 +5,10 @@
 #include <conio.h>
 #include <iomanip>
 
-const int MAX_OPTIONS_ON_MENU = 20; // represents the maximum amount of options shown on the menu. Adjustable to liking
+const int MAX_OPTIONS_ON_MENU = 20; // Represents the maximum amount of options shown on the menu.
 
-//Calculates first and last indexes of elements on each page
-//ONLY USE IN SHOWMENU FUNCTION
+// Calculates first and last indexes of elements on each page
+// ONLY USE IN SHOWMENU FUNCTION
 void calculateIndexesOfMenu(int* firstIndexes, int* lastindexes, const std::vector<MenuOption> menuOptions) {
     int lines, columns;
     firstIndexes[0] = 0;
@@ -31,7 +31,7 @@ void calculateIndexesOfMenu(int* firstIndexes, int* lastindexes, const std::vect
     }
 }
 
-//refreshes menu options, based on given firstIndex of page, lastIndex of page, currentSeleciton, and menu options
+// Refreshes menu options, based on given firstIndex of page, lastIndex of page, currentSeleciton, and menu options
 void refreshMenuOptions(int firstIndex,int lastIndex ,int currentSelection, const std::vector<MenuOption> menuOptions) {
     int lines, columns;
     getConsoleDimensions(lines, columns);
