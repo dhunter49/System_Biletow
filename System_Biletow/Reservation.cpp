@@ -2,7 +2,6 @@
 #include "DataManager.h"
 #include "GlobalConsts.h"
 #include <SQLiteCpp/SQLiteCpp.h>
-#include <limits>
 #include <iostream>
 #include <conio.h>
 #include <algorithm>
@@ -84,39 +83,47 @@ bool Reservation::makeAReservation() {
 	// Number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
 	while (true) {
-		std::cin >> numberOfPeople;
-		if (std::cin.fail() || numberOfPeople < 1) {
-			std::cin.clear(); // Clear the error flag
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+		std::getline(std::cin, input);
+		std::istringstream inputStream(input);
+		inputStream >> numberOfPeople;
+		if (inputStream.fail() || numberOfPeople < 1) {
+			inputStream.clear(); // Clear the error flag
+			clearScreen();
 			std::cout << "Nieprawidłowa liczba osób. Proszę podać liczbę osób: ";
 		}
 		else {
 			break; // Valid input, exit the loop
 		}
 	}
+	clearScreen();
 
 	// Name
 	std::cout << "Podaj imię głównego podróżnego: ";
 	while (true) {
-		std::cin >> firstName;
-		if (firstName.empty()) {
+		std::getline(std::cin, input);
+		if (input.empty()) {
+			clearScreen();
 			std::cout << "Imię nie może być puste. Proszę podać imię: ";
+			continue; // Prompt again
 		}
-		else {
-			break; // Valid input, exit the loop
-		}
+		std::istringstream inputStream(input);
+		inputStream >> firstName;
+		break; // Valid input, exit the loop
 	}
+	clearScreen();
 
 	// Surname
 	std::cout << "Podaj nazwisko głównego podróżnego: ";
 	while (true) {
-		std::cin >> lastName;
-		if (lastName.empty()) {
+		std::getline(std::cin, input);
+		if (input.empty()) {
+			clearScreen();
 			std::cout << "Nazwisko nie może być puste. Proszę podać nazwisko: ";
+			continue; // Prompt again
 		}
-		else {
-			break; // Valid input, exit the loop
-		}
+		std::istringstream inputStream(input);
+		inputStream >> lastName;
+		break; // Valid input, exit the loop
 	}
 
 	// How to aplly discount
@@ -266,7 +273,7 @@ bool Reservation::findASeat() {
 		if (numberOfPeople > 8) {
 			// Number of people exceeds all compartments sizes, tries to split users
 			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje! \nKliknij przycisk aby kontynuować...";
-			_getch(); // Wait for user to press a key
+			(void)_getch(); // Wait for user to press a key
 			return findASeatSplit();
 		}
 		if (!searchingMessageShown) {
