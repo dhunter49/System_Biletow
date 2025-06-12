@@ -238,7 +238,7 @@ bool Reservation::makeAReservation() {
 			return false;
 		}
 	else {
-		std::cout << "Nie znaleziono miejsc(a). Kliknij przycisk aby kontynouwać." << std::endl;
+		std::cout << "Nie znaleziono miejsc(a). Kliknij przycisk aby kontynouwać..." << std::endl;
 		removeFromDatabaseMultiple();
 		(void)_getch(); // Wait for user to press a key
 		return false;
@@ -464,12 +464,16 @@ bool Reservation::askIfUserAgrees() {
 
 	auto& data = DataManager::getInstance();
 
+	setConsoleCursorVisibility(false);
 	for (auto& reservationPair : reservations) {
 		clearScreen();
 		if(reservations.size() == 1 || i == reservations.size())
 			std::cout << "Znaleziono miejsca ("<< i<<'/' << reservations.size() << "): (ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl << std::endl;
 		else
 			std::cout << "Znaleziono miejsca (" << i << '/' << reservations.size() << "): (SPACE - następne, ESC - anuluj rezerwacje, ENTER - zatwierdź rezerwacje)" << std::endl << std::endl;
+
+		std::cout << "   " << reservationPair.firstName << " " << reservationPair.lastName << std::endl;
+		std::cout << "Numer biletu: " << reservationPair.reservationID << std::endl;
 		std::cout << "Trasa: " << data.getTripByID(reservationPair.tripID).getMenuOptionTrip(reservationPair.fromStationNumber, reservationPair.toStationNumber).menuText << std::endl;
 		std::cout << "Klasa: ";
 		if (reservationPair.firstClass)
@@ -485,11 +489,13 @@ bool Reservation::askIfUserAgrees() {
 				// Remove all reservations from database
 				removeFromDatabaseMultiple();
 				reservations.clear();
+				setConsoleCursorVisibility(true);
 				return false; // User cancelled the reservation
 			}
 			else if (key == 13) { // ENTER pressed
 				// All reservations are already saved, so just return true
 				reservations.clear();
+				setConsoleCursorVisibility(true);
 				return true; // User agreed to make a reservation
 			}
 			else if (key == ' ' && i < reservations.size()) { // SPACE pressed
