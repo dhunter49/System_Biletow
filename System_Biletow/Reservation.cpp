@@ -6,11 +6,13 @@
 #include <iostream>
 #include <conio.h>
 #include <algorithm>
+#include <sstream>
 
+// Used to make a reservation. Returns true if reservation was made successfully, false if user cancelled the reservation or if no seats were found.
+// It's a long method, but it handles all the steps of making a reservation, including loading data from the database, showing menus, and getting user input.
 bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
 	data.loadAllRoutesFromDatabase();
-	clearScreen();
 
 	// Route
 	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
@@ -32,25 +34,43 @@ bool Reservation::makeAReservation() {
 
 	// Date
 	Date date;
+	std::string input;
 	char temp;
-	std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
+	std::cout << "Podaj datę przejazdu (DD.MM.YYYY) (wpisz \"exit\" aby zrezygnować): ";
 	while (true) {
-		std::cin >> date.day >> temp >> date.month >> temp >> date.year;
-		if (std::cin.fail() || date.day < 1 || date.month < 1 || date.year < 1 || date.month > 12 || date.day > 31) {
-			std::cin.clear(); // Clear the error flag
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY: ";
+		std::getline(std::cin, input);
+
+		if( input == "exit" || input == "quit" ) {
+			return false; // User wants to exit
 		}
-		else {
-			try {
-				data.loadTripsByDateAndRouteID(date, chosenRoute.getRouteID());
-			}
-			catch (const std::runtime_error& e) {
-				std::cout << "Błąd: " << e.what() << "\n";
-				std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
-				continue;
-			}
-			break; // Valid input, exit the loop
+
+		// Check basic format requirements
+		if (input.empty() || input.size() < 8 || input.size() > 10) {
+			clearScreen();
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY (wpisz \"exit\" aby zrezygnować): ";
+			continue;
+		}
+
+		std::istringstream inputStream(input);
+		inputStream >> date.day >> temp >> date.month >> temp >> date.year;
+
+		// Check if parsing failed or values are invalid
+		if (inputStream.fail() || !inputStream.eof() || temp != '.' ||
+			date.day < 1 || date.month < 1 || date.year < 2000 || date.month > 12 ||
+			date.day > date.getAmountOfDaysInMonth()) {
+			clearScreen();
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY (wpisz \"exit\" aby zrezygnować): ";
+			continue;
+		}
+
+		try {
+			data.loadTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+			break; // Valid input and successful load, exit the loop
+		}
+		catch (const std::runtime_error& e) {
+			clearScreen();
+			std::cout << "Błąd: " << e.what() << "\n";
+			std::cout << "Podaj datę przejazdu (DD.MM.YYYY) (wpisz \"exit\" aby zrezygnować): ";
 		}
 	}
 
@@ -214,7 +234,7 @@ bool Reservation::makeAReservation() {
 	else {
 		std::cout << "Nie znaleziono miejsc(a). Kliknij przycisk aby kontynouwać." << std::endl;
 		removeFromDatabaseMultiple();
-		_getch(); // Wait for user to press a key
+		(void)_getch(); // Wait for user to press a key
 		return false;
 	}
 }
