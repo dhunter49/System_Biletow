@@ -621,6 +621,7 @@ float Reservation::calculateTicketPrice() {
 	queryC.bind(1, tripID);
 	queryC.executeStep();
 	if (!queryC.getColumn(0).getInt()) {
+		isInverted = 1;
 		fromStationNumber++;
 		toStationNumber++;
 	}
@@ -639,6 +640,7 @@ float Reservation::calculateTicketPrice() {
 	distance = queryDistance.getColumn(0).getDouble();
 
 	if (isInverted) {
+		isInverted = 0;
 		fromStationNumber--;
 		toStationNumber--;
 	}
