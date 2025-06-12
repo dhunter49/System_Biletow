@@ -1,5 +1,5 @@
-#include "Car.h"
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "Car.h"
 #include "GlobalConsts.h"
 
 Car::Car():carNumber(0) {};

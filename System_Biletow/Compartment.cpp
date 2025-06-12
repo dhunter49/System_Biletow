@@ -1,5 +1,5 @@
-#include "Compartment.h"
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "Compartment.h"
 #include "GlobalConsts.h"
 
 Compartment::Compartment() : compartmentNumber(0) {};
