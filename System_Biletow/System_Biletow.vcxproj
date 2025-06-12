@@ -138,7 +138,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="displayFunctions.cpp" />
-    <ClCompile Include="Passenger.cpp" />
     <ClCompile Include="Reservation.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="Seat.cpp" />
@@ -161,7 +160,6 @@
     <ClInclude Include="GlobalConsts.h" />
     <ClInclude Include="headers.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Passenger.h" />
     <ClInclude Include="Reservation.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="Seat.h" />
