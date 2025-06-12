@@ -1,5 +1,6 @@
-#include "Train.h"
+#include <iostream>
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "Train.h"
 #include "GlobalConsts.h"
 
 std::string Train::getTrainID() {

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "Car.h"
 #include "GlobalConsts.h"

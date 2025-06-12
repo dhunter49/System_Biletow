@@ -1,3 +1,4 @@
+#include <iostream>
 #include <SQLiteCpp/SQLiteCpp.h>
 #include "Compartment.h"
 #include "GlobalConsts.h"

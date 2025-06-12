@@ -1,5 +1,6 @@
-#include "DataManager.h"
+#include <iostream>
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "DataManager.h"
 #include "GlobalConsts.h"
 
 DataManager* DataManager::instance = nullptr;
