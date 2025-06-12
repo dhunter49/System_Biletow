@@ -84,6 +84,12 @@
     <ClCompile Include="Reservation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LookupMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="displayFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Car.h">
