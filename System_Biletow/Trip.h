@@ -3,9 +3,9 @@
 #include <unordered_map>
 
 struct Date {
-	unsigned int day;
-	unsigned int month;
-	unsigned int year;
+	unsigned int day{};
+	unsigned int month{};
+	unsigned int year{};
 	int getAmountOfDaysInMonth() {
 		if (month == 2) { // February
 			if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) // leap year
@@ -38,8 +38,8 @@ struct Date {
 };
 
 struct Time {
-	unsigned int hours;
-	unsigned int minutes;
+	unsigned int hours{};
+	unsigned int minutes{};
 	// Get Time in "hh:mm"
 	std::string getTimeFormat() {
 		std::string stringHours, stringMinutes, out;
@@ -58,9 +58,9 @@ struct Time {
 };
 
 struct Schedule {
-	int stationID;
-	Time arrival;
-	Time departure;
+	int stationID{};
+	Time arrival{};
+	Time departure{};
 	bool isArrivalTheSameAsDeparture() {
 		if (arrival.hours == departure.hours && arrival.minutes == departure.minutes)
 			return true;
@@ -72,7 +72,7 @@ struct Schedule {
 class Trip : public Route {
 protected:
 	// variables
-	int tripID;
+	int tripID{};
 	// int here is storing stationNum (always starts at 1 for every route)
 	std::unordered_map<int, Schedule> schedules; // stationNum
 	Date date;

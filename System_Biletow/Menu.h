@@ -3,8 +3,8 @@
 #include <vector>
 
 struct MenuOption {
-    int id;
-    std::string menuText;
+    int id{};
+    std::string menuText{};
 };
 
 
