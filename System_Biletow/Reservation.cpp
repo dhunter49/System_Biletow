@@ -12,6 +12,7 @@
 bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
 	data.loadAllRoutesFromDatabase();
+	*this = Reservation();
 
 	// Route
 	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
