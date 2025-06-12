@@ -1,5 +1,3 @@
-#include <vector>
-#include <iostream>
 #include <Windows.h>
 #include <conio.h>
 #include <iomanip>
@@ -8,23 +6,19 @@
 // ONLY WINDOWS
 void setColor(int color) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    if (hConsole == INVALID_HANDLE_VALUE) {
-        throw std::runtime_error("Couldn't get console handle");
-    }
-    if (!SetConsoleTextAttribute(hConsole, color)) {
-        throw std::runtime_error("Couldn't set console text color");
-    }
+    if (hConsole == INVALID_HANDLE_VALUE) return;
+    if (!SetConsoleTextAttribute(hConsole, color)) return;
 }
 
-//Gets the console dimensions
-//ONLY WINDOWS
+// Gets the console dimensions
+// ONLY WINDOWS
 void getConsoleDimensions(int& lines, int& columns) {
     CONSOLE_SCREEN_BUFFER_INFO csbi;
 
     // Get the handle to the console output
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 
-    if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+    if (hConsole != INVALID_HANDLE_VALUE && GetConsoleScreenBufferInfo(hConsole, &csbi)) {
         columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
         lines = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
     }
@@ -34,7 +28,6 @@ void getConsoleDimensions(int& lines, int& columns) {
         lines = 25;
     }
 }
-
 
 // Hides/Shows visibility of text cursor
 // true - visible, false - hidden
@@ -53,6 +46,11 @@ void setConsoleCursorVisibility(bool visible) {
 // ONLY WINDOWS
 void clearScreen() {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hConsole == INVALID_HANDLE_VALUE) {
+        // Fallback screen value
+        system("CLS");
+        return;
+    }
     COORD coordScreen = { 0, 0 };
     DWORD cCharsWritten;
     CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -68,10 +66,13 @@ void clearScreen() {
 // ONLY WINDOWS
 void gotoXY(int x, int y) {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hConsole == INVALID_HANDLE_VALUE) 
+        throw std::runtime_error("Problem z konsolą");
     COORD coordScreen = { static_cast<short>(x), static_cast<short>(y) };
     SetConsoleCursorPosition(hConsole, coordScreen);
 }
 
+// Waits until ESC key is pressed
 void waitForEsc() {
     while (_getch() != 27) {}
 }

@@ -83,10 +83,15 @@ int showMenu(std::string menuTitle, const std::vector<MenuOption> menuOptions) {
             if (menuPage<0 || menuPage>=MAX_PAGES) menuPage = 0;
             refreshMenuOptions(firstIndexes[menuPage], lastIndexes[menuPage], currentSelection, menuOptions);
             gotoXY(columns-19, 23);
-            if (menuPage >= 999) std::cout << "Strona nr. 999+/";
-            else std::cout << "Strona nr. " << std::setw(3) << menuPage + 1 << "/";
-            if (MAX_PAGES >= 999) std::cout << "999+";
-            else std::cout << MAX_PAGES;
+            if (MAX_PAGES != 1) {
+                if (menuPage >= 999) std::cout << "Strona nr. 999+/";
+                else std::cout << "Strona nr. " << std::setw(3) << menuPage + 1 << "/";
+                if (MAX_PAGES >= 999) std::cout << "999+";
+                else std::cout << MAX_PAGES;
+            }
+            else {
+				std::cout << "              ";
+            }
             key = _getch();
             if (key == 0 || key == 224) {
                 switch (_getch()) {

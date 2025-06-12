@@ -1,16 +1,17 @@
-﻿#include "Reservation.h"
+#include "Reservation.h"
 #include "DataManager.h"
 #include "GlobalConsts.h"
 #include <SQLiteCpp/SQLiteCpp.h>
-#include <limits>
 #include <iostream>
 #include <conio.h>
 #include <algorithm>
+#include <sstream>
 
+// Used to make a reservation. Returns true if reservation was made successfully, false if user cancelled the reservation or if no seats were found.
+// It's a long method, but it handles all the steps of making a reservation, including loading data from the database, showing menus, and getting user input.
 bool Reservation::makeAReservation() {
 	DataManager& data = DataManager::getInstance();
 	data.loadAllRoutesFromDatabase();
-	clearScreen();
 
 	// Route
 	std::vector<MenuOption> menuRoutes = data.generateMenuListRoutes();
@@ -32,25 +33,43 @@ bool Reservation::makeAReservation() {
 
 	// Date
 	Date date;
+	std::string input;
 	char temp;
-	std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
+	std::cout << "Podaj datę przejazdu (DD.MM.YYYY) (wpisz \"exit\" aby zrezygnować): ";
 	while (true) {
-		std::cin >> date.day >> temp >> date.month >> temp >> date.year;
-		if (std::cin.fail() || date.day < 1 || date.month < 1 || date.year < 1 || date.month > 12 || date.day > 31) {
-			std::cin.clear(); // Clear the error flag
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
-			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY: ";
+		std::getline(std::cin, input);
+
+		if( input == "exit" || input == "quit" ) {
+			return false; // User wants to exit
 		}
-		else {
-			try {
-				data.getTripsByDateAndRouteID(date, chosenRoute.getRouteID());
-			}
-			catch (const std::runtime_error& e) {
-				std::cout << "Błąd: " << e.what() << "\n";
-				std::cout << "Podaj datę przejazdu (DD.MM.YYYY): ";
-				continue;
-			}
-			break; // Valid input, exit the loop
+
+		// Check basic format requirements
+		if (input.empty() || input.size() < 8 || input.size() > 10) {
+			clearScreen();
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY (wpisz \"exit\" aby zrezygnować): ";
+			continue;
+		}
+
+		std::istringstream inputStream(input);
+		inputStream >> date.day >> temp >> date.month >> temp >> date.year;
+
+		// Check if parsing failed or values are invalid
+		if (inputStream.fail() || !inputStream.eof() || temp != '.' ||
+			date.day < 1 || date.month < 1 || date.year < 2000 || date.month > 12 ||
+			date.day > date.getAmountOfDaysInMonth()) {
+			clearScreen();
+			std::cout << "Nieprawidłowa data. Proszę podać datę w formacie DD.MM.YYYY (wpisz \"exit\" aby zrezygnować): ";
+			continue;
+		}
+
+		try {
+			data.loadTripsByDateAndRouteID(date, chosenRoute.getRouteID());
+			break; // Valid input and successful load, exit the loop
+		}
+		catch (const std::runtime_error& e) {
+			clearScreen();
+			std::cout << "Błąd: " << e.what() << "\n";
+			std::cout << "Podaj datę przejazdu (DD.MM.YYYY) (wpisz \"exit\" aby zrezygnować): ";
 		}
 	}
 
@@ -59,44 +78,52 @@ bool Reservation::makeAReservation() {
 	tripID = showMenu("Wybierz opcje", menuTrips);
 	if (tripID == -2)
 		return false;
-	data.getTrainByTripID(tripID); // Load the train associated with the trip
+	data.loadTrainByTripID(tripID); // Load the train associated with the trip
 
 	// Number of people
 	std::cout << "Podaj liczbę osób do zarezerwowania: ";
 	while (true) {
-		std::cin >> numberOfPeople;
-		if (std::cin.fail() || numberOfPeople < 1) {
-			std::cin.clear(); // Clear the error flag
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
+		std::getline(std::cin, input);
+		std::istringstream inputStream(input);
+		inputStream >> numberOfPeople;
+		if (inputStream.fail() || numberOfPeople < 1) {
+			inputStream.clear(); // Clear the error flag
+			clearScreen();
 			std::cout << "Nieprawidłowa liczba osób. Proszę podać liczbę osób: ";
 		}
 		else {
 			break; // Valid input, exit the loop
 		}
 	}
+	clearScreen();
 
 	// Name
 	std::cout << "Podaj imię głównego podróżnego: ";
 	while (true) {
-		std::cin >> firstName;
-		if (firstName.empty()) {
+		std::getline(std::cin, input);
+		if (input.empty()) {
+			clearScreen();
 			std::cout << "Imię nie może być puste. Proszę podać imię: ";
+			continue; // Prompt again
 		}
-		else {
-			break; // Valid input, exit the loop
-		}
+		std::istringstream inputStream(input);
+		inputStream >> firstName;
+		break; // Valid input, exit the loop
 	}
+	clearScreen();
 
 	// Surname
 	std::cout << "Podaj nazwisko głównego podróżnego: ";
 	while (true) {
-		std::cin >> lastName;
-		if (lastName.empty()) {
+		std::getline(std::cin, input);
+		if (input.empty()) {
+			clearScreen();
 			std::cout << "Nazwisko nie może być puste. Proszę podać nazwisko: ";
+			continue; // Prompt again
 		}
-		else {
-			break; // Valid input, exit the loop
-		}
+		std::istringstream inputStream(input);
+		inputStream >> lastName;
+		break; // Valid input, exit the loop
 	}
 
 	// How to aplly discount
@@ -214,7 +241,7 @@ bool Reservation::makeAReservation() {
 	else {
 		std::cout << "Nie znaleziono miejsc(a). Kliknij przycisk aby kontynouwać." << std::endl;
 		removeFromDatabaseMultiple();
-		_getch(); // Wait for user to press a key
+		(void)_getch(); // Wait for user to press a key
 		return false;
 	}
 }
@@ -246,20 +273,25 @@ bool Reservation::findASeat() {
 		if (numberOfPeople > 8) {
 			// Number of people exceeds all compartments sizes, tries to split users
 			std::cout << "Uwaga: Za dużo osób aby zrobić rezerwacje w jednym przedziale. Program traktuje jako osobne rezerwacje! \nKliknij przycisk aby kontynuować...";
-			_getch(); // Wait for user to press a key
+			(void)_getch(); // Wait for user to press a key
 			return findASeatSplit();
 		}
-		data.getCarsByTrainID(data.currentTrain.getTrainID());
+		if (!searchingMessageShown) {
+			clearScreen();
+			std::cout << "Szukanie miejsc..." << std::endl; // Just in case, if this will take a while, user will know what is happening.
+			searchingMessageShown = true; // Show this message only once
+		}
+		data.loadCarsByTrainID(data.currentTrain.getTrainID());
 		for (auto& carPair : data.currentCars) {
 			// check if there is enough spots in a car
 			if (carPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople) {
-				data.getCompartmentsByCarNumber(carPair.getCarNumber());
+				data.loadCompartmentsByCarNumber(carPair.getCarNumber());
 				for (auto& compartmentPair : data.currentCompartments) {
 					// check if there is enough spots in a compartment
 					if (compartmentPair.getFreeSeats(fromStationNumber, toStationNumber) >= numberOfPeople 
 						&& compartmentPair.getIsFirstClass() == firstClass
 						&& (!isCompartment.isChosen || isCompartment.value == compartmentPair.getIsAnActualCompartment())) {
-						data.getFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
+						data.loadFreeSeatsByCompartmentNumber(compartmentPair.getCompartmentNumber(), carPair.getCarNumber(), fromStationNumber, toStationNumber);
 						for (auto& seatPair : data.currentSeats) {
 							// check if seat meets preferences
 							if (meetsPreferences(seatPair)) {
@@ -574,7 +606,15 @@ void Reservation::removeFromDatabase(){
 }
 
 float Reservation::calculateTicketPrice() {
-	float price{}, distance{};
+	float price{}, distance{}, discount{};
+	if(discounts.empty()) {
+		// Should never happen, but just in case
+		discount = 0;
+	}
+	else {
+		discount = discounts.back();
+		discounts.pop_back(); // Remove the last discount, because it was already used
+	}
 
 	if (fromStationNumber > toStationNumber) // This should not happen
 		std::swap(fromStationNumber, toStationNumber);
@@ -632,5 +672,5 @@ float Reservation::calculateTicketPrice() {
 			distance -= 1000;
 	} while (distance > 1000);
 	
-	return price; // * discount
+	return price - (price * discount);
 }

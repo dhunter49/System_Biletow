@@ -30,9 +30,6 @@
     <ClCompile Include="Compartment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Passenger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Route.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,10 +75,13 @@
     <ClCompile Include="DataManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="generateMenu.cpp">
+    <ClCompile Include="Reservation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Reservation.cpp">
+    <ClCompile Include="LookupMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="displayFunctions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,9 +92,6 @@
     <ClInclude Include="Compartment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Passenger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Route.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -102,9 +99,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Trip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Train.h">

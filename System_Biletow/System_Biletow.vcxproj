@@ -120,6 +120,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\SQLiteCpp\sqlite3;.\SQLiteCpp\include</AdditionalIncludeDirectories>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,12 +134,10 @@
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="Compartment.cpp" />
     <ClCompile Include="DataManager.cpp" />
-    <ClCompile Include="generateMenu.cpp" />
     <ClCompile Include="LookupMenu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="displayFunctions.cpp" />
-    <ClCompile Include="Passenger.cpp" />
     <ClCompile Include="Reservation.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="Seat.cpp" />
@@ -158,9 +158,7 @@
     <ClInclude Include="Compartment.h" />
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="GlobalConsts.h" />
-    <ClInclude Include="headers.h" />
     <ClInclude Include="Menu.h" />
-    <ClInclude Include="Passenger.h" />
     <ClInclude Include="Reservation.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="Seat.h" />

@@ -1,5 +1,6 @@
-#include "Train.h"
+#include <iostream>
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "Train.h"
 #include "GlobalConsts.h"
 
 std::string Train::getTrainID() {
@@ -19,14 +20,9 @@ void Train::setTrainName(std::string newTrainName) {
 Train::Train() {};
 Train::Train(std::string trainID) :trainID(trainID) {};
 Train::Train(std::string trainID, int trainIDNumber, std::string trainName) :trainID(trainID), trainIDNumber(trainIDNumber), trainName(trainName) {};
-Train::Train(Trip trip) {
-	routeID = trip.getRouteID();
-	stationList = trip.getStationList();
-	tripID = trip.getTripID();
-	schedules = trip.getSchedules();
-	date = trip.getDate();
-}
+Train::Train(Trip trip) : Trip(trip) {};
 
+// Gets the menu option for the train in format: "ID Name".
 MenuOption Train::getMenuOptionTrain() {
     std::string optionName{};
     optionName += trainID;
@@ -36,36 +32,54 @@ MenuOption Train::getMenuOptionTrain() {
     return MenuOption{ trainIDNumber, optionName };
 }
 
+// Returns how many seats are taken in this compartment
 int Train::getTakenSeats(int stationStartNumber, int stationEndNumber) {
-    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT COUNT(DISTINCT ID) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
-        "Passengers.TripID = ? AND "
-        "Passengers.FromStation < ? AND "
-        "Passengers.ToStation > ? "
-        "AND Seats.Special IS NULL");
+    try {
+        SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+        SQLite::Statement query(db, "SELECT COUNT(DISTINCT ID) FROM Passengers LEFT JOIN Seats ON Passengers.SeatNumber = Seats.Number WHERE "
+            "Passengers.TripID = ? AND "
+            "Passengers.FromStation < ? AND "
+            "Passengers.ToStation > ? "
+            "AND Seats.Special IS NULL");
 
-    query.bind(1, tripID);
-    query.bind(2, stationEndNumber);
-    query.bind(3, stationStartNumber);
-    query.executeStep();
-    return query.getColumn(0).getInt();
+        query.bind(1, tripID);
+        query.bind(2, stationEndNumber);
+        query.bind(3, stationStartNumber);
+        query.executeStep();
+        return query.getColumn(0).getInt();
+    }
+    catch (SQLite::Exception& e) {
+        std::cerr << "Problem z bazą danych: " << e.what() << "\nKliknij ESC aby kontynuowaæ...";
+        waitForEsc();
+        return 0;
+    }
 }
 
+// Returns how many seats are there in this compartment
 int Train::getSeatCount(int stationStartNumber, int stationEndNumber) {
-    SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
-    SQLite::Statement query(db, "SELECT COUNT(Seats.Number) "
-        "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
-        "WHERE TrainSets.TrainID = ? "
-        "AND Special IS NULL");
-    query.bind(1, trainID);
-    query.executeStep();
-    return query.getColumn(0).getInt();
+    try {
+        SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
+        SQLite::Statement query(db, "SELECT COUNT(Seats.Number) "
+            "FROM Seats FULL OUTER JOIN TrainSets ON Seats.CarModel = TrainSets.CarModel "
+            "WHERE TrainSets.TrainID = ? "
+            "AND Special IS NULL");
+        query.bind(1, trainID);
+        query.executeStep();
+        return query.getColumn(0).getInt();
+    }
+    catch (SQLite::Exception& e) {
+        std::cerr << "Problem z baz¹ danych: " << e.what() << "\nKliknij ESC aby kontynuowaæ...";
+        waitForEsc();
+        return 0;
+    }
 }
 
+// Return amount of available seats in this compartment
 int Train::getFreeSeats(int stationStartNumber, int stationEndNumber) {
     return getSeatCount(stationStartNumber, stationEndNumber) - getTakenSeats(stationStartNumber, stationEndNumber);
 }
 
+// Shows info (model) about all cars in the train
 void Train::showInfo() {
     clearScreen();
     std::cout << "Wagony w pociągu " << trainID << " - " << trainName << ":" << std::endl;

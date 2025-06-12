@@ -1,59 +1,50 @@
-﻿#include "headers.h"
-#include <SQLiteCpp/SQLiteCpp.h>
-#include <unordered_map>
-#include "Menu.h"
-#include "StationManager.h"
-#include "Route.h"
-#include "DataManager.h"
-#include "Trip.h"
-#include "Reservation.h"
 #include <Windows.h>
 #include <vector>
+#include "Menu.h"
+#include "DataManager.h"
+#include "Reservation.h"
+
 int main() {
 	// Allows to display polish characters in console (user should ensure that their console is using font that is compatible with polish chars)
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 
-	ShowScrollBar(GetConsoleWindow(), SB_BOTH, 0); //disables scrollbar // TO MUSI BYĆ W PĘTLI WHILE ŻEBY DZIAŁAŁO, BO JAK UŻYTKOWNIK ZESCROLLUJE MYSZKĄ, TO SIĘ POKAZUJE SCROLLBAR
-
 	// Loads all routes
 	auto& data = DataManager::getInstance();
 	data.loadAllRoutesFromDatabase();
 
-	//auto& dm = DataManager::getInstance();
-
-	//dm.getTripsByDateAndRouteID({ 16, 6, 2025 }, 2);
-	////dm.getCarsByTrainID(dm.getTrainByTripID(6).getTrainID());
-	////dm.getCompartmentsByCarNumber(11);
-	////try {
-	////	dm.getSeatsByCompartmentNumber(1, 11);
-	////}
-	////catch (SQLite::Exception& e) {
-	////	std::cerr << e.what();
-	////}
-	//
-	//std::vector<MenuOption> menu = routes.generateMenuList();
-	//std::cout<<showMenu("WYBIERZ RELACJĘ (niektóre stacje są ukryte)", menu);
-
-	std::vector<MenuOption> mainMenu = { { 0, "Zarezerwuj bilet na przejazd" }, {1, "Pokaż informacje o danym obiekcie" } };
-
-	auto& dm = DataManager::getInstance();
-
+	// Launch Main Menu
+	std::vector<MenuOption> mainMenu = { { 0, "Zarezerwuj bilet na przejazd" }, { 1, "Pokaż informacje o danym obiekcie" } };
 	Reservation reservation;
 	while (true) {
-		clearScreen();
-		switch (showMenu("Witaj w systemie rezerwacji biletów kolejowych", mainMenu)) {
-		case 0:
-			clearScreen();
-			reservation.makeAReservation();
-			break;
-		case 1:
-			clearScreen();
-			dm.showLookupMenu();
-			break;
-		default: 
-			break;
+		int choice = showMenu("Witaj w systemie Polskich Kolei Politechnicznych (PKP)", mainMenu);
+		if (choice == -2) { // ESC pressed
+			// Ask user if they want to really quit the program
+			std::vector<MenuOption> yesOrNo = { { 0 , "Nie wychodź"}, { 1, "Tak, wyjdź z programu"} };
+			int leaveChoice{};
+			leaveChoice = showMenu("Czy na pewno chcesz wyjść z programu?", yesOrNo);
+			if (leaveChoice == -2) { // ESC pressed - not quiting
+				continue;
+			}
+			else if (static_cast<bool>(leaveChoice))
+				return 0;
+			else
+				continue;
+		}
+		else {
+			switch (choice) {
+			case 0:
+				// User chosed to make a reservation
+				reservation.makeAReservation();
+				break;
+			case 1:
+				// User chosed to show information on smth
+				data.showLookupMenu();
+				break;
+			default:
+				// Should never get here
+				break;
+			}
 		}
 	}
-	return 0;
 }
