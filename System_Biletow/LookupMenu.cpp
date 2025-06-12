@@ -1,17 +1,16 @@
+#include <SQLiteCpp/SQLiteCpp.h>
+#include <conio.h>
 #include "Menu.h"
 #include "DataManager.h"
-#include <SQLiteCpp/SQLiteCpp.h>
 #include "GlobalConsts.h"
-#include <conio.h>
 
-// Displays a menu, user chooses route to see info about
+// Displays a menu, user chooses a route to see info about - all stations
 void DataManager::showLookupMenuRoutes() {
-	DataManager& data = DataManager::getInstance();
-	data.loadAllRoutesFromDatabase();
+    // Load all routes
+	loadAllRoutesFromDatabase();
     std::vector<MenuOption> menu = generateMenuListRoutes();
 
     while (true) {
-        clearScreen();
         int choice = showMenu("Wybierz trasę, o której chcesz wyświetlić informacje", menu);
         if (choice == -2)
             return;
@@ -19,24 +18,26 @@ void DataManager::showLookupMenuRoutes() {
     }
 }
 
+// Displays a menu, user chooses a train to see info about - car models
 void DataManager::showLookupMenuTrains() {
     // Loads all trains
     loadAllTrainsFromDatabase();
-
     std::vector<MenuOption> menu = generateMenuListTrains();
+
     while (true) {
-        clearScreen();
         int choice = showMenu("Wybierz pociąg, o którym chcesz wyświetlić informacje", menu);
         if (choice == -2)
             return;
         if (choice < 0)
-            throw std::runtime_error("Wystąpił błąd!");
+            continue;
         trains[choice].showInfo();
         waitForEsc();
     }
 }
 
+// Displays information about a passenger - based on ticket number
 void DataManager::showLookupMenuPassengers() {
+    // Check if there are any passengers saved, if not leave this method
 	SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
 	SQLite::Statement queryCheck(db, "SELECT COUNT(ID) FROM Passengers");
 	if (!queryCheck.executeStep() || queryCheck.getColumn(0).getInt() == 0) {
@@ -44,6 +45,8 @@ void DataManager::showLookupMenuPassengers() {
         (void)_getch();
         return;
 	}
+
+    // There is at least one passenger
     while (true) {
         clearScreen();
 		std::cout << "Podaj numer biletu/numer pasażera, o którym chcesz wyświetlić informacje (wpisz \"exit\" aby wyjść): ";
@@ -84,6 +87,7 @@ void DataManager::showLookupMenuPassengers() {
             int seatNumber = query.getColumn(2).getInt();
             float price = query.getColumn(7).getDouble();
 
+            // Show info
             clearScreen();
             std::cout << "Informacje o pasażerze:" << std::endl;
             std::cout << "Numer biletu: " << input << std::endl;
@@ -109,12 +113,12 @@ void DataManager::showLookupMenuPassengers() {
     }
 }
 
+// Shows menu for showing information about smth (a train, a route or a passenger)
 void DataManager::showLookupMenu() {
     std::vector<MenuOption> lookupMenu = { {0, "trasie"}, {1, "pociągu"}, {2, "pasażerze"} };
     int lookupChoice{};
 
-    do {
-        clearScreen();
+    while(true) {
         lookupChoice = showMenu("Pokaż informacje o", lookupMenu);
         switch (lookupChoice) {
         case 0:
@@ -132,6 +136,6 @@ void DataManager::showLookupMenu() {
         default:
             break;
         }
-    } while (true);
+    }
 }
 
