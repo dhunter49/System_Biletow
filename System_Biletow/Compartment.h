@@ -4,9 +4,9 @@
 class Compartment : public Car {
 protected:
 	// variables
-	int compartmentNumber;
-	bool isAnActualCompartment;
-	bool isFirstClass;
+	int compartmentNumber{};
+	bool isAnActualCompartment{};
+	bool isFirstClass{};
 public:
 	// setters
 	void setCompartmentNumber(int newCompartmentNumber);

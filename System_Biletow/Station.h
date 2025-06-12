@@ -4,8 +4,8 @@
 
 // Struct used to store stations
 struct Station {
-	int id;
-	std::string name;
+	int id{};
+	std::string name{};
 };
 
 // Declaration

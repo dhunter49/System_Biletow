@@ -32,10 +32,6 @@ int Seat::getSeatNumber() {
     return seatNumber;
 }
 
-std::map<int, int> Seat::getTakenBy() {
-    return takenBy;
-}
-
 void Seat::setIsFacingFront(bool newIsFacingFront) {
     isFacingFront = newIsFacingFront;
 }
@@ -62,8 +58,4 @@ void Seat::setSpecial(char newSpecial) {
 
 void Seat::setSeatNumber(int newSeatNumber) {
     seatNumber = newSeatNumber;
-}
-
-void Seat::setTakenBy(std::map<int, int> newTakenBy) {
-    takenBy = newTakenBy;
 }

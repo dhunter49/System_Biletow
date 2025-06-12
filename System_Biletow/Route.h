@@ -13,7 +13,7 @@ public:
 	MenuOption getMenuOptionRoute();
 protected:
 	// variables
-	int routeID;
+	int routeID{};
 	// int here is storing stationNum (always starts at 1 for every route)
 	std::map<int,Station> stationList; 
 	

@@ -4,8 +4,8 @@
 class Car : public Train {
 protected:
 	// variables
-	int carNumber; // NOT an unique identifier - just a number of car in a certain train
-	std::string carModel; // unique identifier
+	int carNumber{}; // NOT an unique identifier - just a number of car in a certain train
+	std::string carModel{}; // unique identifier
 public:
 	// getters 
 	int getCarNumber();

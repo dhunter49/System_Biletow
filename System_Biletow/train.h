@@ -4,9 +4,9 @@
 class Train : public Trip {
 protected:
 	// variables
-	std::string trainID;
-	int trainIDNumber;
-	std::string trainName;
+	std::string trainID{};
+	int trainIDNumber{};
+	std::string trainName{};
 public:
 	// getters
 	std::string getTrainID();

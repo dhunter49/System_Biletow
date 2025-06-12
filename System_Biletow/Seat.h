@@ -9,8 +9,6 @@ protected:
 	bool isWindow{}, isMiddle{}, isCorridor{};
 	char special{}; // 'b' - for passengers with bikes, 'd' - for passengers with disabilities, TBA
 	int seatNumber{};
-	std::map<int, int> takenBy; // stationIDOnRoute, PassengerID
-
 	
 public:
 	// getters
