@@ -6,6 +6,8 @@
 
 // Displays a menu, user chooses route to see info about
 void DataManager::showLookupMenuRoutes() {
+	DataManager& data = DataManager::getInstance();
+	data.loadAllRoutesFromDatabase();
     std::vector<MenuOption> menu = generateMenuListRoutes();
 
     while (true) {
