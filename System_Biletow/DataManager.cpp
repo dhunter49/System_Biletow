@@ -284,7 +284,7 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
     Seat currentSeat;
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     SQLite::Statement query(db, 
-        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special "
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, Special, IsFacingFront "
         "FROM Seats "
         "WHERE Number >= ? AND Number <= ? AND CarModel = ?");
     query.bind(1, compartmentNumber * 10);
@@ -300,6 +300,7 @@ void DataManager::getSeatsByCompartmentNumber(int compartmentNumber, int carNumb
         currentSeat.setIsCorridor(query.getColumn(3).getInt());
         currentSeat.setIsByTable(query.getColumn(4).getInt());
         currentSeat.setSpecial(query.getColumn(5).getInt());
+        currentSeat.setIsFacingFront(query.getColumn(6).getInt());
 
         currentSeats.push_back(currentSeat);
     }
@@ -313,7 +314,7 @@ void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int car
     SQLite::Database db(DATABASE_PATH, SQLite::OPEN_READONLY);
     // Select all seats in the compartment where special IS NULL
     SQLite::Statement seatQuery(db, 
-        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable "
+        "SELECT Number, IsWindow, IsMiddle, IsCorridor, IsTable, IsFacingFront "
         "FROM Seats "
         "WHERE Number >= ? AND Number <= ? AND CarModel = ? AND Special IS NULL");
 
@@ -352,6 +353,7 @@ void DataManager::getFreeSeatsByCompartmentNumber(int compartmentNumber, int car
             currentSeat.setIsMiddle(seatQuery.getColumn(2).getInt());
             currentSeat.setIsCorridor(seatQuery.getColumn(3).getInt());
             currentSeat.setIsByTable(seatQuery.getColumn(4).getInt());
+            currentSeat.setIsFacingFront(seatQuery.getColumn(5).getInt());
             currentSeats.push_back(currentSeat);
         }
     }
