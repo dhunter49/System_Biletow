@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <vector>
-#include "Passenger.h"
+#include "Seat.h"
 #include "Route.h"
 #include "Car.h"
 #include "Compartment.h"
