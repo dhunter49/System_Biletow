@@ -20,11 +20,12 @@ Nasz system bazuje w swojej strukturze na systemie **PKP IC** - odwzorowaliśmy 
 
 Naszym celem było **zniwelować niektóre problemy**, które istnieją obecnie w systemie PKP IC:
 - możliwość rezerwacji tylko dla grup, w których ilość osób jest mniejsza od 6 - **skutecznie**, nasz program wspiera rezerwacje **bez określonego limitu osób**, był testowany nawet dla absurdalnie dużych liczb takich jak 140 osób
+- przy rezerwacji grupowej, jeśli nie ma tylu wolnych miejsc obok siebie, system nie potrafi znaleźć miejsc - **skutecznie**, nasz system w takim wypadku proponuje użytkownikowi **rozdzielenie grup** tak, aby każdy miał jakieś miejsce, nawet jeśli grupa nie będzie siedzieć razem
 - rezerwacja z konkretnymi preferencjami zwraca brak miejsc, gdy nie ma miejsc o danych preferencjach, nawet jeżeli są dostępne inne wolne miejsca - **skutecznie**, gdy nasz program nie znajdzie żadnych miejsc zgodnych z preferencjami, pyta użytkownika czy może **usunąć preferencje**, aby znaleźć inne miejsce (robi to tylko wtedy, gdy jest wystarczająca ogólna ilość miejsc w pociągu)
 - nie da się określić preferencji kierunku siedzenia (przodem/tyłem do kierunku jazdy) - **skutecznie**, nasz system **pozwala na sprecyzowanie** takiej preferencji
 
 # Wykorzystane rozwiązania
-Nasz system łączy się z lokalną bazą danych **SQLite** - przechowuje całą bazę danych w jednym pliku. Do jej obsługi użyliśmy biblioteki [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp) (autor: [SRombauts](https://github.com/SRombauts)) - to obiektowa biblioteka C++, umożliwia wykonywanie zapytań SQL, obsługę parametrów, transakcji i błędów w sposób zgodny praktykami C++. Dzięki tej bibliotece kod dostępu do bazy danych w projekcie jest **czytelniejszy i łatwiejszy w utrzymaniu**. 
+Nasz system łączy się z lokalną bazą danych **SQLite** - przechowuje całą bazę danych w jednym pliku. Do jej obsługi użyliśmy biblioteki [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp) (autor: [SRombauts](https://github.com/SRombauts)) - to obiektowa biblioteka C++, umożliwia ona wykonywanie zapytań SQL, obsługę parametrów, transakcji i błędów w sposób zgodny praktykami C++. Dzięki tej bibliotece kod dostępu do bazy danych w projekcie jest **czytelniejszy i łatwiejszy w utrzymaniu**. 
 
 # Podsumowanie
 Zrealizowaliśmy **wszystkie założenia wstępne**, czyli rezerwację biletów zgodnie z preferencjami oraz sprawdzanie informacji o wybranych pociągach, czy trasach. Dodatkowo udało nam się **rozwiązać niektóre problemy**, które ciągle istnieją w faktycznym systemie PKP IC.
