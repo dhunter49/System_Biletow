@@ -1,6 +1,6 @@
 # Autorzy
-- [Adam **Marzec**](https://github.com/dhunter49) (grupa lab. 3)
-- [Marta **Załuska**](https://github.com/mxrtaaa) (grupa lab. 3)
+- [Adam **Marzec**](https://github.com/dhunter49)
+- [Marta **Załuska**](https://github.com/mxrtaaa)
 
 # Opis
 Nasz program - **system biletów Polskich Kolei Politechnicznych (PKP)** - umożliwia **rezerwowanie miejsc** w pociągach dodanych do bazy danych. Stworzona przez nas przykładowa baza danych zawiera jedno połączenie **Przemyśl Główny - Ustka** (czyli dwie relacje, bo w obie strony). Dodatkowo mamy możliwość **wyświetlenia informacji** o pociągu, pasażerze lub połączeniu. Program jest stworzony dla kasjerów, dlatego też nie ma faktycznego systemu poboru opłat, jedynie wyświetla znalezione miejsca wraz z ceną.
