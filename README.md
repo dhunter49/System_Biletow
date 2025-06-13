@@ -33,4 +33,4 @@ Zrealizowaliśmy **wszystkie założenia wstępne**, czyli rezerwację biletów 
 # Rozbudowa programu
 Nasz system można by oczywiście rozszerzyć o więcej stacji, relacji, pociągów i dat przejazdów, jednak byłoby to jedynie dodanie rekordów do bazy danych, ponieważ nasz kod jest **w pełni skalowalny**. Jedyną rzeczą, którą należałoby zmienić byłoby ulepszenie wsparcia dla pociągów, które w pewnym momencie swojej trasy przejeżdżają przez północ (zmienia się data).  
 W samym kodzie moglibyśmy jeszcze dodać **obsługę miejsc ze specjalnymi udogodnieniami**, takimi jak miejsca dla niepełnosprawnych na wózku inwalidzkim, miejsca na rowery, strefa ciszy, czy miejsca dla dzieci do lat 6. Przygotowaliśmy w kodzie oraz w bazie miejsce na takie preferencje, jednak nie zdążyliśmy dokończyć obsługi ich rezerwacji.  
-Moglibyśmy również automatycznie **usuwać bilety** na przejazdy, które już się odbyły, co zaoszczędziłoby miejsca w bazie danych. 
+Moglibyśmy również automatycznie **usuwać bilety** na przejazdy, które już się odbyły, co zaoszczędziłoby miejsce w bazie danych. 
