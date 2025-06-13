@@ -23,11 +23,11 @@ Naszym celem było **zniwelować niektóre problemy**, które istnieją obecnie 
 5. Obliczanie kosztu przejazdu na podstawie odległości między stacjami oraz zniżki 
 6. Wprowadzenie preferencji siedzenia - np. pozycja (okno, przejście, środek), klasa czy ustawienie przód/tył do kierunku jazdy
 7. Gdy miejsce zgodne z podanymi preferencjami nie zostanie znalezione, ale występują inne wolne miejsca, to program zaoferuje rezerwację z usuniętymi preferencjami
-   ![Czy kontynuować z rezerwacją?](README_Photos\Preferencje.png)
+   ![Czy kontynuować z rezerwacją?](README_Photos/Preferencje.png)
 8. Gdy w całym pociągu nie ma przedziału, który pomieści wszystkich pasażerów, ale w pociągu jest wystarczająco miejsc, to program rozdzieli rezerwacje oraz znajdzie dla wszystkich miejsca z osobna.
-   ![Znajdź miejsca oddzielone](README_Photos\Oddzielone_miejsca.png)
+   ![Znajdź miejsca oddzielone](README_Photos/Oddzielone_miejsca.png)
 9.  Wyświetlanie informacji potwierdzającej z informacjami o miejscu, które znalazł program, z opcją na potwierdzenie lub odrzucenie
-   ![Potwierdzenie biletu](README_Photos\Informacje.png)
+   ![Potwierdzenie biletu](README_Photos/Informacje.png)
 
 # Instrukcja użytkownika
 Użytkownik może poruszać się po programie za pomocą klawiszy **strzałek**, zatwierdzać opcje za pomocą klawisza **Enter** oraz cofać się lub anulować transację za pomocą klawisza **Escape**.  
