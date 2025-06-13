@@ -53,14 +53,17 @@ int main() {
 	} catch (SQLite::Exception& e) {
 		// If there is an error with database, show it to user
 		std::cerr << "Błąd bazy danych: " << e.what() << std::endl;
+		system("pause");
 		return 1;
 	} catch (std::exception& e) {
 		// If there is any other error, show it to user
 		std::cerr << "Błąd: " << e.what() << std::endl;
+		system("pause");
 		return 2;
 	} catch (...) {
 		// Catch all other exceptions
 		std::cerr << "Nieoczekiwany błąd!" << std::endl;
+		system("pause");
 		return 3;
 	}
 }
